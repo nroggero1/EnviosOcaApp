@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -20,6 +20,7 @@ namespace EnviosOcaApp
         private void InitializeComponent()
         {
             pnlMenuLateral = new Panel();
+            btnGestionUsuarios = new Button();
             btnAuditoria = new Button();
             btnImprimirEtiquetas = new Button();
             btnGenerarEnvios = new Button();
@@ -34,6 +35,7 @@ namespace EnviosOcaApp
             // pnlMenuLateral
             // 
             pnlMenuLateral.BackColor = Color.FromArgb(167, 3, 85);
+            pnlMenuLateral.Controls.Add(btnGestionUsuarios);
             pnlMenuLateral.Controls.Add(btnAuditoria);
             pnlMenuLateral.Controls.Add(btnImprimirEtiquetas);
             pnlMenuLateral.Controls.Add(btnGenerarEnvios);
@@ -44,6 +46,24 @@ namespace EnviosOcaApp
             pnlMenuLateral.Name = "pnlMenuLateral";
             pnlMenuLateral.Size = new Size(229, 748);
             pnlMenuLateral.TabIndex = 0;
+            // 
+            // btnGestionUsuarios
+            // 
+            btnGestionUsuarios.Dock = DockStyle.Top;
+            btnGestionUsuarios.FlatAppearance.BorderSize = 0;
+            btnGestionUsuarios.FlatStyle = FlatStyle.Flat;
+            btnGestionUsuarios.Font = new Font("Microsoft Sans Serif", 10F);
+            btnGestionUsuarios.ForeColor = Color.White;
+            btnGestionUsuarios.Location = new Point(0, 292);
+            btnGestionUsuarios.Margin = new Padding(3, 4, 3, 4);
+            btnGestionUsuarios.Name = "btnGestionUsuarios";
+            btnGestionUsuarios.Padding = new Padding(11, 0, 0, 0);
+            btnGestionUsuarios.Size = new Size(229, 53);
+            btnGestionUsuarios.TabIndex = 4;
+            btnGestionUsuarios.Text = "Gestión de Usuarios";
+            btnGestionUsuarios.TextAlign = ContentAlignment.MiddleLeft;
+            btnGestionUsuarios.UseVisualStyleBackColor = true;
+            btnGestionUsuarios.Click += btnGestionUsuarios_Click;
             // 
             // btnAuditoria
             // 
@@ -155,7 +175,10 @@ namespace EnviosOcaApp
         private System.Windows.Forms.Button btnGenerarEnvios;
         private System.Windows.Forms.Button btnAuditoria;
         private System.Windows.Forms.Button btnImprimirEtiquetas;
+        private System.Windows.Forms.Button btnGestionUsuarios;
         private System.Windows.Forms.Panel pnlContenedor;
         private System.Windows.Forms.PictureBox pictureBoxLogo;
     }
 }
+
+
