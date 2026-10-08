@@ -101,10 +101,9 @@ namespace EnviosOcaApp.Services
 
             string xmlDatosString = xmlDatos.ToString(SaveOptions.DisableFormatting);
 
-            // 2. Construir el sobre SOAP con credenciales oficiales de Sandbox
-            // TODO: OCA devuelve "Estructura del XML inválida" si el usuario/password no coinciden con el nrocuenta
-            string usuarioOca = "sschechtel@prevencionart.com.ar"; 
-            string passwordOca = "Corresponsalia04";
+            // 2. Construir el sobre SOAP con credenciales extraídas de config (appsettings o empresas.json)
+            string usuarioOca = string.IsNullOrWhiteSpace(empresa.Usuario) ? "sschechtel@prevencionart.com.ar" : empresa.Usuario; 
+            string passwordOca = string.IsNullOrWhiteSpace(empresa.Password) ? "Corresponsalia04" : empresa.Password;
 
             string soapEnvelope = $@"<?xml version=""1.0"" encoding=""utf-8""?>
 <soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
