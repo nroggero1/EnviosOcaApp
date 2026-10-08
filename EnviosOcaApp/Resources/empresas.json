@@ -1,12 +1,12 @@
-[
+﻿[
   {
     "Nombre": "Sancor Seguros",
-    "Cuit": "30-50000000-1",
-    "Operativa": "416557",
-    "NroCuenta": "111757/001",
+    "Cuit": "30-50004946-0",
+    "Operativa": "283228",
+    "NroCuenta": "111513/000",
     "CentroCosto": "1",
-    "CalleOrigen": "Ruta Nacional 34",
-    "NumeroOrigen": "Km 257",
+    "CalleOrigen": "Independencia",
+    "NumeroOrigen": "333",
     "LocalidadOrigen": "Sunchales",
     "ProvinciaOrigen": "Santa Fe",
     "CpOrigen": "2322",
@@ -15,12 +15,12 @@
   },
   {
     "Nombre": "Prevención ART",
-    "Cuit": "30-60000000-2",
-    "Operativa": "416557",
-    "NroCuenta": "111757/002",
-    "CentroCosto": "2",
-    "CalleOrigen": "Ruta Nacional 34",
-    "NumeroOrigen": "Km 257",
+    "Cuit": "30-68436191-7",
+    "Operativa": "283228",
+    "NroCuenta": "112198/000",
+    "CentroCosto": "1",
+    "CalleOrigen": "Independencia",
+    "NumeroOrigen": "333",
     "LocalidadOrigen": "Sunchales",
     "ProvinciaOrigen": "Santa Fe",
     "CpOrigen": "2322",
@@ -28,17 +28,17 @@
     "Password": "Corresponsalia04"
   },
   {
-    "Nombre": "OCA - Entorno Testing (QA)",
-    "Cuit": "30-53625919-4",
-    "Operativa": "64665",
-    "NroCuenta": "111757/001",
+    "Nombre": "Prevención Salud",
+    "Cuit": "30-71304500-0",
+    "Operativa": "283228",
+    "NroCuenta": "149191/000",
     "CentroCosto": "1",
-    "CalleOrigen": "Cerrito",
-    "NumeroOrigen": "404",
-    "LocalidadOrigen": "CABA",
-    "ProvinciaOrigen": "Capital Federal",
-    "CpOrigen": "1010",
-    "Usuario": "test@oca.com.ar",
-    "Password": "123456"
+    "CalleOrigen": "Independencia",
+    "NumeroOrigen": "333",
+    "LocalidadOrigen": "Sunchales",
+    "ProvinciaOrigen": "Santa Fe",
+    "CpOrigen": "2322",
+    "Usuario": "sschechtel@prevencionart.com.ar",
+    "Password": "Corresponsalia04"
   }
 ]

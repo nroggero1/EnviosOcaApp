@@ -39,52 +39,75 @@ namespace EnviosOcaApp.Services
             return false;
         }
 
+        private void ExecuteWithRetry(Action action, int maxAttempts = 10)
+        {
+            int delay = 300;
+            for (int i = 0; i < maxAttempts; i++)
+            {
+                try
+                {
+                    action();
+                    return; // Exito, salimos del retry
+                }
+                catch (IOException)
+                {
+                    if (i == maxAttempts - 1)
+                        throw; // Si es el último intento, dejamos que falle
+                    
+                    System.Threading.Thread.Sleep(delay + new Random().Next(50, 150)); // Jitter para evitar colisiones en cadena
+                }
+            }
+        }
+
         public void RegistrarGeneracionEtiqueta(string empresa, string nroOrdenOca, string remitente, string destinatario, string estado)
         {
-            var mesActual = DateTime.Now.ToString("yyyy_MM");
-            var archivoPath = Path.Combine(_settings.DirectorioAuditoriaEtiquetas, $"auditoria_{mesActual}.xlsx");
-
-            var usuario = Environment.UserName;
-            var fecha = DateTime.Now.ToString("dd/MM/yyyy");
-            var hora = DateTime.Now.ToString("HH:mm:ss");
-
-            bool archivoExiste = File.Exists(archivoPath);
-
-            using (var workbook = archivoExiste ? new XLWorkbook(archivoPath) : new XLWorkbook())
+            ExecuteWithRetry(() =>
             {
-                var worksheet = archivoExiste ? workbook.Worksheet(1) : workbook.Worksheets.Add("Auditoria");
+                var mesActual = DateTime.Now.ToString("yyyy_MM");
+                var archivoPath = Path.Combine(_settings.DirectorioAuditoriaEtiquetas, $"auditoria_{mesActual}.xlsx");
 
-                if (!archivoExiste)
+                var usuario = Environment.UserName;
+                var fecha = DateTime.Now.ToString("dd/MM/yyyy");
+                var hora = DateTime.Now.ToString("HH:mm:ss");
+
+                bool archivoExiste = File.Exists(archivoPath);
+
+                using (var workbook = archivoExiste ? new XLWorkbook(archivoPath) : new XLWorkbook())
                 {
-                    worksheet.Cell(1, 1).Value = "Fecha";
-                    worksheet.Cell(1, 2).Value = "Hora";
-                    worksheet.Cell(1, 3).Value = "Usuario_Sistema";
-                    worksheet.Cell(1, 4).Value = "Empresa_Seleccionada";
-                    worksheet.Cell(1, 5).Value = "Nro_Orden_OCA";
-                    worksheet.Cell(1, 6).Value = "Remitente";
-                    worksheet.Cell(1, 7).Value = "Destinatario";
-                    worksheet.Cell(1, 8).Value = "Estado_Operacion";
+                    var worksheet = archivoExiste ? workbook.Worksheet(1) : workbook.Worksheets.Add("Auditoria");
 
-                    var range = worksheet.Range("A1:H1");
-                    range.Style.Font.Bold = true;
-                    range.Style.Fill.BackgroundColor = XLColor.LightGray;
+                    if (!archivoExiste)
+                    {
+                        worksheet.Cell(1, 1).Value = "Fecha";
+                        worksheet.Cell(1, 2).Value = "Hora";
+                        worksheet.Cell(1, 3).Value = "Usuario_Sistema";
+                        worksheet.Cell(1, 4).Value = "Empresa_Seleccionada";
+                        worksheet.Cell(1, 5).Value = "Nro_Orden_OCA";
+                        worksheet.Cell(1, 6).Value = "Remitente";
+                        worksheet.Cell(1, 7).Value = "Destinatario";
+                        worksheet.Cell(1, 8).Value = "Estado_Operacion";
+
+                        var range = worksheet.Range("A1:H1");
+                        range.Style.Font.Bold = true;
+                        range.Style.Fill.BackgroundColor = XLColor.LightGray;
+                    }
+
+                    var ultimaFila = worksheet.LastRowUsed()?.RowNumber() ?? 1;
+                    var nuevaFila = ultimaFila + 1;
+
+                    worksheet.Cell(nuevaFila, 1).Value = fecha;
+                    worksheet.Cell(nuevaFila, 2).Value = hora;
+                    worksheet.Cell(nuevaFila, 3).Value = usuario;
+                    worksheet.Cell(nuevaFila, 4).Value = empresa;
+                    worksheet.Cell(nuevaFila, 5).Value = nroOrdenOca;
+                    worksheet.Cell(nuevaFila, 6).Value = remitente;
+                    worksheet.Cell(nuevaFila, 7).Value = destinatario;
+                    worksheet.Cell(nuevaFila, 8).Value = estado;
+
+                    worksheet.Columns().AdjustToContents();
+                    workbook.SaveAs(archivoPath);
                 }
-
-                var ultimaFila = worksheet.LastRowUsed()?.RowNumber() ?? 1;
-                var nuevaFila = ultimaFila + 1;
-
-                worksheet.Cell(nuevaFila, 1).Value = fecha;
-                worksheet.Cell(nuevaFila, 2).Value = hora;
-                worksheet.Cell(nuevaFila, 3).Value = usuario;
-                worksheet.Cell(nuevaFila, 4).Value = empresa;
-                worksheet.Cell(nuevaFila, 5).Value = nroOrdenOca;
-                worksheet.Cell(nuevaFila, 6).Value = remitente;
-                worksheet.Cell(nuevaFila, 7).Value = destinatario;
-                worksheet.Cell(nuevaFila, 8).Value = estado;
-
-                worksheet.Columns().AdjustToContents();
-                workbook.SaveAs(archivoPath);
-            }
+            });
         }
         public System.Data.DataTable ObtenerHistorialMensual()
         {
@@ -97,39 +120,43 @@ namespace EnviosOcaApp.Services
 
             try
             {
-                using (var workbook = new XLWorkbook(archivoPath))
+                ExecuteWithRetry(() => 
                 {
-                    var ws = workbook.Worksheet(1);
-                    bool firstRow = true;
-                    
-                    var currentUser = Environment.UserName;
-                    bool isAdmin = EsAdministrador(currentUser);
-
-                    foreach (var row in ws.RowsUsed())
+                    using (var stream = new FileStream(archivoPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    using (var workbook = new XLWorkbook(stream))
                     {
-                        if (firstRow)
+                        var ws = workbook.Worksheet(1);
+                        bool firstRow = true;
+                        
+                        var currentUser = Environment.UserName;
+                        bool isAdmin = EsAdministrador(currentUser);
+
+                        foreach (var row in ws.RowsUsed())
                         {
-                            foreach (var cell in row.Cells())
-                                dt.Columns.Add(cell.Value.ToString());
-                            firstRow = false;
-                        }
-                        else
-                        {
-                            string rowUser = row.Cell(3).Value.ToString(); // Usuario_Sistema es columna 3
-                            
-                            if (isAdmin || string.Equals(rowUser, currentUser, StringComparison.OrdinalIgnoreCase))
+                            if (firstRow)
                             {
-                                dt.Rows.Add();
-                                int i = 0;
-                                foreach (var cell in row.Cells(1, dt.Columns.Count))
+                                foreach (var cell in row.Cells())
+                                    dt.Columns.Add(cell.Value.ToString());
+                                firstRow = false;
+                            }
+                            else
+                            {
+                                string rowUser = row.Cell(3).Value.ToString(); // Usuario_Sistema es columna 3
+                                
+                                if (isAdmin || string.Equals(rowUser, currentUser, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    dt.Rows[dt.Rows.Count - 1][i] = cell.Value.ToString();
-                                    i++;
+                                    dt.Rows.Add();
+                                    int i = 0;
+                                    foreach (var cell in row.Cells(1, dt.Columns.Count))
+                                    {
+                                        dt.Rows[dt.Rows.Count - 1][i] = cell.Value.ToString();
+                                        i++;
+                                    }
                                 }
                             }
                         }
                     }
-                }
+                });
             }
             catch (Exception)
             {
@@ -149,14 +176,17 @@ namespace EnviosOcaApp.Services
         {
             try
             {
-                var mesActual = DateTime.Now.ToString("yyyy_MM");
-                var archivoPath = Path.Combine(_settings.DirectorioAuditoriaNavegacion, $"navegacion_{mesActual}.csv");
-                
-                var usuario = Environment.UserName;
-                var timestamp = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                ExecuteWithRetry(() =>
+                {
+                    var mesActual = DateTime.Now.ToString("yyyy_MM");
+                    var archivoPath = Path.Combine(_settings.DirectorioAuditoriaNavegacion, $"navegacion_{mesActual}.csv");
+                    
+                    var usuario = Environment.UserName;
+                    var timestamp = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
 
-                string linea = $"{timestamp},{usuario},{modulo},{accion}\n";
-                File.AppendAllText(archivoPath, linea);
+                    string linea = $"{timestamp},{usuario},{modulo},{accion}\n";
+                    File.AppendAllText(archivoPath, linea);
+                });
             }
             catch
             {

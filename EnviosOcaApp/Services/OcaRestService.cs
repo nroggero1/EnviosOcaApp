@@ -38,9 +38,9 @@ namespace EnviosOcaApp.Services
                 new XAttribute("cp", empresa.CpOrigen),
                 new XAttribute("localidad", empresa.LocalidadOrigen),
                 new XAttribute("provincia", empresa.ProvinciaOrigen),
-                new XAttribute("contacto", ""),
+                new XAttribute("contacto", string.IsNullOrWhiteSpace(remitente) ? empresa.Nombre : remitente),
                 new XAttribute("email", ""),
-                new XAttribute("solicitante", ""),
+                new XAttribute("solicitante", empresa.Nombre),
                 new XAttribute("observaciones", ""),
                 new XAttribute("centrocosto", empresa.CentroCosto),
                 new XAttribute("idfranjahoraria", "1"),
@@ -112,7 +112,7 @@ namespace EnviosOcaApp.Services
       <usr>{usuarioOca}</usr>
       <psw>{passwordOca}</psw>
       <xml_Datos><![CDATA[{xmlDatosString}]]></xml_Datos>
-      <ConfirmarRetiro>false</ConfirmarRetiro>
+      <ConfirmarRetiro>true</ConfirmarRetiro>
       <ArchivoCliente></ArchivoCliente>
       <ArchivoProceso></ArchivoProceso>
     </IngresoORMultiplesRetiros_v2>

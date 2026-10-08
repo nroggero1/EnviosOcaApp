@@ -19,126 +19,134 @@ namespace EnviosOcaApp
 
         private void InitializeComponent()
         {
-            this.pnlMenuLateral = new System.Windows.Forms.Panel();
-            this.btnAuditoria = new System.Windows.Forms.Button();
-            this.btnImprimirEtiquetas = new System.Windows.Forms.Button();
-            this.btnGenerarEnvios = new System.Windows.Forms.Button();
-            this.pnlLogo = new System.Windows.Forms.Panel();
-            this.pictureBoxLogo = new System.Windows.Forms.PictureBox();
-            this.pnlContenedor = new System.Windows.Forms.Panel();
-            this.pnlMenuLateral.SuspendLayout();
-            this.pnlLogo.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
-            this.SuspendLayout();
+            pnlMenuLateral = new Panel();
+            btnAuditoria = new Button();
+            btnImprimirEtiquetas = new Button();
+            btnGenerarEnvios = new Button();
+            pnlLogo = new Panel();
+            pictureBoxLogo = new PictureBox();
+            pnlContenedor = new Panel();
+            pnlMenuLateral.SuspendLayout();
+            pnlLogo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).BeginInit();
+            SuspendLayout();
             // 
             // pnlMenuLateral
             // 
-            this.pnlMenuLateral.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(3)))), ((int)(((byte)(85)))));
-            this.pnlMenuLateral.Controls.Add(this.btnAuditoria);
-            this.pnlMenuLateral.Controls.Add(this.btnImprimirEtiquetas);
-            this.pnlMenuLateral.Controls.Add(this.btnGenerarEnvios);
-            this.pnlMenuLateral.Controls.Add(this.pnlLogo);
-            this.pnlMenuLateral.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pnlMenuLateral.Location = new System.Drawing.Point(0, 0);
-            this.pnlMenuLateral.Name = "pnlMenuLateral";
-            this.pnlMenuLateral.Size = new System.Drawing.Size(200, 561);
-            this.pnlMenuLateral.TabIndex = 0;
+            pnlMenuLateral.BackColor = Color.FromArgb(167, 3, 85);
+            pnlMenuLateral.Controls.Add(btnAuditoria);
+            pnlMenuLateral.Controls.Add(btnImprimirEtiquetas);
+            pnlMenuLateral.Controls.Add(btnGenerarEnvios);
+            pnlMenuLateral.Controls.Add(pnlLogo);
+            pnlMenuLateral.Dock = DockStyle.Left;
+            pnlMenuLateral.Location = new Point(0, 0);
+            pnlMenuLateral.Margin = new Padding(3, 4, 3, 4);
+            pnlMenuLateral.Name = "pnlMenuLateral";
+            pnlMenuLateral.Size = new Size(229, 748);
+            pnlMenuLateral.TabIndex = 0;
             // 
             // btnAuditoria
             // 
-            this.btnAuditoria.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnAuditoria.FlatAppearance.BorderSize = 0;
-            this.btnAuditoria.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAuditoria.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnAuditoria.ForeColor = System.Drawing.Color.White;
-            this.btnAuditoria.Location = new System.Drawing.Point(0, 180);
-            this.btnAuditoria.Name = "btnAuditoria";
-            this.btnAuditoria.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
-            this.btnAuditoria.Size = new System.Drawing.Size(200, 40);
-            this.btnAuditoria.TabIndex = 3;
-            this.btnAuditoria.Text = "Historial y Seguimiento";
-            this.btnAuditoria.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnAuditoria.UseVisualStyleBackColor = true;
-            this.btnAuditoria.Click += new System.EventHandler(this.btnAuditoria_Click);
+            btnAuditoria.Dock = DockStyle.Top;
+            btnAuditoria.FlatAppearance.BorderSize = 0;
+            btnAuditoria.FlatStyle = FlatStyle.Flat;
+            btnAuditoria.Font = new Font("Microsoft Sans Serif", 10F);
+            btnAuditoria.ForeColor = Color.White;
+            btnAuditoria.Location = new Point(0, 239);
+            btnAuditoria.Margin = new Padding(3, 4, 3, 4);
+            btnAuditoria.Name = "btnAuditoria";
+            btnAuditoria.Padding = new Padding(11, 0, 0, 0);
+            btnAuditoria.Size = new Size(229, 53);
+            btnAuditoria.TabIndex = 3;
+            btnAuditoria.Text = "Historial y Seguimiento";
+            btnAuditoria.TextAlign = ContentAlignment.MiddleLeft;
+            btnAuditoria.UseVisualStyleBackColor = true;
+            btnAuditoria.Click += btnAuditoria_Click;
             // 
             // btnImprimirEtiquetas
             // 
-            this.btnImprimirEtiquetas.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnImprimirEtiquetas.FlatAppearance.BorderSize = 0;
-            this.btnImprimirEtiquetas.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnImprimirEtiquetas.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnImprimirEtiquetas.ForeColor = System.Drawing.Color.White;
-            this.btnImprimirEtiquetas.Location = new System.Drawing.Point(0, 140);
-            this.btnImprimirEtiquetas.Name = "btnImprimirEtiquetas";
-            this.btnImprimirEtiquetas.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
-            this.btnImprimirEtiquetas.Size = new System.Drawing.Size(200, 40);
-            this.btnImprimirEtiquetas.TabIndex = 2;
-            this.btnImprimirEtiquetas.Text = "Impresión de Etiquetas";
-            this.btnImprimirEtiquetas.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnImprimirEtiquetas.UseVisualStyleBackColor = true;
-            this.btnImprimirEtiquetas.Click += new System.EventHandler(this.btnImprimirEtiquetas_Click);
+            btnImprimirEtiquetas.Dock = DockStyle.Top;
+            btnImprimirEtiquetas.FlatAppearance.BorderSize = 0;
+            btnImprimirEtiquetas.FlatStyle = FlatStyle.Flat;
+            btnImprimirEtiquetas.Font = new Font("Microsoft Sans Serif", 10F);
+            btnImprimirEtiquetas.ForeColor = Color.White;
+            btnImprimirEtiquetas.Location = new Point(0, 186);
+            btnImprimirEtiquetas.Margin = new Padding(3, 4, 3, 4);
+            btnImprimirEtiquetas.Name = "btnImprimirEtiquetas";
+            btnImprimirEtiquetas.Padding = new Padding(11, 0, 0, 0);
+            btnImprimirEtiquetas.Size = new Size(229, 53);
+            btnImprimirEtiquetas.TabIndex = 2;
+            btnImprimirEtiquetas.Text = "Impresión de Etiquetas";
+            btnImprimirEtiquetas.TextAlign = ContentAlignment.MiddleLeft;
+            btnImprimirEtiquetas.UseVisualStyleBackColor = true;
+            btnImprimirEtiquetas.Click += btnImprimirEtiquetas_Click;
             // 
             // btnGenerarEnvios
             // 
-            this.btnGenerarEnvios.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnGenerarEnvios.FlatAppearance.BorderSize = 0;
-            this.btnGenerarEnvios.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnGenerarEnvios.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnGenerarEnvios.ForeColor = System.Drawing.Color.White;
-            this.btnGenerarEnvios.Location = new System.Drawing.Point(0, 100);
-            this.btnGenerarEnvios.Name = "btnGenerarEnvios";
-            this.btnGenerarEnvios.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
-            this.btnGenerarEnvios.Size = new System.Drawing.Size(200, 40);
-            this.btnGenerarEnvios.TabIndex = 1;
-            this.btnGenerarEnvios.Text = "Generación de Envío";
-            this.btnGenerarEnvios.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnGenerarEnvios.UseVisualStyleBackColor = true;
-            this.btnGenerarEnvios.Click += new System.EventHandler(this.btnGenerarEnvios_Click);
+            btnGenerarEnvios.Dock = DockStyle.Top;
+            btnGenerarEnvios.FlatAppearance.BorderSize = 0;
+            btnGenerarEnvios.FlatStyle = FlatStyle.Flat;
+            btnGenerarEnvios.Font = new Font("Microsoft Sans Serif", 10F);
+            btnGenerarEnvios.ForeColor = Color.White;
+            btnGenerarEnvios.Location = new Point(0, 133);
+            btnGenerarEnvios.Margin = new Padding(3, 4, 3, 4);
+            btnGenerarEnvios.Name = "btnGenerarEnvios";
+            btnGenerarEnvios.Padding = new Padding(11, 0, 0, 0);
+            btnGenerarEnvios.Size = new Size(229, 53);
+            btnGenerarEnvios.TabIndex = 1;
+            btnGenerarEnvios.Text = "Generación de Envío";
+            btnGenerarEnvios.TextAlign = ContentAlignment.MiddleLeft;
+            btnGenerarEnvios.UseVisualStyleBackColor = true;
+            btnGenerarEnvios.Click += btnGenerarEnvios_Click;
             // 
             // pnlLogo
             // 
-            this.pnlLogo.Controls.Add(this.pictureBoxLogo);
-            this.pnlLogo.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlLogo.Location = new System.Drawing.Point(0, 0);
-            this.pnlLogo.Name = "pnlLogo";
-            this.pnlLogo.Size = new System.Drawing.Size(200, 100);
-            this.pnlLogo.TabIndex = 0;
+            pnlLogo.Controls.Add(pictureBoxLogo);
+            pnlLogo.Dock = DockStyle.Top;
+            pnlLogo.Location = new Point(0, 0);
+            pnlLogo.Margin = new Padding(3, 4, 3, 4);
+            pnlLogo.Name = "pnlLogo";
+            pnlLogo.Size = new Size(229, 133);
+            pnlLogo.TabIndex = 0;
             // 
             // pictureBoxLogo
             // 
-            this.pictureBoxLogo.Location = new System.Drawing.Point(10, 20);
-            this.pictureBoxLogo.Name = "pictureBoxLogo";
-            this.pictureBoxLogo.Size = new System.Drawing.Size(180, 60);
-            this.pictureBoxLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBoxLogo.TabIndex = 0;
-            this.pictureBoxLogo.TabStop = false;
+            pictureBoxLogo.Location = new Point(0, 13);
+            pictureBoxLogo.Margin = new Padding(3, 4, 3, 4);
+            pictureBoxLogo.Name = "pictureBoxLogo";
+            pictureBoxLogo.Size = new Size(229, 98);
+            pictureBoxLogo.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBoxLogo.TabIndex = 0;
+            pictureBoxLogo.TabStop = false;
             // 
             // pnlContenedor
             // 
-            this.pnlContenedor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(247)))));
-            this.pnlContenedor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlContenedor.Location = new System.Drawing.Point(200, 0);
-            this.pnlContenedor.Name = "pnlContenedor";
-            this.pnlContenedor.Size = new System.Drawing.Size(684, 561);
-            this.pnlContenedor.TabIndex = 1;
+            pnlContenedor.BackColor = Color.FromArgb(246, 246, 247);
+            pnlContenedor.Dock = DockStyle.Fill;
+            pnlContenedor.Location = new Point(229, 0);
+            pnlContenedor.Margin = new Padding(3, 4, 3, 4);
+            pnlContenedor.Name = "pnlContenedor";
+            pnlContenedor.Size = new Size(781, 748);
+            pnlContenedor.TabIndex = 1;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 561);
-            this.Controls.Add(this.pnlContenedor);
-            this.Controls.Add(this.pnlMenuLateral);
-            this.MinimumSize = new System.Drawing.Size(800, 500);
-            this.Name = "Form1";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Text = "Menú Principal - Envios OCA";
-            this.Load += new System.EventHandler(this.Form1_Load);
-            this.pnlMenuLateral.ResumeLayout(false);
-            this.pnlLogo.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).EndInit();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1010, 748);
+            Controls.Add(pnlContenedor);
+            Controls.Add(pnlMenuLateral);
+            Margin = new Padding(3, 4, 3, 4);
+            MinimumSize = new Size(912, 651);
+            Name = "Form1";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Menú Principal - Envios OCA";
+            WindowState = FormWindowState.Maximized;
+            Load += Form1_Load;
+            pnlMenuLateral.ResumeLayout(false);
+            pnlLogo.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).EndInit();
+            ResumeLayout(false);
 
         }
 
