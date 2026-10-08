@@ -1,0 +1,12 @@
+{
+  "administradores": [
+    {
+      "Nombre": "Nicolas Roggero",
+      "Mail": "nroggero@sancorseguros.com"
+    },
+    {
+      "Nombre": "Elio Novello",
+      "Mail": "enovello@sancorseguros.com"
+    }
+  ]
+}

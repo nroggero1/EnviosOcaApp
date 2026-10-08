@@ -1,0 +1,38 @@
+[
+  {
+    "Nombre": "Sancor Seguros",
+    "Cuit": "30-50000000-1",
+    "Operativa": "12345",
+    "NroCuenta": "111757/001",
+    "CentroCosto": "1",
+    "CalleOrigen": "Ruta Nacional 34",
+    "NumeroOrigen": "Km 257",
+    "LocalidadOrigen": "Sunchales",
+    "ProvinciaOrigen": "Santa Fe",
+    "CpOrigen": "2322"
+  },
+  {
+    "Nombre": "Prevención ART",
+    "Cuit": "30-60000000-2",
+    "Operativa": "12346",
+    "NroCuenta": "111757/002",
+    "CentroCosto": "2",
+    "CalleOrigen": "Ruta Nacional 34",
+    "NumeroOrigen": "Km 257",
+    "LocalidadOrigen": "Sunchales",
+    "ProvinciaOrigen": "Santa Fe",
+    "CpOrigen": "2322"
+  },
+  {
+    "Nombre": "OCA - Entorno Testing (QA)",
+    "Cuit": "30-99999999-7",
+    "Operativa": "64665",
+    "NroCuenta": "111757/001",
+    "CentroCosto": "",
+    "CalleOrigen": "Cerrito",
+    "NumeroOrigen": "404",
+    "LocalidadOrigen": "CABA",
+    "ProvinciaOrigen": "Capital Federal",
+    "CpOrigen": "1010"
+  }
+]
