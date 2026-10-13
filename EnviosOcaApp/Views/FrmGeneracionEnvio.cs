@@ -482,7 +482,7 @@ namespace EnviosOcaApp.Views
                 var loteParaEnviar = listaLoteEnvios.ToList();
 
                 // 1. Llamamos al servicio OCA y obtenemos el objeto de respuesta completo (LLAMADA REAL)
-                OcaResponse ocaRespuesta = await Program.OcaService.GenerarLoteRealAsync(empresaSeleccionada, remitente, loteParaEnviar);
+                OcaResponse ocaRespuesta = await Program.OcaService.GenerarLoteRealAsync(empresaSeleccionada, apRem, nomRem, loteParaEnviar);
 
                 if (ocaRespuesta.TieneErrores)
                 {

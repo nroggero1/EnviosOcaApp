@@ -19,10 +19,91 @@ namespace EnviosOcaApp.Services
         public OcaRestService(AppSettings settings)
         {
             _settings = settings;
-            _httpClient = new HttpClient();
+
+            var handler = new HttpClientHandler
+            {
+                CheckCertificateRevocationList = false,
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+
+            _httpClient = new HttpClient(handler);
         }
 
-        public async Task<OcaResponse> GenerarLoteRealAsync(EmpresaOca empresa, string remitente, System.Collections.Generic.List<EnvioOca> lote)
+        public async Task<bool> ActualizarUsuarioOcaAsync(string nombre, string apellido, EmpresaOca empresa = null)
+        {
+            try
+            {
+                string usuarioOca = (_settings != null && !_settings.EsProduccion)
+                    ? "test@oca.com.ar"
+                    : (empresa != null && !string.IsNullOrWhiteSpace(empresa.Usuario) ? empresa.Usuario : "sschechtel@prevencionart.com.ar");
+
+                string passwordOca = (_settings != null && !_settings.EsProduccion)
+                    ? "123456"
+                    : (empresa != null && !string.IsNullOrWhiteSpace(empresa.Password) ? empresa.Password : "Corresponsalia04");
+
+                // 1. Login contra el middleware de ePak para obtener JWT
+                var loginPayload = new { email = usuarioOca, password = passwordOca };
+                string loginJson = System.Text.Json.JsonSerializer.Serialize(loginPayload);
+                var loginContent = new StringContent(loginJson, Encoding.UTF8, "application/json");
+
+                var loginRes = await _httpClient.PostAsync("https://ocaepak.oca.com.ar/middleware/login", loginContent);
+                if (!loginRes.IsSuccessStatusCode) return false;
+
+                string loginRespBody = await loginRes.Content.ReadAsStringAsync();
+                using var doc = System.Text.Json.JsonDocument.Parse(loginRespBody);
+                if (!doc.RootElement.TryGetProperty("access_token", out var tokenProp)) return false;
+                string token = tokenProp.GetString() ?? "";
+
+                // 2. Preparar payload respetando validaciones mínimas de OCA
+                string nomFinal = (nombre ?? "VICTOR").Trim();
+                string apeFinal = (apellido ?? "CEJAS").Trim();
+                if (nomFinal.Length < 3) nomFinal = nomFinal.PadRight(3, '.');
+                if (apeFinal.Length < 4) apeFinal = apeFinal.PadRight(4, '.');
+
+                var updatePayload = new
+                {
+                    Apellido = apeFinal.ToUpperInvariant(),
+                    Nombre = nomFinal.ToUpperInvariant(),
+                    Empresa = (empresa?.Nombre ?? "SANCOR SEGUROS").ToUpperInvariant(),
+                    Contacto = (empresa?.ContactoOrigen ?? "CORRESPONSALIA").ToUpperInvariant(),
+                    Calle = "LAINEZ",
+                    Numero = "58",
+                    Piso = "",
+                    Depto = "",
+                    IdCodPostal = 4069,
+                    Localidad = "SUNCHALES",
+                    eCorreo1 = usuarioOca,
+                    Telefono = "3493420000"
+                };
+
+                string updateJson = System.Text.Json.JsonSerializer.Serialize(updatePayload);
+                using var putRequest = new HttpRequestMessage(HttpMethod.Put, "https://ocaepak.oca.com.ar/middleware/user");
+                putRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                putRequest.Content = new StringContent(updateJson, Encoding.UTF8, "application/json");
+
+                var putRes = await _httpClient.SendAsync(putRequest);
+                return putRes.IsSuccessStatusCode;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public Task<OcaResponse> GenerarLoteRealAsync(EmpresaOca empresa, string remitente, System.Collections.Generic.List<EnvioOca> lote)
+        {
+            string ape = remitente ?? "";
+            string nom = "";
+            if (!string.IsNullOrWhiteSpace(remitente) && remitente.Contains(" "))
+            {
+                var partes = remitente.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+                ape = partes[0];
+                nom = partes[1];
+            }
+            return GenerarLoteRealAsync(empresa, ape, nom, lote);
+        }
+
+        public async Task<OcaResponse> GenerarLoteRealAsync(EmpresaOca empresa, string remitenteApellido, string remitenteNombre, System.Collections.Generic.List<EnvioOca> lote)
         {
             if (empresa == null) throw new ArgumentException("La empresa es obligatoria.");
             if (lote == null || lote.Count == 0) throw new ArgumentException("El lote no puede estar vacío.");
@@ -53,7 +134,8 @@ namespace EnviosOcaApp.Services
             string contactoRetiro = !string.IsNullOrWhiteSpace(empresa.ContactoOrigen) ? empresa.ContactoOrigen : "CORRESPONSALIA";
             if (contactoRetiro.Length > 30) contactoRetiro = contactoRetiro.Substring(0, 30);
 
-            string solicitanteRemitente = string.IsNullOrWhiteSpace(remitente) ? empresa.Nombre : remitente.Trim();
+            string remitenteTextoCompleto = $"{remitenteApellido} {remitenteNombre}".Trim();
+            string solicitanteRemitente = string.IsNullOrWhiteSpace(remitenteTextoCompleto) ? empresa.Nombre : remitenteTextoCompleto;
             if (solicitanteRemitente.Length > 30) solicitanteRemitente = solicitanteRemitente.Substring(0, 30);
 
             // 1. Construir el XML_Datos interno que OCA exige
@@ -150,6 +232,16 @@ namespace EnviosOcaApp.Services
 
             var ocaRes = new OcaResponse();
 
+            // 1. Actualizar titular en OCA al nombre del remitente antes de transmitir
+            if (_settings == null || _settings.EsProduccion)
+            {
+                try
+                {
+                    await ActualizarUsuarioOcaAsync(remitenteNombre, remitenteApellido, empresa);
+                }
+                catch { }
+            }
+
             try
             {
                 var formValues = new System.Collections.Generic.Dictionary<string, string>
@@ -235,11 +327,39 @@ namespace EnviosOcaApp.Services
                         });
                     }
                 }
+
+                // 5. Descargar/precargar de inmediato el PDF de las etiquetas para guardarlas en disco
+                if (!ocaRes.TieneErrores && ocaRes.EnviosGenerados.Count > 0)
+                {
+                    foreach (var guia in ocaRes.EnviosGenerados)
+                    {
+                        if (!string.IsNullOrWhiteSpace(guia.NumeroEnvio))
+                        {
+                            try
+                            {
+                                await ObtenerEtiquetaPdfAsync(guia.NumeroEnvio);
+                            }
+                            catch { }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
                 ocaRes.TieneErrores = true;
                 ocaRes.MensajeError = "Fallo al enviar datos a OCA. Exception: " + ex.Message;
+            }
+            finally
+            {
+                // 2. RESTAURAR SIEMPRE EL TITULAR AL USUARIO INICIAL "VICTOR CEJAS"
+                if (_settings == null || _settings.EsProduccion)
+                {
+                    try
+                    {
+                        await ActualizarUsuarioOcaAsync("VICTOR", "CEJAS", empresa);
+                    }
+                    catch { }
+                }
             }
 
             return ocaRes;
