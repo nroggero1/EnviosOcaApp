@@ -20,5 +20,6 @@ namespace EnviosOcaApp.Models
     {
         public string NumeroRemito { get; set; } = string.Empty; // Nuestro ID interno enviado
         public string NumeroEnvio { get; set; } = string.Empty;  // El Nro de Tracking de OCA (Ej: 34650000...)
+        public string OrdenRetiro { get; set; } = string.Empty;  // Orden de retiro/admisión asignada por OCA
     }
 }

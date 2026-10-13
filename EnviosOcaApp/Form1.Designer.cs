@@ -19,6 +19,7 @@ namespace EnviosOcaApp
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             pnlMenuLateral = new Panel();
             btnGestionUsuarios = new Button();
             btnAuditoria = new Button();
@@ -44,7 +45,7 @@ namespace EnviosOcaApp
             pnlMenuLateral.Location = new Point(0, 0);
             pnlMenuLateral.Margin = new Padding(3, 4, 3, 4);
             pnlMenuLateral.Name = "pnlMenuLateral";
-            pnlMenuLateral.Size = new Size(229, 748);
+            pnlMenuLateral.Size = new Size(270, 748);
             pnlMenuLateral.TabIndex = 0;
             // 
             // btnGestionUsuarios
@@ -58,7 +59,7 @@ namespace EnviosOcaApp
             btnGestionUsuarios.Margin = new Padding(3, 4, 3, 4);
             btnGestionUsuarios.Name = "btnGestionUsuarios";
             btnGestionUsuarios.Padding = new Padding(11, 0, 0, 0);
-            btnGestionUsuarios.Size = new Size(229, 53);
+            btnGestionUsuarios.Size = new Size(270, 53);
             btnGestionUsuarios.TabIndex = 4;
             btnGestionUsuarios.Text = "Gestión de Usuarios";
             btnGestionUsuarios.TextAlign = ContentAlignment.MiddleLeft;
@@ -76,7 +77,7 @@ namespace EnviosOcaApp
             btnAuditoria.Margin = new Padding(3, 4, 3, 4);
             btnAuditoria.Name = "btnAuditoria";
             btnAuditoria.Padding = new Padding(11, 0, 0, 0);
-            btnAuditoria.Size = new Size(229, 53);
+            btnAuditoria.Size = new Size(270, 53);
             btnAuditoria.TabIndex = 3;
             btnAuditoria.Text = "Historial y Seguimiento";
             btnAuditoria.TextAlign = ContentAlignment.MiddleLeft;
@@ -94,7 +95,7 @@ namespace EnviosOcaApp
             btnImprimirEtiquetas.Margin = new Padding(3, 4, 3, 4);
             btnImprimirEtiquetas.Name = "btnImprimirEtiquetas";
             btnImprimirEtiquetas.Padding = new Padding(11, 0, 0, 0);
-            btnImprimirEtiquetas.Size = new Size(229, 53);
+            btnImprimirEtiquetas.Size = new Size(270, 53);
             btnImprimirEtiquetas.TabIndex = 2;
             btnImprimirEtiquetas.Text = "Impresión de Etiquetas";
             btnImprimirEtiquetas.TextAlign = ContentAlignment.MiddleLeft;
@@ -112,7 +113,7 @@ namespace EnviosOcaApp
             btnGenerarEnvios.Margin = new Padding(3, 4, 3, 4);
             btnGenerarEnvios.Name = "btnGenerarEnvios";
             btnGenerarEnvios.Padding = new Padding(11, 0, 0, 0);
-            btnGenerarEnvios.Size = new Size(229, 53);
+            btnGenerarEnvios.Size = new Size(270, 53);
             btnGenerarEnvios.TabIndex = 1;
             btnGenerarEnvios.Text = "Generación de Envío";
             btnGenerarEnvios.TextAlign = ContentAlignment.MiddleLeft;
@@ -126,15 +127,15 @@ namespace EnviosOcaApp
             pnlLogo.Location = new Point(0, 0);
             pnlLogo.Margin = new Padding(3, 4, 3, 4);
             pnlLogo.Name = "pnlLogo";
-            pnlLogo.Size = new Size(229, 133);
+            pnlLogo.Size = new Size(270, 133);
             pnlLogo.TabIndex = 0;
             // 
             // pictureBoxLogo
             // 
-            pictureBoxLogo.Location = new Point(0, 13);
-            pictureBoxLogo.Margin = new Padding(3, 4, 3, 4);
+            pictureBoxLogo.Image = (Image)resources.GetObject("pictureBoxLogo.Image");
+            pictureBoxLogo.Location = new Point(0, 9);
             pictureBoxLogo.Name = "pictureBoxLogo";
-            pictureBoxLogo.Size = new Size(229, 98);
+            pictureBoxLogo.Size = new Size(270, 85);
             pictureBoxLogo.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBoxLogo.TabIndex = 0;
             pictureBoxLogo.TabStop = false;
@@ -143,7 +144,7 @@ namespace EnviosOcaApp
             // 
             pnlContenedor.BackColor = Color.FromArgb(246, 246, 247);
             pnlContenedor.Dock = DockStyle.Fill;
-            pnlContenedor.Location = new Point(229, 0);
+            pnlContenedor.Location = new Point(270, 0);
             pnlContenedor.Margin = new Padding(3, 4, 3, 4);
             pnlContenedor.Name = "pnlContenedor";
             pnlContenedor.Size = new Size(781, 748);
@@ -180,5 +181,7 @@ namespace EnviosOcaApp
         private System.Windows.Forms.PictureBox pictureBoxLogo;
     }
 }
+
+
 
 

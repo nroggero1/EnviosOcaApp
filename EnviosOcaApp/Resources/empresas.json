@@ -1,15 +1,16 @@
-﻿[
+[
   {
     "Nombre": "Sancor Seguros",
     "Cuit": "30-50004946-0",
     "Operativa": "283228",
     "NroCuenta": "111513/000",
     "CentroCosto": "1",
-    "CalleOrigen": "Independencia",
-    "NumeroOrigen": "333",
+    "CalleOrigen": "Lainez",
+    "NumeroOrigen": "58",
     "LocalidadOrigen": "Sunchales",
     "ProvinciaOrigen": "Santa Fe",
     "CpOrigen": "2322",
+    "ContactoOrigen": "CORRESPONSALIA",
     "Usuario": "sschechtel@prevencionart.com.ar",
     "Password": "Corresponsalia04"
   },
@@ -19,11 +20,12 @@
     "Operativa": "283228",
     "NroCuenta": "112198/000",
     "CentroCosto": "1",
-    "CalleOrigen": "Independencia",
-    "NumeroOrigen": "333",
+    "CalleOrigen": "Lainez",
+    "NumeroOrigen": "58",
     "LocalidadOrigen": "Sunchales",
     "ProvinciaOrigen": "Santa Fe",
     "CpOrigen": "2322",
+    "ContactoOrigen": "CORRESPONSALIA",
     "Usuario": "sschechtel@prevencionart.com.ar",
     "Password": "Corresponsalia04"
   },
@@ -33,11 +35,12 @@
     "Operativa": "283228",
     "NroCuenta": "149191/000",
     "CentroCosto": "1",
-    "CalleOrigen": "Independencia",
-    "NumeroOrigen": "333",
+    "CalleOrigen": "Lainez",
+    "NumeroOrigen": "58",
     "LocalidadOrigen": "Sunchales",
     "ProvinciaOrigen": "Santa Fe",
     "CpOrigen": "2322",
+    "ContactoOrigen": "CORRESPONSALIA",
     "Usuario": "sschechtel@prevencionart.com.ar",
     "Password": "Corresponsalia04"
   }

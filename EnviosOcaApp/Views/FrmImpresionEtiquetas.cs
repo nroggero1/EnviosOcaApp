@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -27,14 +27,14 @@ namespace EnviosOcaApp.Views
         {
             try
             {
-                var dt = Program.AuditoriaService.ObtenerHistorialMensual();
+                var dt = Program.AuditoriaService.ObtenerHistorial(null, null, Environment.UserName, true);
                 dgvRecientes.DataSource = dt;
                 
                 // Ajustar visualmente el ancho de columnas si hay datos
                 if (dgvRecientes.Columns.Count > 0)
                 {
                     dgvRecientes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-                    // Darle el espacio restante al Destinatario que suele ser el más largo
+                    // Darle el espacio restante al Destinatario que suele ser el mÃ¡s largo
                     if (dgvRecientes.Columns.Contains("Destinatario"))
                     {
                         dgvRecientes.Columns["Destinatario"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -43,7 +43,7 @@ namespace EnviosOcaApp.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"No se pudo cargar la auditoría: {ex.Message}");
+                MessageBox.Show($"No se pudo cargar la auditorÃ­a: {ex.Message}");
             }
         }
 
@@ -51,7 +51,7 @@ namespace EnviosOcaApp.Views
         {
             if (string.IsNullOrWhiteSpace(txtTracking.Text))
             {
-                MessageBox.Show("Ingrese un número de Tracking o Nro de Operación OCA.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Ingrese un nÃºmero de Tracking o Nro de OperaciÃ³n OCA.", "AtenciÃ³n", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -62,7 +62,7 @@ namespace EnviosOcaApp.Views
         {
             if (dgvRecientes.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Seleccione un envío de la grilla inferior.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Seleccione un envÃ­o de la grilla inferior.", "AtenciÃ³n", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -75,7 +75,7 @@ namespace EnviosOcaApp.Views
 
             if (string.IsNullOrWhiteSpace(nroOca))
             {
-                MessageBox.Show("No se encontró el Nro_Orden_OCA en la fila seleccionada.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No se encontrÃ³ el Nro_Orden_OCA en la fila seleccionada.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -94,9 +94,9 @@ namespace EnviosOcaApp.Views
                 string archivoPdfLocal = await Program.OcaService.ObtenerEtiquetaPdfAsync(codigoBusqueda);
 
                 lblStatus.ForeColor = Color.Green;
-                lblStatus.Text = "¡Etiqueta descargada correctamente!";
+                lblStatus.Text = "Â¡Etiqueta descargada correctamente!";
 
-                // Abrir el PDF simulado automáticamente
+                // Abrir el PDF simulado automÃ¡ticamente
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = archivoPdfLocal,
@@ -117,3 +117,4 @@ namespace EnviosOcaApp.Views
         }
     }
 }
+

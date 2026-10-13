@@ -14,6 +14,7 @@ namespace EnviosOcaApp.Models
         public string LocalidadOrigen { get; set; } = string.Empty;
         public string ProvinciaOrigen { get; set; } = string.Empty;
         public string CpOrigen { get; set; } = string.Empty;
+        public string ContactoOrigen { get; set; } = "CORRESPONSALIA";
         public string Usuario { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
 

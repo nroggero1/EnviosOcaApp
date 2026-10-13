@@ -25,7 +25,7 @@ namespace EnviosOcaApp.Services
                 {
                     string json = File.ReadAllText(jsonPath);
                     
-                    // Verificación flexible: si el usuario de red actual está en el mail o en el nombre
+                    // VerificaciÃ³n flexible: si el usuario de red actual estÃ¡ en el mail o en el nombre
                     if (json.Contains(currentUser, StringComparison.OrdinalIgnoreCase))
                     {
                         return true;
@@ -52,7 +52,7 @@ namespace EnviosOcaApp.Services
                 catch (IOException)
                 {
                     if (i == maxAttempts - 1)
-                        throw; // Si es el último intento, dejamos que falle
+                        throw; // Si es el Ãºltimo intento, dejamos que falle
                     
                     System.Threading.Thread.Sleep(delay + new Random().Next(50, 150)); // Jitter para evitar colisiones en cadena
                 }
@@ -109,68 +109,160 @@ namespace EnviosOcaApp.Services
                 }
             });
         }
-        public System.Data.DataTable ObtenerHistorialMensual()
+
+        public void ActualizarEstadoOrden(string nroOrdenOca, string nuevoEstado)
         {
-            var dt = new System.Data.DataTable();
-            var mesActual = DateTime.Now.ToString("yyyy_MM");
-            var archivoPath = Path.Combine(_settings.DirectorioAuditoriaEtiquetas, $"auditoria_{mesActual}.xlsx");
+            if (string.IsNullOrWhiteSpace(nroOrdenOca)) return;
 
-            if (!File.Exists(archivoPath))
-                return dt; // Retorna vacio si no hay auditoria este mes
-
-            try
+            ExecuteWithRetry(() =>
             {
-                ExecuteWithRetry(() => 
+                if (!Directory.Exists(_settings.DirectorioAuditoriaEtiquetas)) return;
+                var archivos = Directory.GetFiles(_settings.DirectorioAuditoriaEtiquetas, "auditoria_*.xlsx");
+                foreach (var archivoPath in archivos)
                 {
-                    using (var stream = new FileStream(archivoPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                    using (var workbook = new XLWorkbook(stream))
+                    using (var workbook = new XLWorkbook(archivoPath))
                     {
                         var ws = workbook.Worksheet(1);
-                        bool firstRow = true;
-                        
-                        var currentUser = Environment.UserName;
-                        bool isAdmin = EsAdministrador(currentUser);
-
+                        bool modificado = false;
                         foreach (var row in ws.RowsUsed())
                         {
-                            if (firstRow)
+                            string colOrden = row.Cell(5).Value.ToString().Trim();
+                            string colDest = row.Cell(7).Value.ToString();
+                            if (colOrden.Equals(nroOrdenOca.Trim(), StringComparison.OrdinalIgnoreCase) ||
+                                colDest.Contains(nroOrdenOca.Trim()))
                             {
-                                foreach (var cell in row.Cells())
-                                    dt.Columns.Add(cell.Value.ToString());
-                                firstRow = false;
+                                row.Cell(8).Value = nuevoEstado;
+                                modificado = true;
                             }
-                            else
+                        }
+                        if (modificado)
+                        {
+                            workbook.SaveAs(archivoPath);
+                        }
+                    }
+                }
+            });
+        }
+
+        public System.Data.DataTable ObtenerHistorial(DateTime? desde = null, DateTime? hasta = null, string usuario = null, bool isAdmin = false)
+        {
+            var dt = new System.Data.DataTable();
+            bool headersAdded = false;
+
+            if (!isAdmin)
+            {
+                usuario = Environment.UserName; // Forzar filtro al usuario actual si no es admin
+            }
+
+            if (!Directory.Exists(_settings.DirectorioAuditoriaEtiquetas)) return dt;
+            
+            var archivos = Directory.GetFiles(_settings.DirectorioAuditoriaEtiquetas, "auditoria_*.xlsx");
+
+            foreach (var archivoPath in archivos)
+            {
+                try
+                {
+                    ExecuteWithRetry(() => 
+                    {
+                        using (var stream = new FileStream(archivoPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                        using (var workbook = new XLWorkbook(stream))
+                        {
+                            var ws = workbook.Worksheet(1);
+                            bool firstRow = true;
+
+                            foreach (var row in ws.RowsUsed())
                             {
-                                string rowUser = row.Cell(3).Value.ToString(); // Usuario_Sistema es columna 3
-                                
-                                if (isAdmin || string.Equals(rowUser, currentUser, StringComparison.OrdinalIgnoreCase))
+                                if (firstRow)
                                 {
-                                    dt.Rows.Add();
-                                    int i = 0;
-                                    foreach (var cell in row.Cells(1, dt.Columns.Count))
+                                    if (!headersAdded)
                                     {
-                                        dt.Rows[dt.Rows.Count - 1][i] = cell.Value.ToString();
-                                        i++;
+                                        foreach (var cell in row.Cells())
+                                            dt.Columns.Add(cell.Value.ToString());
+                                        headersAdded = true;
+                                    }
+                                    firstRow = false;
+                                }
+                                else
+                                {
+                                    string fechaStr = row.Cell(1).Value.ToString();
+                                    string rowUser = row.Cell(3).Value.ToString();
+                                    
+                                    // Filtro de Fecha
+                                    bool fechaValida = true;
+                                    if (DateTime.TryParseExact(fechaStr, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out DateTime fechaFila))
+                                    {
+                                        if (desde.HasValue && fechaFila.Date < desde.Value.Date) fechaValida = false;
+                                        if (hasta.HasValue && fechaFila.Date > hasta.Value.Date) fechaValida = false;
+                                    }
+
+                                    // Filtro de Usuario
+                                    bool usuarioValido = true;
+                                    if (!string.IsNullOrWhiteSpace(usuario))
+                                    {
+                                        if (!string.Equals(rowUser, usuario, StringComparison.OrdinalIgnoreCase))
+                                            usuarioValido = false;
+                                    }
+
+                                    if (fechaValida && usuarioValido)
+                                    {
+                                        dt.Rows.Add();
+                                        int i = 0;
+                                        foreach (var cell in row.Cells(1, dt.Columns.Count))
+                                        {
+                                            dt.Rows[dt.Rows.Count - 1][i] = cell.Value.ToString();
+                                            i++;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                });
-            }
-            catch (Exception)
-            {
-                // Manejar archivo bloqueado u otro error devolviendo lo leido hasta ahora
+                    });
+                }
+                catch { }
             }
             
             // Invertir las filas para que los más recientes salgan primero
             var dtInvertido = dt.Clone();
+            // Optional sorting by combining Fecha y Hora can be complex with strings, so just reversing order as it was:
             for (int i = dt.Rows.Count - 1; i >= 0; i--)
             {
                 dtInvertido.ImportRow(dt.Rows[i]);
             }
 
             return dtInvertido;
+        }
+
+        public System.Collections.Generic.List<string> ObtenerUsuariosUnicos()
+        {
+            var usuarios = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            if (!Directory.Exists(_settings.DirectorioAuditoriaEtiquetas)) return new System.Collections.Generic.List<string>();
+
+            var archivos = Directory.GetFiles(_settings.DirectorioAuditoriaEtiquetas, "auditoria_*.xlsx");
+            foreach (var archivoPath in archivos)
+            {
+                try
+                {
+                    ExecuteWithRetry(() => 
+                    {
+                        using (var stream = new FileStream(archivoPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                        using (var workbook = new XLWorkbook(stream))
+                        {
+                            var ws = workbook.Worksheet(1);
+                            bool firstRow = true;
+                            foreach (var row in ws.RowsUsed())
+                            {
+                                if (firstRow) { firstRow = false; continue; }
+                                string rowUser = row.Cell(3).Value.ToString();
+                                if (!string.IsNullOrWhiteSpace(rowUser)) usuarios.Add(rowUser);
+                            }
+                        }
+                    });
+                }
+                catch { }
+            }
+            var list = System.Linq.Enumerable.ToList(usuarios);
+            list.Sort();
+            return list;
         }
         public void RegistrarNavegacion(string modulo, string accion)
         {
@@ -190,8 +282,10 @@ namespace EnviosOcaApp.Services
             }
             catch
             {
-                // Ignoramos errores de log de navegación para no bloquear la app
+                // Ignoramos errores de log de navegaciÃ³n para no bloquear la app
             }
         }
     }
 }
+
+

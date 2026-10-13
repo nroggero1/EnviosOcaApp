@@ -1,12 +1,11 @@
 using System;
 using System.Data;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using System.Linq;
 using EnviosOcaApp.Models;
-using System.IO;
 
 namespace EnviosOcaApp.Services
 {
@@ -15,8 +14,7 @@ namespace EnviosOcaApp.Services
         private readonly AppSettings _settings;
         private readonly HttpClient _httpClient;
 
-        // URL oficial de Producción de OCA ePak (Probando si el Firewall la deja pasar)
-        private readonly string OcaApiUrl = "http://webservice.oca.com.ar/epak_tracking/Oep_TrackEPak.asmx";
+        public string BaseUrl => _settings?.OcaBaseUrl ?? "https://webservice.oca.com.ar/epak_tracking/Oep_TrackEPak.asmx";
 
         public OcaRestService(AppSettings settings)
         {
@@ -29,20 +27,49 @@ namespace EnviosOcaApp.Services
             if (empresa == null) throw new ArgumentException("La empresa es obligatoria.");
             if (lote == null || lote.Count == 0) throw new ArgumentException("El lote no puede estar vacío.");
 
+            // Determinar credenciales según entorno QA / Producción
+            string usuarioOca;
+            string passwordOca;
+            string nroCuenta;
+            string operativa;
+
+            if (_settings != null && !_settings.EsProduccion)
+            {
+                // Entorno QA oficial según developers.oca.com.ar/epak.html
+                usuarioOca = !string.IsNullOrWhiteSpace(empresa.Usuario) ? empresa.Usuario : "test@oca.com.ar";
+                passwordOca = !string.IsNullOrWhiteSpace(empresa.Password) ? empresa.Password : "123456";
+                nroCuenta = !string.IsNullOrWhiteSpace(empresa.NroCuenta) ? empresa.NroCuenta : "111757/001";
+                operativa = !string.IsNullOrWhiteSpace(empresa.Operativa) ? empresa.Operativa : "64665";
+            }
+            else
+            {
+                // Entorno PRODUCCIÓN
+                usuarioOca = !string.IsNullOrWhiteSpace(empresa.Usuario) ? empresa.Usuario : "sschechtel@prevencionart.com.ar";
+                passwordOca = !string.IsNullOrWhiteSpace(empresa.Password) ? empresa.Password : "Corresponsalia04";
+                nroCuenta = empresa.NroCuenta;
+                operativa = empresa.Operativa;
+            }
+
+            string contactoRetiro = !string.IsNullOrWhiteSpace(empresa.ContactoOrigen) ? empresa.ContactoOrigen : "CORRESPONSALIA";
+            if (contactoRetiro.Length > 30) contactoRetiro = contactoRetiro.Substring(0, 30);
+
+            string solicitanteRemitente = string.IsNullOrWhiteSpace(remitente) ? empresa.Nombre : remitente.Trim();
+            if (solicitanteRemitente.Length > 30) solicitanteRemitente = solicitanteRemitente.Substring(0, 30);
+
             // 1. Construir el XML_Datos interno que OCA exige
             var origenNode = new XElement("origen",
-                new XAttribute("calle", empresa.CalleOrigen),
-                new XAttribute("nro", empresa.NumeroOrigen),
+                new XAttribute("calle", empresa.CalleOrigen ?? ""),
+                new XAttribute("nro", empresa.NumeroOrigen ?? ""),
                 new XAttribute("piso", ""),
                 new XAttribute("depto", ""),
-                new XAttribute("cp", empresa.CpOrigen),
-                new XAttribute("localidad", empresa.LocalidadOrigen),
-                new XAttribute("provincia", empresa.ProvinciaOrigen),
-                new XAttribute("contacto", string.IsNullOrWhiteSpace(remitente) ? empresa.Nombre : remitente),
+                new XAttribute("cp", empresa.CpOrigen ?? ""),
+                new XAttribute("localidad", empresa.LocalidadOrigen ?? ""),
+                new XAttribute("provincia", empresa.ProvinciaOrigen ?? ""),
+                new XAttribute("contacto", contactoRetiro),
                 new XAttribute("email", ""),
-                new XAttribute("solicitante", empresa.Nombre),
+                new XAttribute("solicitante", solicitanteRemitente),
                 new XAttribute("observaciones", ""),
-                new XAttribute("centrocosto", empresa.CentroCosto),
+                new XAttribute("centrocosto", empresa.CentroCosto ?? "1"),
                 new XAttribute("idfranjahoraria", "1"),
                 new XAttribute("idcentroimposicionorigen", "0"),
                 new XAttribute("fecha", DateTime.Now.ToString("yyyyMMdd")),
@@ -53,22 +80,42 @@ namespace EnviosOcaApp.Services
 
             foreach (var envio in lote)
             {
+                // OCA exige que tanto apellido como nombre tengan datos (no vacíos)
+                string nombreCompleto = envio.NombreDestinatario?.Trim() ?? "";
+                string apellido = nombreCompleto;
+                string nombre = "Destinatario";
+                if (nombreCompleto.Contains(" "))
+                {
+                    var partes = nombreCompleto.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+                    apellido = partes[0];
+                    nombre = partes[1];
+                }
+
+                if (apellido.Length > 30) apellido = apellido.Substring(0, 30);
+                if (nombre.Length > 30) nombre = nombre.Substring(0, 30);
+
+                string idOperativaFinal = (_settings != null && !_settings.EsProduccion)
+                    ? "64665"
+                    : (envio.IdOperativa > 0 ? envio.IdOperativa.ToString() : operativa);
+
                 var envioNode = new XElement("envio",
-                    new XAttribute("idoperativa", envio.IdOperativa),
+                    new XAttribute("idoperativa", idOperativaFinal),
                     new XAttribute("nroremito", envio.Remito),
+                    new XAttribute("cantidadremitos", "1"),
                     new XElement("destinatario",
-                        new XAttribute("apellido", envio.NombreDestinatario),
-                        new XAttribute("nombre", ""),
-                        new XAttribute("calle", envio.Calle),
-                        new XAttribute("nro", envio.Numero),
-                        new XAttribute("piso", envio.Piso),
+                        new XAttribute("apellido", apellido),
+                        new XAttribute("nombre", nombre),
+                        new XAttribute("calle", envio.Calle ?? ""),
+                        new XAttribute("nro", envio.Numero ?? ""),
+                        new XAttribute("piso", envio.Piso ?? ""),
                         new XAttribute("depto", ""),
-                        new XAttribute("localidad", envio.Localidad),
-                        new XAttribute("provincia", envio.Provincia),
-                        new XAttribute("cp", envio.CP),
-                        new XAttribute("email", envio.Email),
-                        new XAttribute("telefono", envio.Telefono),
-                        new XAttribute("celular", ""), new XAttribute("idci", "0"),
+                        new XAttribute("localidad", envio.Localidad ?? ""),
+                        new XAttribute("provincia", envio.Provincia ?? ""),
+                        new XAttribute("cp", envio.CP ?? ""),
+                        new XAttribute("email", envio.Email ?? ""),
+                        new XAttribute("telefono", envio.Telefono ?? ""),
+                        new XAttribute("idci", "0"),
+                        new XAttribute("celular", envio.Telefono ?? ""),
                         new XAttribute("observaciones", "")
                     ),
                     new XElement("paquetes")
@@ -86,108 +133,113 @@ namespace EnviosOcaApp.Services
                         new XAttribute("cant", "1")
                     ));
                 }
-                
+
                 enviosNode.Add(envioNode);
             }
 
             var xmlDatos = new XElement("ROWS",
-                new XElement("cabecera", 
-                    new XAttribute("ver", "2.0"), 
-                    new XAttribute("nrocuenta", empresa.NroCuenta),
+                new XElement("cabecera",
+                    new XAttribute("ver", "2.0"),
+                    new XAttribute("nrocuenta", nroCuenta),
                     new XAttribute("origen", "API")
                 ),
                 new XElement("origenes", origenNode)
             );
 
-            string xmlDatosString = xmlDatos.ToString(SaveOptions.DisableFormatting);
-
-            // 2. Construir el sobre SOAP con credenciales extraídas de config (appsettings o empresas.json)
-            string usuarioOca = string.IsNullOrWhiteSpace(empresa.Usuario) ? "sschechtel@prevencionart.com.ar" : empresa.Usuario; 
-            string passwordOca = string.IsNullOrWhiteSpace(empresa.Password) ? "Corresponsalia04" : empresa.Password;
-
-            string soapEnvelope = $@"<?xml version=""1.0"" encoding=""utf-8""?>
-<soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
-  <soap:Body>
-    <IngresoORMultiplesRetiros_v2 xmlns=""#Oca_e_Pak"">
-      <usr>{usuarioOca}</usr>
-      <psw>{passwordOca}</psw>
-      <xml_Datos><![CDATA[{xmlDatosString}]]></xml_Datos>
-      <ConfirmarRetiro>true</ConfirmarRetiro>
-      <ArchivoCliente></ArchivoCliente>
-      <ArchivoProceso></ArchivoProceso>
-    </IngresoORMultiplesRetiros_v2>
-  </soap:Body>
-</soap:Envelope>";
-
-            var request = new HttpRequestMessage(HttpMethod.Post, OcaApiUrl);
-            request.Headers.Add("SOAPAction", "\"#Oca_e_Pak/IngresoORMultiplesRetiros_v2\"");
-            request.Content = new StringContent(soapEnvelope, Encoding.UTF8, "text/xml");
-
-            System.IO.File.WriteAllText(@"C:\Users\nroggero\OneDrive - Grupo Sancor Seguros\Escritorio\Automati\PruebaBot\EnviosOCA\UltimaPeticionOca.xml", soapEnvelope);
-
-            // 3. Enviar a OCA
-            var httpResponse = await _httpClient.SendAsync(request);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            try
-            {
-                string debugPath = @"C:\Users\nroggero\OneDrive - Grupo Sancor Seguros\Escritorio\Automati\PruebaBot\EnviosOCA\UltimaRespuestaOca.xml";
-                System.IO.File.WriteAllText(debugPath, responseBody);
-            }
-            catch { }
+            string xmlDatosString = "<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?>\n" + xmlDatos.ToString(SaveOptions.DisableFormatting);
 
             var ocaRes = new OcaResponse();
 
-            // 4. Parsear respuesta 
             try
             {
-                var xdoc = XDocument.Parse(responseBody);
-                XNamespace ns = "http://www.oca.com.ar/";
-                
-                var errorNode = xdoc.Descendants(ns + "Error").FirstOrDefault();
-                if (errorNode == null) 
-                    errorNode = xdoc.Descendants("Error").FirstOrDefault(); // Fallback sin namespace por las dudas
+                var formValues = new System.Collections.Generic.Dictionary<string, string>
+                {
+                    { "usr", usuarioOca },
+                    { "psw", passwordOca },
+                    { "xml_Datos", xmlDatosString },
+                    { "ConfirmarRetiro", "true" },
+                    { "ArchivoCliente", "" },
+                    { "ArchivoProceso", "" },
+                    { "compatMode", "0" }
+                };
 
+                var formContent = new FormUrlEncodedContent(formValues);
+                var httpResponse = await _httpClient.PostAsync($"{BaseUrl}/IngresoORMultiplesRetiros_v2", formContent);
+                string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+                var xdoc = XDocument.Parse(responseBody);
+
+                // 1. Verificar si hay errores explícitos
+                var errorNode = xdoc.Descendants().FirstOrDefault(x => x.Name.LocalName == "Error");
                 if (errorNode != null)
                 {
+                    string msgError = errorNode.Element("Descripcion")?.Value
+                        ?? errorNode.Element(errorNode.Name.Namespace + "Descripcion")?.Value
+                        ?? "Error desconocido devuelto por OCA.";
+
                     ocaRes.TieneErrores = true;
-                    ocaRes.MensajeError = errorNode.Element(ns + "Descripcion")?.Value 
-                                          ?? errorNode.Element("Descripcion")?.Value 
-                                          ?? "Error desconocido devuelto por OCA.";
+                    ocaRes.MensajeError = msgError;
                     return ocaRes;
                 }
 
-                var resumenNode = xdoc.Descendants(ns + "Resumen").FirstOrDefault();
-                if (resumenNode == null)
-                    resumenNode = xdoc.Descendants("Resumen").FirstOrDefault();
-
+                // 2. Extraer Resumen
+                var resumenNode = xdoc.Descendants().FirstOrDefault(x => x.Name.LocalName == "Resumen");
                 if (resumenNode != null)
                 {
-                    ocaRes.CodigoOperacion = resumenNode.Element(ns + "CodigoOperacion")?.Value 
-                                             ?? resumenNode.Element("CodigoOperacion")?.Value 
-                                             ?? "";
+                    ocaRes.CodigoOperacion = resumenNode.Element("CodigoOperacion")?.Value
+                        ?? resumenNode.Element(resumenNode.Name.Namespace + "CodigoOperacion")?.Value
+                        ?? "";
                 }
 
-                var enviosResult = xdoc.Descendants(ns + "Envio").ToList();
-                if (enviosResult.Count == 0)
-                    enviosResult = xdoc.Descendants("Envio").ToList();
-
-                foreach (var env in enviosResult)
+                // 3. Verificar si hay rechazos por remito
+                var detalleRechazos = xdoc.Descendants().Where(x => x.Name.LocalName == "DetalleRechazos").ToList();
+                if (detalleRechazos.Count > 0)
                 {
-                    string remito = env.Element(ns + "NumeroRemito")?.Value ?? env.Element("NumeroRemito")?.Value ?? "";
-                    string numeroEnvio = env.Element(ns + "NumeroEnvio")?.Value ?? env.Element("NumeroEnvio")?.Value ?? "";
+                    ocaRes.TieneErrores = true;
+                    var rechazos = detalleRechazos.Select(r =>
+                    {
+                        string remito = r.Element("Remito")?.Value ?? r.Element(r.Name.Namespace + "Remito")?.Value ?? "";
+                        string motivo = r.Element("Motivo")?.Value ?? r.Element(r.Name.Namespace + "Motivo")?.Value ?? "";
+                        return $"Remito {remito}: {motivo}";
+                    });
+                    ocaRes.MensajeError = string.Join("; ", rechazos);
+                    return ocaRes;
+                }
+
+                // 4. Extraer envíos ingresados exitosamente
+                var detalleIngresos = xdoc.Descendants().Where(x => x.Name.LocalName == "DetalleIngresos").ToList();
+                foreach (var det in detalleIngresos)
+                {
+                    string remito = det.Element("Remito")?.Value ?? det.Element(det.Name.Namespace + "Remito")?.Value ?? "";
+                    string numeroEnvio = det.Element("NumeroEnvio")?.Value ?? det.Element(det.Name.Namespace + "NumeroEnvio")?.Value ?? "";
+                    string ordenRetiro = det.Element("OrdenRetiro")?.Value ?? det.Element(det.Name.Namespace + "OrdenRetiro")?.Value ?? "";
 
                     ocaRes.EnviosGenerados.Add(new OcaEnvioGenerado
                     {
                         NumeroRemito = remito,
-                        NumeroEnvio = numeroEnvio
+                        NumeroEnvio = numeroEnvio,
+                        OrdenRetiro = ordenRetiro
                     });
+                }
+
+                // Si no devolvió DetalleIngresos pero sí CodigoOperacion (por ejemplo en carritos)
+                if (ocaRes.EnviosGenerados.Count == 0 && !string.IsNullOrWhiteSpace(ocaRes.CodigoOperacion))
+                {
+                    for (int i = 0; i < lote.Count; i++)
+                    {
+                        ocaRes.EnviosGenerados.Add(new OcaEnvioGenerado
+                        {
+                            NumeroRemito = lote[i].Remito,
+                            NumeroEnvio = ocaRes.CodigoOperacion,
+                            OrdenRetiro = ocaRes.CodigoOperacion
+                        });
+                    }
                 }
             }
             catch (Exception ex)
             {
                 ocaRes.TieneErrores = true;
-                ocaRes.MensajeError = $"Fallo al parsear XML de OCA. Crudo: {responseBody.Substring(0, Math.Min(200, responseBody.Length))}... Exception: {ex.Message}";
+                ocaRes.MensajeError = "Fallo al enviar datos a OCA. Exception: " + ex.Message;
             }
 
             return ocaRes;
@@ -207,7 +259,7 @@ namespace EnviosOcaApp.Services
   </soap:Body>
 </soap:Envelope>";
 
-            var request = new HttpRequestMessage(HttpMethod.Post, OcaApiUrl);
+            var request = new HttpRequestMessage(HttpMethod.Post, BaseUrl);
             request.Headers.Add("SOAPAction", "\"#Oca_e_Pak/Tracking_Pieza_ConIdEstado\"");
             request.Content = new StringContent(soapEnvelope, Encoding.UTF8, "text/xml");
 
@@ -216,7 +268,6 @@ namespace EnviosOcaApp.Services
 
             var xdoc = XDocument.Parse(responseBody);
             
-            // OCA returns a diffgram dataset
             var diffgram = xdoc.Descendants().FirstOrDefault(x => x.Name.LocalName == "diffgram");
             
             if (diffgram == null || !diffgram.HasElements)
@@ -252,18 +303,37 @@ namespace EnviosOcaApp.Services
             if (string.IsNullOrWhiteSpace(ordenOcaOTracking))
                 throw new ArgumentException("El código no puede estar vacío.");
 
+            if (ordenOcaOTracking.StartsWith("MOCK-"))
+            {
+                await Task.Delay(1000);
+                string folderMock = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Etiquetas_OCA");
+                Directory.CreateDirectory(folderMock);
+                string pdfPathMock = Path.Combine(folderMock, $"Etiqueta_{ordenOcaOTracking}.pdf");
+                File.WriteAllText(pdfPathMock, $"[SIMULACION PDF PARA ETIQUETA OCA]\nOrden/Tracking: {ordenOcaOTracking}\nFecha: {DateTime.Now}\nCódigo de Barras ZPL: ^XA^FO50,50^B3N,N,100,Y,N^FD{ordenOcaOTracking}^FS^XZ");
+                return pdfPathMock;
+            }
+
+            string idOrdenRetiroTag = "<idOrdenRetiro></idOrdenRetiro>";
+            string nroEnvioTag = $"<nroEnvio>{ordenOcaOTracking}</nroEnvio>";
+
+            if (ordenOcaOTracking.Length <= 10 && long.TryParse(ordenOcaOTracking, out _))
+            {
+                idOrdenRetiroTag = $"<idOrdenRetiro>{ordenOcaOTracking}</idOrdenRetiro>";
+                nroEnvioTag = "<nroEnvio></nroEnvio>";
+            }
+
             string soapEnvelope = $@"<?xml version=""1.0"" encoding=""utf-8""?>
 <soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
   <soap:Body>
     <GetPdfDeEtiquetasPorOrdenOrNumeroEnvio xmlns=""#Oca_e_Pak"">
-      <idOrdenRetiro></idOrdenRetiro>
-      <nroEnvio>{ordenOcaOTracking}</nroEnvio>
+      {idOrdenRetiroTag}
+      {nroEnvioTag}
       <logisticaInversa></logisticaInversa>
     </GetPdfDeEtiquetasPorOrdenOrNumeroEnvio>
   </soap:Body>
 </soap:Envelope>";
 
-            var request = new HttpRequestMessage(HttpMethod.Post, OcaApiUrl);
+            var request = new HttpRequestMessage(HttpMethod.Post, BaseUrl);
             request.Headers.Add("SOAPAction", "\"#Oca_e_Pak/GetPdfDeEtiquetasPorOrdenOrNumeroEnvio\"");
             request.Content = new StringContent(soapEnvelope, Encoding.UTF8, "text/xml");
 
@@ -291,31 +361,84 @@ namespace EnviosOcaApp.Services
                 throw new Exception($"Error de OCA al obtener etiqueta: {base64pdf}");
             }
 
-            string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Etiquetas_OCA");
-            Directory.CreateDirectory(folder);
+            string folder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Etiquetas_OCA");
+            System.IO.Directory.CreateDirectory(folder);
 
-            string pdfPath = Path.Combine(folder, $"Etiqueta_{ordenOcaOTracking}.pdf");
+            string pdfPath = System.IO.Path.Combine(folder, $"Etiqueta_{ordenOcaOTracking}.pdf");
             byte[] pdfBytes = Convert.FromBase64String(base64pdf);
-            File.WriteAllBytes(pdfPath, pdfBytes);
+            System.IO.File.WriteAllBytes(pdfPath, pdfBytes);
 
             return pdfPath;
         }
 
-        // Queda MOCK para la impresion porque OCA requiere otro endpoint SOAP y no tenemos credenciales para validar ZPL aún
-        public async Task<string> ObtenerEtiquetaMockAsync(string ordenOcaOTracking)
+        public async Task<(bool Exito, string Mensaje)> AnularOrdenGeneradaAsync(int idOrdenRetiro)
+        {
+            string usuarioOca = (_settings != null && !_settings.EsProduccion)
+                ? "test@oca.com.ar"
+                : "sschechtel@prevencionart.com.ar";
+
+            string passwordOca = (_settings != null && !_settings.EsProduccion)
+                ? "123456"
+                : "Corresponsalia04";
+
+            var formValues = new System.Collections.Generic.Dictionary<string, string>
+            {
+                { "usr", usuarioOca },
+                { "psw", passwordOca },
+                { "IdOrdenRetiro", idOrdenRetiro.ToString() }
+            };
+
+            var formContent = new FormUrlEncodedContent(formValues);
+            var response = await _httpClient.PostAsync($"{BaseUrl}/AnularOrdenGenerada", formContent);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var xdoc = XDocument.Parse(responseBody);
+            var tableNode = xdoc.Descendants().FirstOrDefault(x => x.Name.LocalName == "Table");
+            if (tableNode != null)
+            {
+                string idResultStr = tableNode.Element("IdResult")?.Value
+                    ?? tableNode.Element(tableNode.Name.Namespace + "IdResult")?.Value
+                    ?? "0";
+
+                string mensaje = tableNode.Element("Mensaje")?.Value
+                    ?? tableNode.Element(tableNode.Name.Namespace + "Mensaje")?.Value
+                    ?? "Sin mensaje devuelto por OCA.";
+
+                int.TryParse(idResultStr, out int idResult);
+                // Si la orden fue anulada exitosamente o el mensaje lo indica
+                bool exito = idResult == 1 || mensaje.ToLower().Contains("anulada") || mensaje.ToLower().Contains("éxito") || mensaje.ToLower().Contains("exito");
+                return (exito, mensaje);
+            }
+
+            return (false, "Respuesta no reconocida de OCA.");
+        }
+
+        public async Task<OcaResponse> GenerarLoteMockAsync(string cuitEmpresa, string remitente, System.Collections.Generic.List<EnvioOca> lote)
         {
             await Task.Delay(1500);
 
-            if (string.IsNullOrWhiteSpace(ordenOcaOTracking))
-                throw new ArgumentException("El código no puede estar vacío.");
+            if (string.IsNullOrWhiteSpace(cuitEmpresa))
+                throw new ArgumentException("El CUIT de la empresa es obligatorio.");
 
-            string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Etiquetas_OCA_Test");
-            Directory.CreateDirectory(folder);
+            if (lote == null || lote.Count == 0)
+                throw new ArgumentException("El lote no puede estar vacío.");
 
-            string pdfPath = Path.Combine(folder, $"Etiqueta_{ordenOcaOTracking}.pdf");
-            File.WriteAllText(pdfPath, $"[SIMULACION PDF PARA ETIQUETA OCA]\nOrden/Tracking: {ordenOcaOTracking}\nFecha: {DateTime.Now}\nCódigo de Barras ZPL: ^XA^FO50,50^B3N,N,100,Y,N^FD{ordenOcaOTracking}^FS^XZ");
+            var response = new OcaResponse
+            {
+                TieneErrores = false,
+                CodigoOperacion = "MOCK-OP-" + DateTime.Now.Ticks.ToString()
+            };
 
-            return pdfPath;
+            foreach (var envio in lote)
+            {
+                response.EnviosGenerados.Add(new OcaEnvioGenerado
+                {
+                    NumeroRemito = envio.Remito,
+                    NumeroEnvio = "32111" + DateTime.Now.ToString("yyMMddHHmm") + new Random().Next(1000, 9999).ToString()
+                });
+            }
+
+            return response;
         }
     }
 }

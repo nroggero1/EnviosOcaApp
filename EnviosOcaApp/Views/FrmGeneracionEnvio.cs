@@ -12,6 +12,11 @@ namespace EnviosOcaApp.Views
     {
         private BindingList<PaqueteOca> listaPaquetesActual;
         private BindingList<EnvioOca> listaLoteEnvios;
+        private TableLayoutPanel? _tlpOrigen;
+        private Label lblRemitenteApellido = new Label { Text = "Ap. Remitente:", AutoSize = true };
+        private TextBox txtRemitenteApellido = new TextBox();
+        private Label lblRemitenteNombre = new Label { Text = "Nom. Remitente:", AutoSize = true };
+        private TextBox txtRemitenteNombre = new TextBox();
 
         public FrmGeneracionEnvio()
         {
@@ -23,71 +28,8 @@ namespace EnviosOcaApp.Views
 
         private void OrganizarLayoutResponsivo()
         {
-            // 0. Recreamos el layout de Operador
-            var tlpOperador = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 2,
-                RowCount = 1,
-                AutoSize = true,
-                Padding = new Padding(5)
-            };
-            tlpOperador.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            tlpOperador.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
-            tlpOperador.Controls.Add(lblUsuario, 0, 0);
-            tlpOperador.Controls.Add(txtUsuario, 1, 0);
-            txtUsuario.Dock = DockStyle.Fill;
-
-            // 0.1 Recreamos el layout de Origen
-            var tlpOrigen = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 6,
-                RowCount = 1,
-                AutoSize = true,
-                Padding = new Padding(5)
-            };
-            tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
-            tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
-            tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
-
-            tlpOrigen.Controls.Add(lblEmpresa, 0, 0);
-            tlpOrigen.Controls.Add(cmbEmpresa, 1, 0);
-            cmbEmpresa.Dock = DockStyle.Fill;
-
-            tlpOrigen.Controls.Add(lblApellidoRemitente, 2, 0);
-            tlpOrigen.Controls.Add(txtApellidoRemitente, 3, 0);
-            txtApellidoRemitente.Dock = DockStyle.Fill;
-
-            tlpOrigen.Controls.Add(lblNombreRemitente, 4, 0);
-            tlpOrigen.Controls.Add(txtNombreRemitente, 5, 0);
-            txtNombreRemitente.Dock = DockStyle.Fill;
-
-            foreach (Control c in tlpOperador.Controls) {
-                if (c is Label lbl) {
-                    lbl.Dock = DockStyle.Fill;
-                    lbl.TextAlign = ContentAlignment.MiddleLeft;
-                }
-            }
-
-            foreach (Control c in tlpOrigen.Controls) {
-                if (c is Label lbl) {
-                    lbl.Dock = DockStyle.Fill;
-                    lbl.TextAlign = ContentAlignment.MiddleLeft;
-                }
-            }
-
+            // Layout de Datos Globales manejado ahora en ConfigurarLayoutDatosGlobales()
             var tlpGlobal = (TableLayoutPanel)this.Controls.Find("tlpGlobal", true)[0];
-            var grpOperador = (GroupBox)tlpGlobal.Controls.Find("grpOperador", true)[0];
-            grpOperador.Controls.Clear();
-            grpOperador.Controls.Add(tlpOperador);
-
-            var grpOrigen = (GroupBox)tlpGlobal.Controls.Find("grpOrigen", true)[0];
-            grpOrigen.Controls.Clear();
-            grpOrigen.Controls.Add(tlpOrigen);
 
             // 1. Recreamos el layout de Destino con una TableLayoutPanel de 6 columnas
             var tlpDestino = new TableLayoutPanel
@@ -209,8 +151,8 @@ namespace EnviosOcaApp.Views
             txtObservaciones.Dock = DockStyle.Fill;
 
             var flpOpciones = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, WrapContents = false };
-            chkPrioritario = new CheckBox { Text = "Envío Prioritario", AutoSize = true };
-            chkSeguro = new CheckBox { Text = "Asegurar Envío", AutoSize = true };
+            chkPrioritario = new CheckBox { Text = "EnvÃ­o Prioritario", AutoSize = true };
+            chkSeguro = new CheckBox { Text = "Asegurar EnvÃ­o", AutoSize = true };
             flpOpciones.Controls.Add(chkPrioritario);
             flpOpciones.Controls.Add(chkSeguro);
             tlpPaquete.Controls.Add(flpOpciones, 0, 2);
@@ -240,13 +182,92 @@ namespace EnviosOcaApp.Views
 
         private CheckBox chkPrioritario;
         private CheckBox chkSeguro;
-        private TextBox txtNombreRemitente = new TextBox();
-        private TextBox txtApellidoRemitente = new TextBox();
-        private Label lblNombreRemitente = new Label { Text = "Nombre:", AutoSize = true };
-        private Label lblApellidoRemitente = new Label { Text = "Apellido:", AutoSize = true };
+
+        
+        
+        
+
+        private void ConfigurarLayoutDatosGlobales()
+        {
+            // grpOperador
+            grpOperador.Controls.Clear();
+            var tlpOperador = new TableLayoutPanel { 
+                Dock = DockStyle.Fill, 
+                ColumnCount = 2, 
+                RowCount = 1,
+                Padding = new Padding(0, 12, 0, 0) // Empuja hacia abajo para alejar del borde superior del GroupBox
+            };
+            tlpOperador.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            tlpOperador.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            
+            lblUsuario.AutoSize = true;
+            lblUsuario.Anchor = AnchorStyles.Left; // Esto centra verticalmente de forma automática
+            lblUsuario.Margin = new Padding(10, 3, 3, 3);
+            
+            txtUsuario.Dock = DockStyle.None;
+            txtUsuario.Anchor = AnchorStyles.Left | AnchorStyles.Right; // Centra verticalmente y expande a los lados
+            txtUsuario.Margin = new Padding(3, 3, 15, 3);
+            
+            tlpOperador.Controls.Add(lblUsuario, 0, 0);
+            tlpOperador.Controls.Add(txtUsuario, 1, 0);
+            grpOperador.Controls.Add(tlpOperador);
+
+            // grpOrigen
+            grpOrigen.Controls.Clear();
+            _tlpOrigen = new TableLayoutPanel { 
+                Dock = DockStyle.Fill, 
+                ColumnCount = 4, 
+                RowCount = 2,
+                Padding = new Padding(0, 4, 0, 0)
+            };
+            _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+
+            lblEmpresa.AutoSize = true;
+            lblEmpresa.Anchor = AnchorStyles.Left;
+            lblEmpresa.Margin = new Padding(8, 2, 3, 2);
+            
+            cmbEmpresa.Dock = DockStyle.None;
+            cmbEmpresa.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            cmbEmpresa.Margin = new Padding(3, 2, 10, 2);
+            
+            lblRemitenteApellido.AutoSize = true;
+            lblRemitenteApellido.Anchor = AnchorStyles.Left;
+            lblRemitenteApellido.Margin = new Padding(8, 2, 3, 2);
+            lblRemitenteApellido.Text = "Ap. Remitente:";
+            
+            txtRemitenteApellido.Dock = DockStyle.None;
+            txtRemitenteApellido.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            txtRemitenteApellido.Margin = new Padding(3, 2, 10, 2);
+            
+            lblRemitenteNombre.AutoSize = true;
+            lblRemitenteNombre.Anchor = AnchorStyles.Left;
+            lblRemitenteNombre.Margin = new Padding(8, 2, 3, 2);
+            lblRemitenteNombre.Text = "Nom. Remitente:";
+            
+            txtRemitenteNombre.Dock = DockStyle.None;
+            txtRemitenteNombre.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            txtRemitenteNombre.Margin = new Padding(3, 2, 10, 2);
+
+            _tlpOrigen.Controls.Add(lblEmpresa, 0, 0);
+            _tlpOrigen.Controls.Add(cmbEmpresa, 1, 0);
+            _tlpOrigen.SetColumnSpan(cmbEmpresa, 3);
+
+            _tlpOrigen.Controls.Add(lblRemitenteApellido, 0, 1);
+            _tlpOrigen.Controls.Add(txtRemitenteApellido, 1, 1);
+            _tlpOrigen.Controls.Add(lblRemitenteNombre, 2, 1);
+            _tlpOrigen.Controls.Add(txtRemitenteNombre, 3, 1);
+
+            grpOrigen.Controls.Add(_tlpOrigen);
+        }
 
         private void FrmGeneracionEnvio_Load(object sender, EventArgs e)
         {
+            ConfigurarLayoutDatosGlobales();
             txtUsuario.Text = Environment.UserName;
 
             string path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "empresas.json");
@@ -260,6 +281,10 @@ namespace EnviosOcaApp.Views
 
             // CARGAR CONFIGURACIÓN DE USUARIO ACTUAL
             string usersPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "usuarios.json");
+            bool esAdmin = false;
+            string defaultApellido = Environment.UserName;
+            string defaultNombre = "";
+
             if (System.IO.File.Exists(usersPath))
             {
                 string jsonUsers = System.IO.File.ReadAllText(usersPath);
@@ -270,8 +295,14 @@ namespace EnviosOcaApp.Views
                     var currentUser = usuarios.FirstOrDefault(u => u.UsernameWindows.Equals(Environment.UserName, StringComparison.OrdinalIgnoreCase));
                     if (currentUser != null)
                     {
-                        txtNombreRemitente.Text = currentUser.Nombre;
-                        txtApellidoRemitente.Text = currentUser.Apellido;
+                        defaultApellido = currentUser.Apellido ?? "";
+                        defaultNombre = currentUser.Nombre ?? "";
+
+                        string nombreCompleto = $"{defaultApellido} {defaultNombre}".Trim();
+                        if (!string.IsNullOrWhiteSpace(nombreCompleto))
+                        {
+                            txtUsuario.Text = $"{nombreCompleto} ({currentUser.UsernameWindows})";
+                        }
 
                         foreach (var item in cmbEmpresa.Items)
                         {
@@ -282,15 +313,21 @@ namespace EnviosOcaApp.Views
                             }
                         }
 
-                        if (!currentUser.EsAdministrador)
-                        {
-                            txtNombreRemitente.ReadOnly = true;
-                            txtApellidoRemitente.ReadOnly = true;
-                            cmbEmpresa.Enabled = false;
-                        }
+                        esAdmin = currentUser.EsAdministrador;
                     }
                 }
             }
+
+            txtRemitenteApellido.Text = defaultApellido;
+            txtRemitenteNombre.Text = defaultNombre;
+
+            lblRemitenteApellido.Visible = esAdmin;
+            txtRemitenteApellido.Visible = esAdmin;
+            txtRemitenteApellido.Enabled = esAdmin;
+
+            lblRemitenteNombre.Visible = esAdmin;
+            txtRemitenteNombre.Visible = esAdmin;
+            txtRemitenteNombre.Enabled = esAdmin;
 
             dgvPaquetes.DataSource = listaPaquetesActual;
             dgvLoteEnvios.DataSource = listaLoteEnvios;
@@ -304,7 +341,7 @@ namespace EnviosOcaApp.Views
                 !decimal.TryParse(txtPeso.Text, out decimal peso) ||
                 !decimal.TryParse(txtValor.Text, out decimal valor))
             {
-                MessageBox.Show("Verifique que las dimensiones, peso y valor sean numéricos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Verifique que las dimensiones, peso y valor sean numÃ©ricos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -352,11 +389,11 @@ namespace EnviosOcaApp.Views
                 return;
             }
 
-            int idOperativa = 283231; // Default: Estándar Sin Seguro
+            int idOperativa = 283231; // Default: EstÃ¡ndar Sin Seguro
             if (chkPrioritario.Checked && chkSeguro.Checked) idOperativa = 416557; // Prioritario con seguro
-            else if (!chkPrioritario.Checked && chkSeguro.Checked) idOperativa = 416558; // Estándar con seguro
+            else if (!chkPrioritario.Checked && chkSeguro.Checked) idOperativa = 416558; // EstÃ¡ndar con seguro
             else if (chkPrioritario.Checked && !chkSeguro.Checked) idOperativa = 283228; // Prioritario sin seguro
-            else if (!chkPrioritario.Checked && !chkSeguro.Checked) idOperativa = 283231; // Estándar sin seguro
+            else if (!chkPrioritario.Checked && !chkSeguro.Checked) idOperativa = 283231; // EstÃ¡ndar sin seguro
 
             var envio = new EnvioOca
             {
@@ -417,17 +454,23 @@ namespace EnviosOcaApp.Views
         {
             if (listaLoteEnvios.Count == 0)
             {
-                MessageBox.Show("El lote está vacío. Por favor añada al menos un envío.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("El lote estÃ¡ vacÃ­o. Por favor aÃ±ada al menos un envÃ­o.", "AtenciÃ³n", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (cmbEmpresa.SelectedItem is not EmpresaOca empresaSeleccionada)
             {
-                MessageBox.Show("Debe seleccionar una empresa válida.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Debe seleccionar una empresa vÃ¡lida.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            string remitente = $"{txtApellidoRemitente.Text.Trim()} {txtNombreRemitente.Text.Trim()}".Trim();
+            string apRem = txtRemitenteApellido.Text.Trim();
+            string nomRem = txtRemitenteNombre.Text.Trim();
+            string remitente = $"{apRem} {nomRem}".Trim();
+            if (string.IsNullOrWhiteSpace(remitente))
+            {
+                remitente = Environment.UserName;
+            }
 
             try
             {
@@ -443,18 +486,18 @@ namespace EnviosOcaApp.Views
 
                 if (ocaRespuesta.TieneErrores)
                 {
-                    lblStatus.Text = "Falló la transmisión.";
+                    lblStatus.Text = "FallÃ³ la transmisiÃ³n.";
                     lblStatus.ForeColor = Color.Red;
-                    MessageBox.Show($"OCA rechazó el envío: {ocaRespuesta.MensajeError}", "Error de API", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"OCA rechazÃ³ el envÃ­o: {ocaRespuesta.MensajeError}", "Error de API", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // 2. Transmisión exitosa. Loggeamos en el Excel
+                // 2. TransmisiÃ³n exitosa. Loggeamos en el Excel
                 foreach (var envio in loteParaEnviar)
                 {
                     string direccionCompleta = $"{envio.Calle} {envio.Numero} {envio.Piso}".Trim();
                     
-                    // Buscamos la guía generada para este remito particular en la respuesta de OCA
+                    // Buscamos la guÃ­a generada para este remito particular en la respuesta de OCA
                     var infoGuia = ocaRespuesta.EnviosGenerados.FirstOrDefault(g => 
                         g.NumeroRemito.TrimStart('0') == envio.Remito.TrimStart('0') || 
                         g.NumeroRemito == envio.Remito);
@@ -475,11 +518,11 @@ namespace EnviosOcaApp.Views
                 int totalPaquetesLote = loteParaEnviar.Sum(x => x.BultosTotales);
 
                 lblStatus.ForeColor = Color.Green;
-                lblStatus.Text = $"¡Éxito! Operación: {ocaRespuesta.CodigoOperacion} ({ocaRespuesta.EnviosGenerados.Count} guías / {totalPaquetesLote} paquetes).";
+                lblStatus.Text = $"Â¡Ã‰xito! OperaciÃ³n: {ocaRespuesta.CodigoOperacion} ({ocaRespuesta.EnviosGenerados.Count} guÃ­as / {totalPaquetesLote} paquetes).";
                 
                 string msgBoxOp = string.IsNullOrWhiteSpace(ocaRespuesta.CodigoOperacion) ? "(Individuales)" : ocaRespuesta.CodigoOperacion;
 
-                MessageBox.Show($"Transmisión del Lote generada exitosamente.\nN° Operación: {msgBoxOp}\nDestinatarios: {ocaRespuesta.EnviosGenerados.Count}\nTotal Etiquetas a imprimir: {totalPaquetesLote}", "Transmisión Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"TransmisiÃ³n del Lote generada exitosamente.\nNÂ° OperaciÃ³n: {msgBoxOp}\nDestinatarios: {ocaRespuesta.EnviosGenerados.Count}\nTotal Etiquetas a imprimir: {totalPaquetesLote}", "TransmisiÃ³n Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 listaLoteEnvios.Clear();
             }
@@ -487,7 +530,7 @@ namespace EnviosOcaApp.Views
             {
                 lblStatus.Text = "Error interno.";
                 lblStatus.ForeColor = Color.Red;
-                MessageBox.Show($"Ocurrió un error inesperado:\n{ex.Message}", "Error Crítico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"OcurriÃ³ un error inesperado:\n{ex.Message}", "Error CrÃ­tico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -497,3 +540,11 @@ namespace EnviosOcaApp.Views
         }
     }
 }
+
+
+
+
+
+
+
+
