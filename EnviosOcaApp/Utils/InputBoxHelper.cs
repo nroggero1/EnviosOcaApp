@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace EnviosOcaApp.Views
+namespace EnviosOcaApp.Utils
 {
     public static class InputBoxHelper
     {

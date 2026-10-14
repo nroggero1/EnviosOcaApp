@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using EnviosOcaApp.Utils;
 
 namespace EnviosOcaApp.Views
 {
@@ -213,6 +214,7 @@ namespace EnviosOcaApp.Views
                     {
                         Program.AuditoriaService.ActualizarEstadoOrden(nroOca, "ANULADA");
                         Program.AuditoriaService.ActualizarEstadoOrden(idOrdenRetiro.ToString(), "ANULADA");
+                        Program.AuditoriaService.RegistrarNavegacion("Impresión de Etiquetas", $"Orden confirmada como ya anulada en OCA: {idOrdenRetiro}");
                         CargarAuditoriaReciente();
                         MessageBox.Show($"OCA informó que la orden ya se encontraba anulada:\n{mensaje}\n\nSe actualizó el estado en el sistema a ANULADA.", "Orden ya Anulada", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }

@@ -15,6 +15,23 @@ namespace EnviosOcaApp
         public Form1()
         {
             InitializeComponent();
+            this.FormClosing += Form1_FormClosing;
+        }
+
+        private void Form1_FormClosing(object? sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                Program.AuditoriaService?.RegistrarNavegacion("Sesión", "Cierre voluntario de la aplicación por el usuario");
+            }
+            else if (e.CloseReason == CloseReason.ApplicationExitCall)
+            {
+                // Cierre programado (por ejemplo, desconexión por inactividad) ya registrado por InactividadService
+            }
+            else
+            {
+                Program.AuditoriaService?.RegistrarNavegacion("Sesión", $"Cierre de aplicación (Motivo: {e.CloseReason})");
+            }
         }
 
         private void AbrirFormularioHijo(Form formHijo)
@@ -38,6 +55,8 @@ namespace EnviosOcaApp
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            Program.AuditoriaService?.RegistrarNavegacion("Sesión", $"Inicio de sesión / Apertura de la aplicación ({Environment.UserName})");
+
             try
             {
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();

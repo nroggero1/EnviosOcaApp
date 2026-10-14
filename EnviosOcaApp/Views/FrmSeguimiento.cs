@@ -7,6 +7,7 @@ using System.IO;
 using System.Text.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
+using EnviosOcaApp.Utils;
 
 namespace EnviosOcaApp.Views
 {
@@ -289,6 +290,7 @@ namespace EnviosOcaApp.Views
                         lblEstadoTracking.ForeColor = Color.Green;
                         Program.AuditoriaService.ActualizarEstadoOrden(input, "ANULADA");
                         Program.AuditoriaService.ActualizarEstadoOrden(idOrden.ToString(), "ANULADA");
+                        Program.AuditoriaService.RegistrarNavegacion("Auditoría y Seguimiento", $"Orden anulada en OCA: {idOrden}");
                         CargarDatosAuditoria();
                         MessageBox.Show($"Respuesta de OCA:\n{mensaje}", "Orden Anulada", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -300,6 +302,7 @@ namespace EnviosOcaApp.Views
                             lblEstadoTracking.ForeColor = Color.DarkOrange;
                             Program.AuditoriaService.ActualizarEstadoOrden(input, "ANULADA");
                             Program.AuditoriaService.ActualizarEstadoOrden(idOrden.ToString(), "ANULADA");
+                            Program.AuditoriaService.RegistrarNavegacion("Auditoría y Seguimiento", $"Orden confirmada como ya anulada en OCA: {idOrden}");
                             CargarDatosAuditoria();
                             MessageBox.Show($"OCA informó que la orden ya se encontraba anulada:\n{mensaje}\n\nSe actualizó el estado a ANULADA.", "Orden ya Anulada", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }

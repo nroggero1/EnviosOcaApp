@@ -34,12 +34,38 @@ namespace EnviosOcaApp
 
         private static void InicializarConfiguracion()
         {
-            var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development";
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string currentDir = Directory.GetCurrentDirectory();
 
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true);
+            string[] candidatas = new[]
+            {
+                Path.Combine(baseDir, "Resources", "appsettings.json"),
+                Path.Combine(currentDir, "Resources", "appsettings.json"),
+                Path.Combine(baseDir, "appsettings.json"),
+                Path.Combine(currentDir, "appsettings.json")
+            };
+
+            string? rutaEncontrada = null;
+            foreach (var ruta in candidatas)
+            {
+                if (File.Exists(ruta))
+                {
+                    rutaEncontrada = ruta;
+                    break;
+                }
+            }
+
+            var builder = new ConfigurationBuilder();
+            if (rutaEncontrada != null)
+            {
+                builder.SetBasePath(Path.GetDirectoryName(rutaEncontrada)!)
+                       .AddJsonFile(Path.GetFileName(rutaEncontrada), optional: false, reloadOnChange: true);
+            }
+            else
+            {
+                builder.SetBasePath(Path.Combine(baseDir, "Resources"))
+                       .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            }
 
             var configRoot = builder.Build();
             configRoot.GetSection("AppConfig").Bind(ConfiguracionActual);

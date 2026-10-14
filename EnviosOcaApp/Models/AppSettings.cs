@@ -50,37 +50,65 @@ namespace EnviosOcaApp.Models
 
         public string ObtenerRutaUsuariosCompleta()
         {
-            if (string.IsNullOrWhiteSpace(RutaArchivoUsuarios))
-                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "usuarios.json");
-
-            if (Path.IsPathRooted(RutaArchivoUsuarios))
-                return RutaArchivoUsuarios;
-
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, RutaArchivoUsuarios);
+            return ResolverRutaDinamica(RutaArchivoUsuarios, Path.Combine("Resources", "usuarios.json"));
         }
 
         public string ObtenerRutaEmpresasCompleta()
         {
-            if (string.IsNullOrWhiteSpace(RutaArchivoEmpresas))
-                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "empresas.json");
-
-            if (Path.IsPathRooted(RutaArchivoEmpresas))
-                return RutaArchivoEmpresas;
-
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, RutaArchivoEmpresas);
+            return ResolverRutaDinamica(RutaArchivoEmpresas, Path.Combine("Resources", "empresas.json"));
         }
 
         public string ObtenerDirectorioEtiquetasPdf()
         {
             if (!string.IsNullOrWhiteSpace(DirectorioDescargaEtiquetasPdf))
             {
-                if (Path.IsPathRooted(DirectorioDescargaEtiquetasPdf))
-                    return DirectorioDescargaEtiquetasPdf;
+                string expandida = Environment.ExpandEnvironmentVariables(DirectorioDescargaEtiquetasPdf);
+                if (Path.IsPathRooted(expandida))
+                    return expandida;
 
-                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DirectorioDescargaEtiquetasPdf);
+                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, expandida);
+            }
+
+            // Ruta dinámica por defecto para cada usuario: Descargas de su perfil Windows
+            string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            if (!string.IsNullOrWhiteSpace(userProfile))
+            {
+                return Path.Combine(userProfile, "Downloads", "Etiquetas_OCA");
             }
 
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Etiquetas_OCA");
+        }
+
+        public string ObtenerDirectorioAuditoriaEtiquetas()
+        {
+            return ResolverRutaDinamica(DirectorioAuditoriaEtiquetas, Path.Combine("Auditoria", "Etiquetas"));
+        }
+
+        public string ObtenerDirectorioAuditoriaNavegacion()
+        {
+            return ResolverRutaDinamica(DirectorioAuditoriaNavegacion, Path.Combine("Auditoria", "Navegacion"));
+        }
+
+        private string ResolverRutaDinamica(string? ruta, string fallbackRelativo)
+        {
+            string valor = string.IsNullOrWhiteSpace(ruta) ? fallbackRelativo : ruta;
+            string expandida = Environment.ExpandEnvironmentVariables(valor);
+
+            if (Path.IsPathRooted(expandida))
+                return expandida;
+
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string currentDir = Directory.GetCurrentDirectory();
+
+            string candidateCurrent = Path.Combine(currentDir, expandida);
+            if (Directory.Exists(candidateCurrent) || File.Exists(candidateCurrent))
+                return candidateCurrent;
+
+            string candidateBase = Path.Combine(baseDir, expandida);
+            if (Directory.Exists(candidateBase) || File.Exists(candidateBase))
+                return candidateBase;
+
+            return candidateBase;
         }
     }
 }
