@@ -267,10 +267,11 @@ namespace EnviosOcaApp.Views
 
         private void FrmGeneracionEnvio_Load(object sender, EventArgs e)
         {
+            EnviosOcaApp.Utils.UiHelper.ForzarMayusculasEnControles(this);
             ConfigurarLayoutDatosGlobales();
             txtUsuario.Text = Environment.UserName;
 
-            string path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "empresas.json");
+            string path = Program.ConfiguracionActual.ObtenerRutaEmpresasCompleta();
             if (System.IO.File.Exists(path))
             {
                 string json = System.IO.File.ReadAllText(path);
@@ -280,7 +281,7 @@ namespace EnviosOcaApp.Views
             }
 
             // CARGAR CONFIGURACIÓN DE USUARIO ACTUAL
-            string usersPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "usuarios.json");
+            string usersPath = Program.ConfiguracionActual.ObtenerRutaUsuariosCompleta();
             bool esAdmin = false;
             string defaultApellido = Environment.UserName;
             string defaultNombre = "";
@@ -497,14 +498,17 @@ namespace EnviosOcaApp.Views
                 {
                     string direccionCompleta = $"{envio.Calle} {envio.Numero} {envio.Piso}".Trim();
                     
-                    // Buscamos la guÃ­a generada para este remito particular en la respuesta de OCA
+                    // Buscamos la guía generada para este remito particular en la respuesta de OCA
                     var infoGuia = ocaRespuesta.EnviosGenerados.FirstOrDefault(g => 
                         g.NumeroRemito.TrimStart('0') == envio.Remito.TrimStart('0') || 
                         g.NumeroRemito == envio.Remito);
                         
                     string trackingNumber = infoGuia != null && !string.IsNullOrWhiteSpace(infoGuia.NumeroEnvio) ? infoGuia.NumeroEnvio : "S/D";
+                    string ordenRetiro = !string.IsNullOrWhiteSpace(infoGuia?.OrdenRetiro) 
+                        ? infoGuia.OrdenRetiro 
+                        : (!string.IsNullOrWhiteSpace(ocaRespuesta.CodigoOperacion) ? ocaRespuesta.CodigoOperacion : "");
 
-                    string destFinalAuditoria = $"{envio.NombreDestinatario} ({direccionCompleta}, {envio.Localidad}) [Tracking: {trackingNumber} | Bultos: {envio.BultosTotales}]";
+                    string destFinalAuditoria = $"{envio.NombreDestinatario} ({direccionCompleta}, {envio.Localidad}) [OR: {ordenRetiro} | Tracking: {trackingNumber} | Bultos: {envio.BultosTotales}]";
 
                     Program.AuditoriaService.RegistrarGeneracionEtiqueta(
                         empresa: empresaSeleccionada.Nombre,

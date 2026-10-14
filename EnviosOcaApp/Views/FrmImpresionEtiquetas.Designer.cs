@@ -27,8 +27,10 @@ namespace EnviosOcaApp.Views
             this.btnImprimirDirecto = new System.Windows.Forms.Button();
             this.grpRecientes = new System.Windows.Forms.GroupBox();
             this.dgvRecientes = new System.Windows.Forms.DataGridView();
+            this.btnAnularEnvio = new System.Windows.Forms.Button();
             this.btnImprimirSeleccionado = new System.Windows.Forms.Button();
             this.btnRefrescar = new System.Windows.Forms.Button();
+            this.lblTipDobleClic = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
 
             this.panelHeader.SuspendLayout();
@@ -98,19 +100,32 @@ namespace EnviosOcaApp.Views
 
             // grpRecientes
             this.grpRecientes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpRecientes.Controls.Add(this.lblTipDobleClic);
             this.grpRecientes.Controls.Add(this.btnRefrescar);
             this.grpRecientes.Controls.Add(this.dgvRecientes);
+            this.grpRecientes.Controls.Add(this.btnAnularEnvio);
             this.grpRecientes.Controls.Add(this.btnImprimirSeleccionado);
-            this.grpRecientes.Location = new System.Drawing.Point(20, 160);
+            this.grpRecientes.Location = new System.Drawing.Point(20, 155);
             this.grpRecientes.Name = "grpRecientes";
-            this.grpRecientes.Size = new System.Drawing.Size(760, 320);
+            this.grpRecientes.Size = new System.Drawing.Size(760, 330);
             this.grpRecientes.TabIndex = 2;
             this.grpRecientes.TabStop = false;
             this.grpRecientes.Text = "Últimos Envíos Generados (Mes Actual)";
 
+            // lblTipDobleClic
+            this.lblTipDobleClic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblTipDobleClic.AutoSize = true;
+            this.lblTipDobleClic.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point);
+            this.lblTipDobleClic.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.lblTipDobleClic.Location = new System.Drawing.Point(15, 282);
+            this.lblTipDobleClic.Name = "lblTipDobleClic";
+            this.lblTipDobleClic.Size = new System.Drawing.Size(355, 13);
+            this.lblTipDobleClic.TabIndex = 5;
+            this.lblTipDobleClic.Text = "💡 Doble clic para Seguimiento en tiempo real | Clic derecho para opciones";
+
             // btnRefrescar
             this.btnRefrescar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefrescar.Location = new System.Drawing.Point(660, 20);
+            this.btnRefrescar.Location = new System.Drawing.Point(660, 18);
             this.btnRefrescar.Name = "btnRefrescar";
             this.btnRefrescar.Size = new System.Drawing.Size(85, 25);
             this.btnRefrescar.TabIndex = 4;
@@ -123,13 +138,29 @@ namespace EnviosOcaApp.Views
             this.dgvRecientes.AllowUserToDeleteRows = false;
             this.dgvRecientes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvRecientes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvRecientes.Location = new System.Drawing.Point(15, 55);
+            this.dgvRecientes.Location = new System.Drawing.Point(15, 50);
             this.dgvRecientes.MultiSelect = false;
             this.dgvRecientes.Name = "dgvRecientes";
             this.dgvRecientes.ReadOnly = true;
             this.dgvRecientes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvRecientes.Size = new System.Drawing.Size(730, 205);
+            this.dgvRecientes.Size = new System.Drawing.Size(730, 210);
             this.dgvRecientes.TabIndex = 0;
+            this.dgvRecientes.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvRecientes_CellDoubleClick);
+
+            // btnAnularEnvio
+            this.btnAnularEnvio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAnularEnvio.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(57)))), ((int)(((byte)(43)))));
+            this.btnAnularEnvio.FlatAppearance.BorderSize = 0;
+            this.btnAnularEnvio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAnularEnvio.ForeColor = System.Drawing.Color.White;
+            this.btnAnularEnvio.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnAnularEnvio.Location = new System.Drawing.Point(395, 272);
+            this.btnAnularEnvio.Name = "btnAnularEnvio";
+            this.btnAnularEnvio.Size = new System.Drawing.Size(145, 36);
+            this.btnAnularEnvio.TabIndex = 2;
+            this.btnAnularEnvio.Text = "Anular Envío";
+            this.btnAnularEnvio.UseVisualStyleBackColor = false;
+            this.btnAnularEnvio.Click += new System.EventHandler(this.btnAnularEnvio_Click);
 
             // btnImprimirSeleccionado
             this.btnImprimirSeleccionado.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -137,10 +168,10 @@ namespace EnviosOcaApp.Views
             this.btnImprimirSeleccionado.FlatAppearance.BorderSize = 0;
             this.btnImprimirSeleccionado.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnImprimirSeleccionado.ForeColor = System.Drawing.Color.White;
-            this.btnImprimirSeleccionado.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnImprimirSeleccionado.Location = new System.Drawing.Point(545, 270);
+            this.btnImprimirSeleccionado.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnImprimirSeleccionado.Location = new System.Drawing.Point(550, 272);
             this.btnImprimirSeleccionado.Name = "btnImprimirSeleccionado";
-            this.btnImprimirSeleccionado.Size = new System.Drawing.Size(200, 35);
+            this.btnImprimirSeleccionado.Size = new System.Drawing.Size(195, 36);
             this.btnImprimirSeleccionado.TabIndex = 3;
             this.btnImprimirSeleccionado.Text = "Imprimir Seleccionado";
             this.btnImprimirSeleccionado.UseVisualStyleBackColor = false;
@@ -174,6 +205,7 @@ namespace EnviosOcaApp.Views
             this.grpBusqueda.ResumeLayout(false);
             this.grpBusqueda.PerformLayout();
             this.grpRecientes.ResumeLayout(false);
+            this.grpRecientes.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRecientes)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -187,8 +219,10 @@ namespace EnviosOcaApp.Views
         private System.Windows.Forms.Button btnImprimirDirecto;
         private System.Windows.Forms.GroupBox grpRecientes;
         private System.Windows.Forms.DataGridView dgvRecientes;
+        private System.Windows.Forms.Button btnAnularEnvio;
         private System.Windows.Forms.Button btnImprimirSeleccionado;
         private System.Windows.Forms.Button btnRefrescar;
+        private System.Windows.Forms.Label lblTipDobleClic;
         private System.Windows.Forms.Label lblStatus;
     }
 }

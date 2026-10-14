@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Windows.Forms;
 using EnviosOcaApp.Models;
+using EnviosOcaApp.Utils;
 
 namespace EnviosOcaApp.Views
 {
@@ -20,9 +21,10 @@ namespace EnviosOcaApp.Views
 
         private void FrmRegistroInicial_Load(object sender, EventArgs e)
         {
-            txtUsername.Text = Environment.UserName;
+            txtUsername.Text = Environment.UserName.ToUpper();
             CargarEmpresas();
             OrganizarLayout();
+            UiHelper.ForzarMayusculasEnControles(this);
         }
 
         private void OrganizarLayout()
@@ -38,27 +40,44 @@ namespace EnviosOcaApp.Views
             tlp.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
 
-            lblMensaje.Text = "¡Bienvenido! Es tu primera vez aquí. Por favor, completá tus datos.";
+            lblMensaje.Text = "¡Bienvenido! Es tu primer ingreso al sistema. Por favor completá tus datos de usuario:";
             lblMensaje.AutoSize = true;
             lblMensaje.Font = new Font(lblMensaje.Font, FontStyle.Bold);
             tlp.Controls.Add(lblMensaje, 0, 0);
             tlp.SetColumnSpan(lblMensaje, 2);
 
-            lblUsername.Text = "Usuario Windows:"; lblUsername.Dock = DockStyle.Fill; lblUsername.TextAlign = ContentAlignment.MiddleLeft;
-            txtUsername.Dock = DockStyle.Fill; txtUsername.ReadOnly = true;
-            tlp.Controls.Add(lblUsername, 0, 1); tlp.Controls.Add(txtUsername, 1, 1);
+            lblUsername.Text = "Usuario Windows:"; 
+            lblUsername.Dock = DockStyle.Fill; 
+            lblUsername.TextAlign = ContentAlignment.MiddleLeft;
+            txtUsername.Dock = DockStyle.Fill; 
+            txtUsername.ReadOnly = true;
+            txtUsername.CharacterCasing = CharacterCasing.Upper;
+            tlp.Controls.Add(lblUsername, 0, 1); 
+            tlp.Controls.Add(txtUsername, 1, 1);
 
-            lblNombre.Text = "Nombre:"; lblNombre.Dock = DockStyle.Fill; lblNombre.TextAlign = ContentAlignment.MiddleLeft;
+            lblNombre.Text = "Nombre:"; 
+            lblNombre.Dock = DockStyle.Fill; 
+            lblNombre.TextAlign = ContentAlignment.MiddleLeft;
             txtNombre.Dock = DockStyle.Fill;
-            tlp.Controls.Add(lblNombre, 0, 2); tlp.Controls.Add(txtNombre, 1, 2);
+            txtNombre.CharacterCasing = CharacterCasing.Upper;
+            tlp.Controls.Add(lblNombre, 0, 2); 
+            tlp.Controls.Add(txtNombre, 1, 2);
 
-            lblApellido.Text = "Apellido:"; lblApellido.Dock = DockStyle.Fill; lblApellido.TextAlign = ContentAlignment.MiddleLeft;
+            lblApellido.Text = "Apellido:"; 
+            lblApellido.Dock = DockStyle.Fill; 
+            lblApellido.TextAlign = ContentAlignment.MiddleLeft;
             txtApellido.Dock = DockStyle.Fill;
-            tlp.Controls.Add(lblApellido, 0, 3); tlp.Controls.Add(txtApellido, 1, 3);
+            txtApellido.CharacterCasing = CharacterCasing.Upper;
+            tlp.Controls.Add(lblApellido, 0, 3); 
+            tlp.Controls.Add(txtApellido, 1, 3);
 
-            lblEmpresa.Text = "Empresa Defecto:"; lblEmpresa.Dock = DockStyle.Fill; lblEmpresa.TextAlign = ContentAlignment.MiddleLeft;
-            cmbEmpresa.Dock = DockStyle.Fill; cmbEmpresa.DropDownStyle = ComboBoxStyle.DropDownList;
-            tlp.Controls.Add(lblEmpresa, 0, 4); tlp.Controls.Add(cmbEmpresa, 1, 4);
+            lblEmpresa.Text = "Empresa Defecto:"; 
+            lblEmpresa.Dock = DockStyle.Fill; 
+            lblEmpresa.TextAlign = ContentAlignment.MiddleLeft;
+            cmbEmpresa.Dock = DockStyle.Fill; 
+            cmbEmpresa.DropDownStyle = ComboBoxStyle.DropDownList;
+            tlp.Controls.Add(lblEmpresa, 0, 4); 
+            tlp.Controls.Add(cmbEmpresa, 1, 4);
 
             var tlpMain = new TableLayoutPanel
             {
@@ -74,7 +93,13 @@ namespace EnviosOcaApp.Views
 
             btnGuardar.Text = "Comenzar";
             btnGuardar.Anchor = AnchorStyles.Right;
-            var pnlBotones = new FlowLayoutPanel { FlowDirection = FlowDirection.RightToLeft, Dock = DockStyle.Fill, AutoSize = true, Padding = new Padding(10) };
+            var pnlBotones = new FlowLayoutPanel 
+            { 
+                FlowDirection = FlowDirection.RightToLeft, 
+                Dock = DockStyle.Fill, 
+                AutoSize = true, 
+                Padding = new Padding(10) 
+            };
             pnlBotones.Controls.Add(btnGuardar);
             tlpMain.Controls.Add(pnlBotones, 0, 1);
 
@@ -84,14 +109,14 @@ namespace EnviosOcaApp.Views
 
         private void CargarEmpresas()
         {
-            string empPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "empresas.json");
+            string empPath = Program.ConfiguracionActual.ObtenerRutaEmpresasCompleta();
             if (File.Exists(empPath))
             {
                 string json = File.ReadAllText(empPath);
                 var empresas = JsonSerializer.Deserialize<List<EmpresaOca>>(json) ?? new List<EmpresaOca>();
                 foreach (var emp in empresas)
                 {
-                    cmbEmpresa.Items.Add(emp.Nombre);
+                    cmbEmpresa.Items.Add(emp.Nombre.ToUpper());
                 }
                 if (cmbEmpresa.Items.Count > 0) cmbEmpresa.SelectedIndex = 0;
             }
@@ -107,10 +132,10 @@ namespace EnviosOcaApp.Views
 
             NuevoUsuario = new UsuarioApp
             {
-                UsernameWindows = txtUsername.Text,
-                Nombre = txtNombre.Text,
-                Apellido = txtApellido.Text,
-                EmpresaDefecto = cmbEmpresa.Text,
+                UsernameWindows = txtUsername.Text.Trim().ToUpper(),
+                Nombre = txtNombre.Text.Trim().ToUpper(),
+                Apellido = txtApellido.Text.Trim().ToUpper(),
+                EmpresaDefecto = cmbEmpresa.Text.Trim().ToUpper(),
                 EsAdministrador = false
             };
 

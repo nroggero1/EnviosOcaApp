@@ -481,7 +481,8 @@ namespace EnviosOcaApp.Services
                 throw new Exception($"Error de OCA al obtener etiqueta: {base64pdf}");
             }
 
-            string folder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Etiquetas_OCA");
+            string folder = _settings?.ObtenerDirectorioEtiquetasPdf() 
+                ?? System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Etiquetas_OCA");
             System.IO.Directory.CreateDirectory(folder);
 
             string pdfPath = System.IO.Path.Combine(folder, $"Etiqueta_{ordenOcaOTracking}.pdf");

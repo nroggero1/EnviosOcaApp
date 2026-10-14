@@ -20,16 +20,14 @@ namespace EnviosOcaApp.Services
         {
             try
             {
-                string jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "usuarios.json");
+                string jsonPath = _settings?.ObtenerRutaUsuariosCompleta() 
+                    ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "usuarios.json");
                 if (File.Exists(jsonPath))
                 {
                     string json = File.ReadAllText(jsonPath);
-                    
-                    // VerificaciÃ³n flexible: si el usuario de red actual estÃ¡ en el mail o en el nombre
-                    if (json.Contains(currentUser, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return true;
-                    }
+                    var usuarios = System.Text.Json.JsonSerializer.Deserialize<System.Collections.Generic.List<UsuarioApp>>(json);
+                    var user = usuarios?.FirstOrDefault(u => u.UsernameWindows.Equals(currentUser, StringComparison.OrdinalIgnoreCase));
+                    return user != null && user.EsAdministrador;
                 }
             }
             catch

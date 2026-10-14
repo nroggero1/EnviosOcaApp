@@ -13,6 +13,7 @@ namespace EnviosOcaApp
         public static AppSettings ConfiguracionActual { get; private set; } = new AppSettings();
         public static ExcelAuditoriaService AuditoriaService { get; private set; }
         public static OcaRestService OcaService { get; private set; }
+        public static InactividadService InactividadService { get; private set; }
 
         [STAThread]
         static void Main()
@@ -21,8 +22,13 @@ namespace EnviosOcaApp
 
             AuditoriaService = new ExcelAuditoriaService(ConfiguracionActual);
             OcaService = new OcaRestService(ConfiguracionActual);
+            InactividadService = new InactividadService(ConfiguracionActual.MinutosInactividadDesconexion);
 
             ApplicationConfiguration.Initialize();
+
+            // Iniciar monitoreo global de inactividad
+            InactividadService.Iniciar();
+
             Application.Run(new Form1());
         }
 

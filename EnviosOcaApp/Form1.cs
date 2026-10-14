@@ -1,6 +1,9 @@
-﻿using System;
+using System;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+using EnviosOcaApp.Utils;
 using EnviosOcaApp.Views;
 
 namespace EnviosOcaApp
@@ -26,6 +29,10 @@ namespace EnviosOcaApp
             pnlContenedor.Controls.Add(formHijo);
             pnlContenedor.Tag = formHijo;
             formHijo.BringToFront();
+
+            // Forzar que todos los inputs del formulario hijo manejen mayúsculas
+            UiHelper.ForzarMayusculasEnControles(formHijo);
+
             formHijo.Show();
         }
 
@@ -44,26 +51,41 @@ namespace EnviosOcaApp
             }
             catch { /* Ignorar si no carga temporalmente */ }
 
+            UiHelper.ForzarMayusculasEnControles(this);
+
             ValidarPermisosUsuario();
 
-            // Abrir el mÃ³dulo de generaciÃ³n por defecto al iniciar
+            // Abrir el módulo de generación por defecto al iniciar
             AbrirFormularioHijo(new FrmGeneracionEnvio());
         }
 
-                private void ValidarPermisosUsuario()
+        private bool EsUsuarioActualAdmin()
+        {
+            string usersPath = Program.ConfiguracionActual.ObtenerRutaUsuariosCompleta();
+            if (File.Exists(usersPath))
+            {
+                string json = File.ReadAllText(usersPath);
+                var usuarios = System.Text.Json.JsonSerializer.Deserialize<System.Collections.Generic.List<EnviosOcaApp.Models.UsuarioApp>>(json);
+                var currentUser = usuarios?.FirstOrDefault(u => u.UsernameWindows.Equals(Environment.UserName, StringComparison.OrdinalIgnoreCase));
+                return currentUser != null && currentUser.EsAdministrador;
+            }
+            return false;
+        }
+
+        private void ValidarPermisosUsuario()
         {
             btnGestionUsuarios.Visible = false;
-            string usersPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "usuarios.json");
+            string usersPath = Program.ConfiguracionActual.ObtenerRutaUsuariosCompleta();
             
             var usuarios = new System.Collections.Generic.List<EnviosOcaApp.Models.UsuarioApp>();
             
-            if (System.IO.File.Exists(usersPath))
+            if (File.Exists(usersPath))
             {
-                string json = System.IO.File.ReadAllText(usersPath);
+                string json = File.ReadAllText(usersPath);
                 usuarios = System.Text.Json.JsonSerializer.Deserialize<System.Collections.Generic.List<EnviosOcaApp.Models.UsuarioApp>>(json) ?? usuarios;
             }
 
-            var currentUser = System.Linq.Enumerable.FirstOrDefault(usuarios, u => u.UsernameWindows.Equals(Environment.UserName, StringComparison.OrdinalIgnoreCase));
+            var currentUser = usuarios.FirstOrDefault(u => u.UsernameWindows.Equals(Environment.UserName, StringComparison.OrdinalIgnoreCase));
             
             if (currentUser == null)
             {
@@ -72,17 +94,38 @@ namespace EnviosOcaApp
                     if (frmRegistro.ShowDialog() == DialogResult.OK && frmRegistro.NuevoUsuario != null)
                     {
                         currentUser = frmRegistro.NuevoUsuario;
-                        usuarios.Add(currentUser);
+
+                        // Criterio de registro único: no duplicar el username
+                        var existente = usuarios.FirstOrDefault(u => u.UsernameWindows.Equals(currentUser.UsernameWindows, StringComparison.OrdinalIgnoreCase));
+                        if (existente == null)
+                        {
+                            usuarios.Add(currentUser);
+                        }
+                        else
+                        {
+                            existente.Nombre = currentUser.Nombre;
+                            existente.Apellido = currentUser.Apellido;
+                            existente.EmpresaDefecto = currentUser.EmpresaDefecto;
+                            currentUser = existente;
+                        }
+
                         string newJson = System.Text.Json.JsonSerializer.Serialize(usuarios, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
                         
-                        // Ensure directory exists just in case
-                        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(usersPath)!);
-                        System.IO.File.WriteAllText(usersPath, newJson);
+                        Directory.CreateDirectory(Path.GetDirectoryName(usersPath)!);
+                        File.WriteAllText(usersPath, newJson);
+
+                        // Sincronizar también con la carpeta del proyecto si existe
+                        string sourcePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "usuarios.json");
+                        if (File.Exists(sourcePath) && !sourcePath.Equals(usersPath, StringComparison.OrdinalIgnoreCase))
+                        {
+                            try { File.WriteAllText(sourcePath, newJson); } catch { }
+                        }
+
+                        Program.AuditoriaService.RegistrarNavegacion("Registro Inicial", $"Registro de nuevo usuario: {currentUser.UsernameWindows} ({currentUser.Apellido} {currentUser.Nombre})");
                     }
                     else
                     {
-                        // User cancelled or closed the mandatory prompt. Exit app?
-                        MessageBox.Show("Es obligatorio completar el registro inicial.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Es obligatorio completar el registro inicial para utilizar el sistema.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         Environment.Exit(0);
                     }
                 }
@@ -96,27 +139,43 @@ namespace EnviosOcaApp
 
         private void btnGestionUsuarios_Click(object sender, EventArgs e)
         {
+            if (!EsUsuarioActualAdmin())
+            {
+                MessageBox.Show("Acceso denegado. Este módulo está restringido exclusivamente a administradores.", "Acceso Restringido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             Program.AuditoriaService.RegistrarNavegacion("Gestión de Usuarios", "Ingreso al módulo");
             AbrirFormularioHijo(new Views.FrmGestionUsuarios());
         }
 
         private void btnGenerarEnvios_Click(object sender, EventArgs e)
         {
-            Program.AuditoriaService.RegistrarNavegacion("GeneraciÃ³n de EnvÃ­os", "Ingreso al mÃ³dulo");
+            Program.AuditoriaService.RegistrarNavegacion("Generación de Envíos", "Ingreso al módulo");
             AbrirFormularioHijo(new FrmGeneracionEnvio());
         }
 
         private void btnImprimirEtiquetas_Click(object sender, EventArgs e)
         {
-            Program.AuditoriaService.RegistrarNavegacion("ImpresiÃ³n de Etiquetas", "Ingreso al mÃ³dulo");
+            Program.AuditoriaService.RegistrarNavegacion("Impresión de Etiquetas", "Ingreso al módulo");
             AbrirFormularioHijo(new FrmImpresionEtiquetas());
         }
 
         private void btnAuditoria_Click(object sender, EventArgs e)
         {
-            Program.AuditoriaService.RegistrarNavegacion("AuditorÃ­a y Seguimiento", "Ingreso al mÃ³dulo");
+            Program.AuditoriaService.RegistrarNavegacion("Auditoría y Seguimiento", "Ingreso al módulo");
             AbrirFormularioHijo(new FrmSeguimiento());
+        }
+
+        public void NavegarASeguimiento(string? codigoTracking = null)
+        {
+            Program.AuditoriaService.RegistrarNavegacion("Auditoría y Seguimiento", $"Navegación automática a seguimiento: {codigoTracking}");
+            var frm = new FrmSeguimiento();
+            AbrirFormularioHijo(frm);
+            if (!string.IsNullOrWhiteSpace(codigoTracking))
+            {
+                frm.ConsultarTracking(codigoTracking);
+            }
         }
     }
 }
-
