@@ -10,7 +10,7 @@ namespace EnviosOcaApp.Views
 {
     public partial class FrmImpresionEtiquetas : Form
     {
-        private ContextMenuStrip cmsRecientes;
+        private ContextMenuStrip cmsRecientes = null!;
 
         public FrmImpresionEtiquetas()
         {
@@ -59,6 +59,9 @@ namespace EnviosOcaApp.Views
 
         private void FrmImpresionEtiquetas_Load(object sender, EventArgs e)
         {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+                return;
+
             EnviosOcaApp.Utils.UiHelper.ForzarMayusculasEnControles(this);
             CargarAuditoriaReciente();
             dgvRecientes.Cursor = Cursors.Hand;

@@ -2,6 +2,7 @@ namespace EnviosOcaApp.Models
 {
     public class PaqueteOca
     {
+        public string Tamano { get; set; } = string.Empty;
         public decimal Alto { get; set; }
         public decimal Ancho { get; set; }
         public decimal Largo { get; set; }

@@ -29,7 +29,7 @@ namespace EnviosOcaApp.Services
             _httpClient = new HttpClient(handler);
         }
 
-        public async Task<bool> ActualizarUsuarioOcaAsync(string nombre, string apellido, EmpresaOca empresa = null)
+        public async Task<bool> ActualizarUsuarioOcaAsync(string nombre, string apellido, EmpresaOca? empresa = null)
         {
             try
             {
@@ -204,19 +204,22 @@ namespace EnviosOcaApp.Services
                 );
 
                 var paquetesNode = envioNode.Element("paquetes");
-                foreach (var paquete in envio.Paquetes)
+                if (paquetesNode != null)
                 {
-                    paquetesNode.Add(new XElement("paquete",
-                        new XAttribute("alto", paquete.Alto.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)),
-                        new XAttribute("ancho", paquete.Ancho.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)),
-                        new XAttribute("largo", paquete.Largo.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)),
-                        new XAttribute("peso", paquete.Peso.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)),
-                        new XAttribute("valor", paquete.Valor.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)),
-                        new XAttribute("cant", "1")
-                    ));
+                    foreach (var paquete in envio.Paquetes)
+                    {
+                        paquetesNode.Add(new XElement("paquete",
+                            new XAttribute("alto", paquete.Alto.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)),
+                            new XAttribute("ancho", paquete.Ancho.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)),
+                            new XAttribute("largo", paquete.Largo.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)),
+                            new XAttribute("peso", paquete.Peso.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)),
+                            new XAttribute("valor", paquete.Valor.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)),
+                            new XAttribute("cant", "1")
+                        ));
+                    }
                 }
 
-                enviosNode.Add(envioNode);
+                enviosNode?.Add(envioNode);
             }
 
             var xmlDatos = new XElement("ROWS",
@@ -365,7 +368,7 @@ namespace EnviosOcaApp.Services
             return ocaRes;
         }
 
-        public async Task<DataTable> ObtenerTrackingAsync(string numeroEnvio)
+        public async Task<DataTable?> ObtenerTrackingAsync(string numeroEnvio)
         {
             if (string.IsNullOrWhiteSpace(numeroEnvio))
                 throw new ArgumentException("El número de envío no puede estar vacío.");

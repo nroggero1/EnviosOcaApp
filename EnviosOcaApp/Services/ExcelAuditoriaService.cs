@@ -165,7 +165,7 @@ namespace EnviosOcaApp.Services
             });
         }
 
-        public System.Data.DataTable ObtenerHistorial(DateTime? desde = null, DateTime? hasta = null, string usuario = null, bool isAdmin = false)
+        public System.Data.DataTable ObtenerHistorial(DateTime? desde = null, DateTime? hasta = null, string? usuario = null, bool isAdmin = false)
         {
             var dt = new System.Data.DataTable();
             bool headersAdded = false;

@@ -22,6 +22,9 @@ namespace EnviosOcaApp.Views
 
         private void FrmGestionUsuarios_Load(object sender, EventArgs e)
         {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+                return;
+
             UiHelper.ForzarMayusculasEnControles(this);
 
             // Verificación estricta de seguridad: solo los administradores pueden ver y editar usuarios
@@ -32,7 +35,6 @@ namespace EnviosOcaApp.Views
                 return;
             }
 
-            OrganizarLayout();
             CargarUsuarios();
             CargarEmpresas();
         }
@@ -51,134 +53,6 @@ namespace EnviosOcaApp.Views
             }
             catch { }
             return false;
-        }
-
-        private void OrganizarLayout()
-        {
-            var tlp = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 4,
-                RowCount = 4,
-                AutoSize = true,
-                Padding = new Padding(10)
-            };
-
-            tlp.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50f));
-            tlp.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50f));
-
-            lblUsername.Text = "Username Windows:"; 
-            lblUsername.AutoSize = true; 
-            lblUsername.Dock = DockStyle.Fill; 
-            lblUsername.TextAlign = ContentAlignment.MiddleLeft;
-            txtUsername.Dock = DockStyle.Fill;
-            txtUsername.CharacterCasing = CharacterCasing.Upper;
-
-            lblNombre.Text = "Nombre:"; 
-            lblNombre.AutoSize = true; 
-            lblNombre.Dock = DockStyle.Fill; 
-            lblNombre.TextAlign = ContentAlignment.MiddleLeft;
-            txtNombre.Dock = DockStyle.Fill;
-            txtNombre.CharacterCasing = CharacterCasing.Upper;
-
-            lblApellido.Text = "Apellido:"; 
-            lblApellido.AutoSize = true; 
-            lblApellido.Dock = DockStyle.Fill; 
-            lblApellido.TextAlign = ContentAlignment.MiddleLeft;
-            txtApellido.Dock = DockStyle.Fill;
-            txtApellido.CharacterCasing = CharacterCasing.Upper;
-
-            lblEmpresa.Text = "Empresa Defecto:"; 
-            lblEmpresa.AutoSize = true; 
-            lblEmpresa.Dock = DockStyle.Fill; 
-            lblEmpresa.TextAlign = ContentAlignment.MiddleLeft;
-            cmbEmpresa.Dock = DockStyle.Fill; 
-            cmbEmpresa.DropDownStyle = ComboBoxStyle.DropDownList;
-
-            chkAdmin.Text = "Es Administrador"; 
-            chkAdmin.AutoSize = true; 
-            chkAdmin.Dock = DockStyle.Fill;
-            chkAdmin.TextAlign = ContentAlignment.MiddleLeft; 
-            chkAdmin.CheckAlign = ContentAlignment.MiddleLeft;
-            chkAdmin.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-
-            tlp.Controls.Add(lblUsername, 0, 0);
-            tlp.Controls.Add(txtUsername, 1, 0);
-            
-            tlp.Controls.Add(lblNombre, 0, 1);
-            tlp.Controls.Add(txtNombre, 1, 1);
-            tlp.Controls.Add(lblApellido, 2, 1);
-            tlp.Controls.Add(txtApellido, 3, 1);
-
-            tlp.Controls.Add(lblEmpresa, 0, 2);
-            tlp.Controls.Add(cmbEmpresa, 1, 2);
-            tlp.Controls.Add(chkAdmin, 2, 2);
-            tlp.SetColumnSpan(chkAdmin, 2);
-
-            var panelBotones = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                FlowDirection = FlowDirection.LeftToRight,
-                AutoSize = true,
-                Padding = new Padding(0, 8, 0, 0)
-            };
-
-            btnNuevo.Text = "Nuevo"; 
-            btnNuevo.AutoSize = true;
-            btnNuevo.Cursor = Cursors.Hand;
-
-            btnGuardar.Text = "Guardar"; 
-            btnGuardar.AutoSize = true;
-            btnGuardar.BackColor = Color.FromArgb(167, 3, 85);
-            btnGuardar.ForeColor = Color.White;
-            btnGuardar.FlatStyle = FlatStyle.Flat;
-            btnGuardar.FlatAppearance.BorderSize = 0;
-            btnGuardar.Cursor = Cursors.Hand;
-
-            btnEliminar.Text = "Eliminar"; 
-            btnEliminar.AutoSize = true;
-            btnEliminar.BackColor = Color.FromArgb(192, 57, 43);
-            btnEliminar.ForeColor = Color.White;
-            btnEliminar.FlatStyle = FlatStyle.Flat;
-            btnEliminar.FlatAppearance.BorderSize = 0;
-            btnEliminar.Cursor = Cursors.Hand;
-
-            panelBotones.Controls.Add(btnNuevo);
-            panelBotones.Controls.Add(btnGuardar);
-            panelBotones.Controls.Add(btnEliminar);
-
-            tlp.Controls.Add(panelBotones, 0, 3);
-            tlp.SetColumnSpan(panelBotones, 4);
-
-            grpDatos.Controls.Clear();
-            grpDatos.Controls.Add(tlp);
-            grpDatos.AutoSize = true;
-            grpDatos.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-
-            var tlpMain = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                RowCount = 3,
-                ColumnCount = 1,
-                Padding = new Padding(10)
-            };
-            tlpMain.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            tlpMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
-            tlpMain.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            
-            lblTitulo.Dock = DockStyle.Fill;
-            lblTitulo.TextAlign = ContentAlignment.MiddleLeft;
-            dgvUsuarios.Dock = DockStyle.Fill;
-            grpDatos.Dock = DockStyle.Fill;
-
-            tlpMain.Controls.Add(lblTitulo, 0, 0);
-            tlpMain.Controls.Add(dgvUsuarios, 0, 1);
-            tlpMain.Controls.Add(grpDatos, 0, 2);
-
-            this.Controls.Clear();
-            this.Controls.Add(tlpMain);
         }
 
         private void CargarUsuarios()

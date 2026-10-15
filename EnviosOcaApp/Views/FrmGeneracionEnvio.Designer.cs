@@ -221,7 +221,7 @@ namespace EnviosOcaApp.Views
             grpComposicion.Margin = new Padding(3, 4, 3, 4);
             grpComposicion.Name = "grpComposicion";
             grpComposicion.Padding = new Padding(3, 4, 3, 4);
-            grpComposicion.Size = new Size(1055, 360);
+            grpComposicion.Size = new Size(1055, 430);
             grpComposicion.TabIndex = 3;
             grpComposicion.TabStop = false;
             grpComposicion.Text = "1. Composición de Envío Individual";
@@ -233,10 +233,10 @@ namespace EnviosOcaApp.Views
             btnAgregarEnvioAlLote.FlatStyle = FlatStyle.Flat;
             btnAgregarEnvioAlLote.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnAgregarEnvioAlLote.ForeColor = Color.Black;
-            btnAgregarEnvioAlLote.Location = new Point(413, 307);
+            btnAgregarEnvioAlLote.Location = new Point(413, 382);
             btnAgregarEnvioAlLote.Margin = new Padding(3, 4, 3, 4);
             btnAgregarEnvioAlLote.Name = "btnAgregarEnvioAlLote";
-            btnAgregarEnvioAlLote.Size = new Size(229, 40);
+            btnAgregarEnvioAlLote.Size = new Size(229, 38);
             btnAgregarEnvioAlLote.TabIndex = 21;
             btnAgregarEnvioAlLote.Text = "👇 Añadir Envío al Lote 👇";
             btnAgregarEnvioAlLote.UseVisualStyleBackColor = false;
@@ -256,7 +256,7 @@ namespace EnviosOcaApp.Views
             tlpComposicion.Name = "tlpComposicion";
             tlpComposicion.RowCount = 1;
             tlpComposicion.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlpComposicion.Size = new Size(1041, 273);
+            tlpComposicion.Size = new Size(1041, 345);
             tlpComposicion.TabIndex = 0;
             // 
             // grpDestino
@@ -556,7 +556,7 @@ namespace EnviosOcaApp.Views
             txtValor.Name = "txtValor";
             txtValor.Size = new Size(57, 27);
             txtValor.TabIndex = 16;
-            txtValor.Text = "0";
+            txtValor.Text = "";
             // 
             // lblObservaciones
             // 
@@ -606,7 +606,7 @@ namespace EnviosOcaApp.Views
             dgvPaquetes.Location = new Point(11, 153);
             dgvPaquetes.Margin = new Padding(3, 4, 3, 4);
             dgvPaquetes.Name = "dgvPaquetes";
-            dgvPaquetes.ReadOnly = true;
+            dgvPaquetes.ReadOnly = false;
             dgvPaquetes.RowHeadersWidth = 51;
             dgvPaquetes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvPaquetes.Size = new Size(549, 140);
@@ -618,11 +618,11 @@ namespace EnviosOcaApp.Views
             grpLote.Controls.Add(dgvLoteEnvios);
             grpLote.Controls.Add(btnQuitarEnvio);
             grpLote.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            grpLote.Location = new Point(17, 560);
+            grpLote.Location = new Point(17, 626);
             grpLote.Margin = new Padding(3, 4, 3, 4);
             grpLote.Name = "grpLote";
             grpLote.Padding = new Padding(3, 4, 3, 4);
-            grpLote.Size = new Size(1055, 267);
+            grpLote.Size = new Size(1055, 175);
             grpLote.TabIndex = 4;
             grpLote.TabStop = false;
             grpLote.Text = "2. Lote Masivo (Envíos listos para transmitir)";
@@ -632,23 +632,23 @@ namespace EnviosOcaApp.Views
             dgvLoteEnvios.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvLoteEnvios.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvLoteEnvios.Font = new Font("Segoe UI", 9F);
-            dgvLoteEnvios.Location = new Point(11, 29);
+            dgvLoteEnvios.Location = new Point(11, 26);
             dgvLoteEnvios.Margin = new Padding(3, 4, 3, 4);
             dgvLoteEnvios.Name = "dgvLoteEnvios";
             dgvLoteEnvios.ReadOnly = true;
             dgvLoteEnvios.RowHeadersWidth = 51;
             dgvLoteEnvios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvLoteEnvios.Size = new Size(891, 224);
+            dgvLoteEnvios.Size = new Size(891, 138);
             dgvLoteEnvios.TabIndex = 22;
             // 
             // btnQuitarEnvio
             // 
             btnQuitarEnvio.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnQuitarEnvio.Font = new Font("Segoe UI", 9F);
-            btnQuitarEnvio.Location = new Point(914, 29);
+            btnQuitarEnvio.Location = new Point(914, 26);
             btnQuitarEnvio.Margin = new Padding(3, 4, 3, 4);
             btnQuitarEnvio.Name = "btnQuitarEnvio";
-            btnQuitarEnvio.Size = new Size(131, 40);
+            btnQuitarEnvio.Size = new Size(131, 35);
             btnQuitarEnvio.TabIndex = 23;
             btnQuitarEnvio.Text = "Quitar Sel.";
             btnQuitarEnvio.UseVisualStyleBackColor = true;
@@ -662,10 +662,10 @@ namespace EnviosOcaApp.Views
             btnGenerar.FlatStyle = FlatStyle.Flat;
             btnGenerar.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Bold);
             btnGenerar.ForeColor = Color.White;
-            btnGenerar.Location = new Point(843, 840);
+            btnGenerar.Location = new Point(843, 808);
             btnGenerar.Margin = new Padding(3, 4, 3, 4);
             btnGenerar.Name = "btnGenerar";
-            btnGenerar.Size = new Size(229, 53);
+            btnGenerar.Size = new Size(229, 45);
             btnGenerar.TabIndex = 24;
             btnGenerar.Text = "Transmitir Lote OCA";
             btnGenerar.UseVisualStyleBackColor = false;
@@ -677,7 +677,7 @@ namespace EnviosOcaApp.Views
             lblStatus.AutoSize = true;
             lblStatus.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
             lblStatus.ForeColor = Color.Green;
-            lblStatus.Location = new Point(23, 853);
+            lblStatus.Location = new Point(23, 820);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(0, 18);
             lblStatus.TabIndex = 5;
@@ -686,8 +686,9 @@ namespace EnviosOcaApp.Views
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            AutoScroll = true;
             BackColor = Color.White;
-            ClientSize = new Size(1086, 920);
+            ClientSize = new Size(1086, 865);
             Controls.Add(lblStatus);
             Controls.Add(btnGenerar);
             Controls.Add(grpLote);

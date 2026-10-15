@@ -11,9 +11,9 @@ namespace EnviosOcaApp
     internal static class Program
     {
         public static AppSettings ConfiguracionActual { get; private set; } = new AppSettings();
-        public static ExcelAuditoriaService AuditoriaService { get; private set; }
-        public static OcaRestService OcaService { get; private set; }
-        public static InactividadService InactividadService { get; private set; }
+        public static ExcelAuditoriaService AuditoriaService { get; private set; } = null!;
+        public static OcaRestService OcaService { get; private set; } = null!;
+        public static InactividadService InactividadService { get; private set; } = null!;
 
         [STAThread]
         static void Main()

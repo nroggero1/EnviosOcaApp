@@ -13,13 +13,13 @@ namespace EnviosOcaApp.Views
 {
     public partial class FrmSeguimiento : Form
     {
-        private DateTimePicker dtpDesde;
-        private DateTimePicker dtpHasta;
-        private ComboBox cmbUsuario;
-        private Button btnFiltrar;
-        private Label lblUsuario;
+        private DateTimePicker dtpDesde = null!;
+        private DateTimePicker dtpHasta = null!;
+        private ComboBox cmbUsuario = null!;
+        private Button btnFiltrar = null!;
+        private Label lblUsuario = null!;
         private bool esAdministrador = false;
-        private ContextMenuStrip cmsAuditoria;
+        private ContextMenuStrip cmsAuditoria = null!;
 
         public FrmSeguimiento()
         {
@@ -372,6 +372,9 @@ namespace EnviosOcaApp.Views
 
         private void FrmSeguimiento_Load(object sender, EventArgs e)
         {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+                return;
+
             EnviosOcaApp.Utils.UiHelper.ForzarMayusculasEnControles(this);
             VerificarPermisos();
             CargarComboUsuarios();
@@ -419,7 +422,7 @@ namespace EnviosOcaApp.Views
             catch { }
         }
 
-        private void BtnFiltrar_Click(object sender, EventArgs e)
+        private void BtnFiltrar_Click(object? sender, EventArgs e)
         {
             CargarDatosAuditoria();
         }
@@ -428,7 +431,7 @@ namespace EnviosOcaApp.Views
         {
             try
             {
-                string usuarioFiltro = esAdministrador ? (cmbUsuario.Text == "Todos" ? null : cmbUsuario.Text) : Environment.UserName;
+                string? usuarioFiltro = esAdministrador ? (cmbUsuario.Text == "Todos" ? null : cmbUsuario.Text) : Environment.UserName;
                 
                 dgvAuditoriaInterna.DataSource = Program.AuditoriaService.ObtenerHistorial(dtpDesde.Value, dtpHasta.Value, usuarioFiltro, esAdministrador);
                 dgvAuditoriaInterna.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
