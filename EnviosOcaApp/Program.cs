@@ -1,5 +1,9 @@
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Extensions.Configuration;
 using EnviosOcaApp.Models;
@@ -15,21 +19,84 @@ namespace EnviosOcaApp
         public static OcaRestService OcaService { get; private set; } = null!;
         public static InactividadService InactividadService { get; private set; } = null!;
 
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+
+        private const int SW_RESTORE = 9;
+
         [STAThread]
         static void Main()
         {
-            InicializarConfiguracion();
+            // Restricción de instancia única: solo una sesión por usuario de Windows a la vez
+            string mutexName = $"Global\\EnviosOcaApp_SingleInstance_{Environment.UserName}";
+            bool esPrimeraInstancia;
+            Mutex? mutex = null;
 
-            AuditoriaService = new ExcelAuditoriaService(ConfiguracionActual);
-            OcaService = new OcaRestService(ConfiguracionActual);
-            InactividadService = new InactividadService(ConfiguracionActual.MinutosInactividadDesconexion);
+            try
+            {
+                mutex = new Mutex(true, mutexName, out esPrimeraInstancia);
+            }
+            catch (AbandonedMutexException)
+            {
+                esPrimeraInstancia = true;
+            }
 
-            ApplicationConfiguration.Initialize();
+            if (!esPrimeraInstancia)
+            {
+                TraerInstanciaExistenteAlFrente();
+                MessageBox.Show(
+                    "La aplicación de Envíos OCA ya se encuentra abierta y en ejecución en este equipo.",
+                    "Atención - Sesión en curso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
 
-            // Iniciar monitoreo global de inactividad
-            InactividadService.Iniciar();
+            try
+            {
+                InicializarConfiguracion();
 
-            Application.Run(new Form1());
+                AuditoriaService = new ExcelAuditoriaService(ConfiguracionActual);
+                OcaService = new OcaRestService(ConfiguracionActual);
+                InactividadService = new InactividadService(ConfiguracionActual.MinutosInactividadDesconexion);
+
+                ApplicationConfiguration.Initialize();
+
+                // Iniciar monitoreo global de inactividad
+                InactividadService.Iniciar();
+
+                Application.Run(new Form1());
+            }
+            finally
+            {
+                if (mutex != null)
+                {
+                    try { mutex.ReleaseMutex(); } catch { }
+                    mutex.Dispose();
+                }
+            }
+        }
+
+        private static void TraerInstanciaExistenteAlFrente()
+        {
+            try
+            {
+                var procesoActual = Process.GetCurrentProcess();
+                var procesos = Process.GetProcessesByName(procesoActual.ProcessName);
+                foreach (var p in procesos)
+                {
+                    if (p.Id != procesoActual.Id && p.MainWindowHandle != IntPtr.Zero)
+                    {
+                        ShowWindowAsync(p.MainWindowHandle, SW_RESTORE);
+                        SetForegroundWindow(p.MainWindowHandle);
+                        break;
+                    }
+                }
+            }
+            catch { }
         }
 
         private static void InicializarConfiguracion()
