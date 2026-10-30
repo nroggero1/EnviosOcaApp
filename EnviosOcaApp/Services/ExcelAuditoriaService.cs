@@ -12,8 +12,15 @@ namespace EnviosOcaApp.Services
         public ExcelAuditoriaService(AppSettings settings)
         {
             _settings = settings;
-            Directory.CreateDirectory(_settings.ObtenerDirectorioAuditoriaEtiquetas());
-            Directory.CreateDirectory(_settings.ObtenerDirectorioAuditoriaNavegacion());
+            try
+            {
+                Directory.CreateDirectory(_settings.ObtenerDirectorioAuditoriaEtiquetas());
+                Directory.CreateDirectory(_settings.ObtenerDirectorioAuditoriaNavegacion());
+            }
+            catch
+            {
+                // Si la red tiene demora o no está disponible en el milisegundo de inicio, no bloqueamos el arranque
+            }
         }
 
         private bool EsAdministrador(string currentUser)
@@ -50,7 +57,7 @@ namespace EnviosOcaApp.Services
                 catch (IOException)
                 {
                     if (i == maxAttempts - 1)
-                        throw; // Si es el Ãºltimo intento, dejamos que falle
+                        throw; // Si es el último intento, dejamos que falle
                     
                     System.Threading.Thread.Sleep(delay + new Random().Next(50, 150)); // Jitter para evitar colisiones en cadena
                 }
@@ -61,10 +68,14 @@ namespace EnviosOcaApp.Services
         {
             ExecuteWithRetry(() =>
             {
-                var mesActual = DateTime.Now.ToString("yyyy_MM");
-                var archivoPath = Path.Combine(_settings.ObtenerDirectorioAuditoriaEtiquetas(), $"auditoria_{mesActual}.xlsx");
+                var dirEtiquetas = _settings.ObtenerDirectorioAuditoriaEtiquetas();
+                if (!Directory.Exists(dirEtiquetas))
+                    Directory.CreateDirectory(dirEtiquetas);
 
-                var usuario = Environment.UserName;
+                var mesActual = DateTime.Now.ToString("yyyy_MM");
+                var archivoPath = Path.Combine(dirEtiquetas, $"auditoria_{mesActual}.xlsx");
+
+                var usuario = Environment.UserName.ToUpper();
                 var fecha = DateTime.Now.ToString("dd/MM/yyyy");
                 var hora = DateTime.Now.ToString("HH:mm:ss");
 
@@ -74,8 +85,18 @@ namespace EnviosOcaApp.Services
                 {
                     var worksheet = archivoExiste ? workbook.Worksheet(1) : workbook.Worksheets.Add("Auditoria");
 
-                    if (!archivoExiste)
+                    // Asegurar que la Fila 1 siempre contenga los encabezados
+                    bool tieneEncabezados = !worksheet.Cell(1, 1).IsEmpty() && 
+                                            worksheet.Cell(1, 1).GetString().Trim().Equals("Fecha", StringComparison.OrdinalIgnoreCase);
+
+                    if (!tieneEncabezados)
                     {
+                        // Si la fila 1 tenía datos porque se creó antes sin encabezados, insertamos una fila arriba
+                        if (!worksheet.Cell(1, 1).IsEmpty())
+                        {
+                            worksheet.Row(1).InsertRowsAbove(1);
+                        }
+
                         worksheet.Cell(1, 1).Value = "Fecha";
                         worksheet.Cell(1, 2).Value = "Hora";
                         worksheet.Cell(1, 3).Value = "Usuario_Sistema";
@@ -89,7 +110,9 @@ namespace EnviosOcaApp.Services
 
                         var range = worksheet.Range("A1:J1");
                         range.Style.Font.Bold = true;
-                        range.Style.Fill.BackgroundColor = XLColor.LightGray;
+                        range.Style.Fill.BackgroundColor = XLColor.FromArgb(167, 3, 85); // Magenta institucional OCA
+                        range.Style.Font.FontColor = XLColor.White;
+                        range.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     }
 
                     var ultimaFila = worksheet.LastRowUsed()?.RowNumber() ?? 1;
@@ -118,8 +141,9 @@ namespace EnviosOcaApp.Services
 
             ExecuteWithRetry(() =>
             {
-                if (!Directory.Exists(_settings.ObtenerDirectorioAuditoriaEtiquetas())) return;
-                var archivos = Directory.GetFiles(_settings.ObtenerDirectorioAuditoriaEtiquetas(), "auditoria_*.xlsx");
+                var dirEtiquetas = _settings.ObtenerDirectorioAuditoriaEtiquetas();
+                if (!Directory.Exists(dirEtiquetas)) return;
+                var archivos = Directory.GetFiles(dirEtiquetas, "auditoria_*.xlsx");
                 foreach (var archivoPath in archivos)
                 {
                     using (var workbook = new XLWorkbook(archivoPath))
@@ -127,18 +151,26 @@ namespace EnviosOcaApp.Services
                         var ws = workbook.Worksheet(1);
                         bool modificado = false;
 
-                        // Asegurar encabezados para fecha y usuario de modificación
-                        if (ws.Cell(1, 9).IsEmpty() || ws.Cell(1, 9).Value.ToString() != "Fecha_Modificacion")
+                        // Asegurar encabezados en caso de archivo previo sin cabecera
+                        bool tieneEncabezados = !ws.Cell(1, 1).IsEmpty() && 
+                                                ws.Cell(1, 1).GetString().Trim().Equals("Fecha", StringComparison.OrdinalIgnoreCase);
+                        if (!tieneEncabezados && !ws.Cell(1, 1).IsEmpty())
                         {
+                            ws.Row(1).InsertRowsAbove(1);
+                            ws.Cell(1, 1).Value = "Fecha";
+                            ws.Cell(1, 2).Value = "Hora";
+                            ws.Cell(1, 3).Value = "Usuario_Sistema";
+                            ws.Cell(1, 4).Value = "Empresa_Seleccionada";
+                            ws.Cell(1, 5).Value = "Nro_Orden_OCA";
+                            ws.Cell(1, 6).Value = "Remitente";
+                            ws.Cell(1, 7).Value = "Destinatario";
+                            ws.Cell(1, 8).Value = "Estado_Operacion";
                             ws.Cell(1, 9).Value = "Fecha_Modificacion";
-                            ws.Cell(1, 9).Style.Font.Bold = true;
-                            ws.Cell(1, 9).Style.Fill.BackgroundColor = XLColor.LightGray;
-                        }
-                        if (ws.Cell(1, 10).IsEmpty() || ws.Cell(1, 10).Value.ToString() != "Usuario_Modificacion")
-                        {
                             ws.Cell(1, 10).Value = "Usuario_Modificacion";
-                            ws.Cell(1, 10).Style.Font.Bold = true;
-                            ws.Cell(1, 10).Style.Fill.BackgroundColor = XLColor.LightGray;
+                            var range = ws.Range("A1:J1");
+                            range.Style.Font.Bold = true;
+                            range.Style.Fill.BackgroundColor = XLColor.FromArgb(167, 3, 85);
+                            range.Style.Font.FontColor = XLColor.White;
                         }
 
                         foreach (var row in ws.RowsUsed())
@@ -151,7 +183,7 @@ namespace EnviosOcaApp.Services
                             {
                                 row.Cell(8).Value = nuevoEstado;
                                 row.Cell(9).Value = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-                                row.Cell(10).Value = !string.IsNullOrWhiteSpace(usuarioModifica) ? usuarioModifica : Environment.UserName;
+                                row.Cell(10).Value = !string.IsNullOrWhiteSpace(usuarioModifica) ? usuarioModifica.ToUpper() : Environment.UserName.ToUpper();
                                 modificado = true;
                             }
                         }
@@ -175,9 +207,10 @@ namespace EnviosOcaApp.Services
                 usuario = Environment.UserName; // Forzar filtro al usuario actual si no es admin
             }
 
-            if (!Directory.Exists(_settings.ObtenerDirectorioAuditoriaEtiquetas())) return dt;
+            var dirEtiquetas = _settings.ObtenerDirectorioAuditoriaEtiquetas();
+            if (!Directory.Exists(dirEtiquetas)) return dt;
             
-            var archivos = Directory.GetFiles(_settings.ObtenerDirectorioAuditoriaEtiquetas(), "auditoria_*.xlsx");
+            var archivos = Directory.GetFiles(dirEtiquetas, "auditoria_*.xlsx");
 
             foreach (var archivoPath in archivos)
             {
@@ -244,7 +277,6 @@ namespace EnviosOcaApp.Services
             
             // Invertir las filas para que los más recientes salgan primero
             var dtInvertido = dt.Clone();
-            // Optional sorting by combining Fecha y Hora can be complex with strings, so just reversing order as it was:
             for (int i = dt.Rows.Count - 1; i >= 0; i--)
             {
                 dtInvertido.ImportRow(dt.Rows[i]);
@@ -256,9 +288,10 @@ namespace EnviosOcaApp.Services
         public System.Collections.Generic.List<string> ObtenerUsuariosUnicos()
         {
             var usuarios = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            if (!Directory.Exists(_settings.ObtenerDirectorioAuditoriaEtiquetas())) return new System.Collections.Generic.List<string>();
+            var dirEtiquetas = _settings.ObtenerDirectorioAuditoriaEtiquetas();
+            if (!Directory.Exists(dirEtiquetas)) return new System.Collections.Generic.List<string>();
 
-            var archivos = Directory.GetFiles(_settings.ObtenerDirectorioAuditoriaEtiquetas(), "auditoria_*.xlsx");
+            var archivos = Directory.GetFiles(dirEtiquetas, "auditoria_*.xlsx");
             foreach (var archivoPath in archivos)
             {
                 try
@@ -285,6 +318,7 @@ namespace EnviosOcaApp.Services
             list.Sort();
             return list;
         }
+
         public void RegistrarNavegacion(string modulo, string accion)
         {
             try
@@ -292,21 +326,58 @@ namespace EnviosOcaApp.Services
                 ExecuteWithRetry(() =>
                 {
                     var mesActual = DateTime.Now.ToString("yyyy_MM");
-                    var archivoPath = Path.Combine(_settings.ObtenerDirectorioAuditoriaNavegacion(), $"navegacion_{mesActual}.csv");
-                    
-                    var usuario = Environment.UserName;
-                    var timestamp = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                    var dirNavegacion = _settings.ObtenerDirectorioAuditoriaNavegacion();
+                    if (!Directory.Exists(dirNavegacion))
+                        Directory.CreateDirectory(dirNavegacion);
 
-                    string linea = $"{timestamp},{usuario},{modulo},{accion}\n";
-                    File.AppendAllText(archivoPath, linea);
+                    var archivoPath = Path.Combine(dirNavegacion, $"navegacion_{mesActual}.csv");
+
+                    var usuario = Environment.UserName.ToUpper();
+                    var fecha = DateTime.Now.ToString("dd/MM/yyyy");
+                    var hora = DateTime.Now.ToString("HH:mm:ss");
+
+                    // Codificación UTF-8 con BOM obligatorio para que Excel en Windows muestre tildes y caracteres en español correctamente
+                    var utf8ConBom = new System.Text.UTF8Encoding(true);
+
+                    bool archivoExiste = File.Exists(archivoPath);
+                    bool tieneContenido = archivoExiste && new FileInfo(archivoPath).Length > 0;
+
+                    if (!tieneContenido)
+                    {
+                        string encabezado = "Fecha,Hora,Usuario,Modulo,Accion\r\n";
+                        File.WriteAllText(archivoPath, encabezado, utf8ConBom);
+                    }
+                    else
+                    {
+                        // Si el archivo ya existía pero no tenía el encabezado 'Fecha', lo agregamos al principio
+                        try
+                        {
+                            string primerLinea = "";
+                            using (var reader = new StreamReader(archivoPath, System.Text.Encoding.Default, true))
+                            {
+                                primerLinea = reader.ReadLine() ?? "";
+                            }
+                            if (!primerLinea.StartsWith("Fecha", StringComparison.OrdinalIgnoreCase))
+                            {
+                                string contenidoPrevio = File.ReadAllText(archivoPath, System.Text.Encoding.UTF8);
+                                string nuevoContenido = "Fecha,Hora,Usuario,Modulo,Accion\r\n" + contenidoPrevio;
+                                File.WriteAllText(archivoPath, nuevoContenido, utf8ConBom);
+                            }
+                        }
+                        catch { }
+                    }
+
+                    // Escapar comillas dobles para formato CSV estándar
+                    string accionEscapada = accion.Replace("\"", "\"\"");
+                    string linea = $"{fecha},{hora},{usuario},{modulo},\"{accionEscapada}\"\r\n";
+
+                    File.AppendAllText(archivoPath, linea, utf8ConBom);
                 });
             }
             catch
             {
-                // Ignoramos errores de log de navegaciÃ³n para no bloquear la app
+                // Ignoramos errores de log de navegación para no bloquear la app
             }
         }
     }
 }
-
-

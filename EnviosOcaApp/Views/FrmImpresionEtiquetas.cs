@@ -82,6 +82,13 @@ namespace EnviosOcaApp.Views
                 if (dgvRecientes.Columns.Count > 0)
                 {
                     dgvRecientes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                    if (dgvRecientes.Columns.Contains("Usuario_Sistema")) dgvRecientes.Columns["Usuario_Sistema"].HeaderText = "Usuario";
+                    if (dgvRecientes.Columns.Contains("Empresa_Seleccionada")) dgvRecientes.Columns["Empresa_Seleccionada"].HeaderText = "Empresa";
+                    if (dgvRecientes.Columns.Contains("Nro_Orden_OCA")) dgvRecientes.Columns["Nro_Orden_OCA"].HeaderText = "Nro. Orden OCA";
+                    if (dgvRecientes.Columns.Contains("Estado_Operacion")) dgvRecientes.Columns["Estado_Operacion"].HeaderText = "Estado Operación";
+                    if (dgvRecientes.Columns.Contains("Fecha_Modificacion")) dgvRecientes.Columns["Fecha_Modificacion"].HeaderText = "Fecha Modificación";
+                    if (dgvRecientes.Columns.Contains("Usuario_Modificacion")) dgvRecientes.Columns["Usuario_Modificacion"].HeaderText = "Usuario Modificación";
+
                     if (dgvRecientes.Columns.Contains("Destinatario"))
                     {
                         dgvRecientes.Columns["Destinatario"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;

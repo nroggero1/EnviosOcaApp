@@ -435,7 +435,14 @@ namespace EnviosOcaApp.Views
                 
                 dgvAuditoriaInterna.DataSource = Program.AuditoriaService.ObtenerHistorial(dtpDesde.Value, dtpHasta.Value, usuarioFiltro, esAdministrador);
                 dgvAuditoriaInterna.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-                
+
+                if (dgvAuditoriaInterna.Columns.Contains("Usuario_Sistema")) dgvAuditoriaInterna.Columns["Usuario_Sistema"].HeaderText = "Usuario";
+                if (dgvAuditoriaInterna.Columns.Contains("Empresa_Seleccionada")) dgvAuditoriaInterna.Columns["Empresa_Seleccionada"].HeaderText = "Empresa";
+                if (dgvAuditoriaInterna.Columns.Contains("Nro_Orden_OCA")) dgvAuditoriaInterna.Columns["Nro_Orden_OCA"].HeaderText = "Nro. Orden OCA";
+                if (dgvAuditoriaInterna.Columns.Contains("Estado_Operacion")) dgvAuditoriaInterna.Columns["Estado_Operacion"].HeaderText = "Estado Operación";
+                if (dgvAuditoriaInterna.Columns.Contains("Fecha_Modificacion")) dgvAuditoriaInterna.Columns["Fecha_Modificacion"].HeaderText = "Fecha Modificación";
+                if (dgvAuditoriaInterna.Columns.Contains("Usuario_Modificacion")) dgvAuditoriaInterna.Columns["Usuario_Modificacion"].HeaderText = "Usuario Modificación";
+
                 if (dgvAuditoriaInterna.Columns.Contains("Destinatario"))
                     dgvAuditoriaInterna.Columns["Destinatario"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }

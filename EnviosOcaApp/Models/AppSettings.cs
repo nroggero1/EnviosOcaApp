@@ -94,6 +94,27 @@ namespace EnviosOcaApp.Models
             string valor = string.IsNullOrWhiteSpace(ruta) ? fallbackRelativo : ruta;
             string expandida = Environment.ExpandEnvironmentVariables(valor);
 
+            // Salvaguarda para entornos donde %OneDriveCommercial% no esté explícitamente seteado
+            if (expandida.Contains("%OneDriveCommercial%", StringComparison.OrdinalIgnoreCase))
+            {
+                string? oneDrive = Environment.GetEnvironmentVariable("OneDriveCommercial") 
+                    ?? Environment.GetEnvironmentVariable("OneDrive");
+
+                if (string.IsNullOrWhiteSpace(oneDrive))
+                {
+                    string sancorFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive - Grupo Sancor Seguros");
+                    if (Directory.Exists(sancorFolder))
+                    {
+                        oneDrive = sancorFolder;
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(oneDrive))
+                {
+                    expandida = expandida.Replace("%OneDriveCommercial%", oneDrive, StringComparison.OrdinalIgnoreCase);
+                }
+            }
+
             if (Path.IsPathRooted(expandida))
                 return expandida;
 
