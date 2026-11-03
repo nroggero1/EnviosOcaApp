@@ -17,322 +17,323 @@ namespace EnviosOcaApp.Views
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
-            this.lblTitulo = new System.Windows.Forms.Label();
-            this.dgvUsuarios = new System.Windows.Forms.DataGridView();
-            this.grpDatos = new System.Windows.Forms.GroupBox();
-            this.tlpDatos = new System.Windows.Forms.TableLayoutPanel();
-            this.lblUsername = new System.Windows.Forms.Label();
-            this.txtUsername = new System.Windows.Forms.TextBox();
-            this.lblNombre = new System.Windows.Forms.Label();
-            this.txtNombre = new System.Windows.Forms.TextBox();
-            this.lblApellido = new System.Windows.Forms.Label();
-            this.txtApellido = new System.Windows.Forms.TextBox();
-            this.lblEmpresa = new System.Windows.Forms.Label();
-            this.cmbEmpresa = new System.Windows.Forms.ComboBox();
-            this.chkAdmin = new System.Windows.Forms.CheckBox();
-            this.pnlBotones = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnNuevo = new System.Windows.Forms.Button();
-            this.btnGuardar = new System.Windows.Forms.Button();
-            this.btnEliminar = new System.Windows.Forms.Button();
-            this.tlpMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvUsuarios)).BeginInit();
-            this.grpDatos.SuspendLayout();
-            this.tlpDatos.SuspendLayout();
-            this.pnlBotones.SuspendLayout();
-            this.SuspendLayout();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            tlpMain = new TableLayoutPanel();
+            lblTitulo = new Label();
+            dgvUsuarios = new DataGridView();
+            grpDatos = new GroupBox();
+            tlpDatos = new TableLayoutPanel();
+            lblUsername = new Label();
+            txtUsername = new TextBox();
+            lblNombre = new Label();
+            txtNombre = new TextBox();
+            lblApellido = new Label();
+            txtApellido = new TextBox();
+            lblEmpresa = new Label();
+            cmbEmpresa = new ComboBox();
+            chkAdmin = new CheckBox();
+            pnlBotones = new FlowLayoutPanel();
+            btnNuevo = new Button();
+            btnGuardar = new Button();
+            btnEliminar = new Button();
+            tlpMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvUsuarios).BeginInit();
+            grpDatos.SuspendLayout();
+            tlpDatos.SuspendLayout();
+            pnlBotones.SuspendLayout();
+            SuspendLayout();
             // 
             // tlpMain
             // 
-            this.tlpMain.ColumnCount = 1;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Controls.Add(this.lblTitulo, 0, 0);
-            this.tlpMain.Controls.Add(this.dgvUsuarios, 0, 1);
-            this.tlpMain.Controls.Add(this.grpDatos, 0, 2);
-            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpMain.Location = new System.Drawing.Point(0, 0);
-            this.tlpMain.Name = "tlpMain";
-            this.tlpMain.Padding = new System.Windows.Forms.Padding(12);
-            this.tlpMain.RowCount = 3;
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 185F));
-            this.tlpMain.Size = new System.Drawing.Size(834, 561);
-            this.tlpMain.TabIndex = 0;
+            tlpMain.ColumnCount = 1;
+            tlpMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlpMain.Controls.Add(lblTitulo, 0, 0);
+            tlpMain.Controls.Add(dgvUsuarios, 0, 1);
+            tlpMain.Controls.Add(grpDatos, 0, 2);
+            tlpMain.Dock = DockStyle.Fill;
+            tlpMain.Location = new Point(0, 0);
+            tlpMain.Name = "tlpMain";
+            tlpMain.Padding = new Padding(12);
+            tlpMain.RowCount = 3;
+            tlpMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
+            tlpMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlpMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 185F));
+            tlpMain.Size = new Size(834, 561);
+            tlpMain.TabIndex = 0;
             // 
             // lblTitulo
             // 
-            this.lblTitulo.AutoSize = true;
-            this.lblTitulo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblTitulo.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitulo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
-            this.lblTitulo.Location = new System.Drawing.Point(15, 12);
-            this.lblTitulo.Name = "lblTitulo";
-            this.lblTitulo.Size = new System.Drawing.Size(806, 35);
-            this.lblTitulo.TabIndex = 0;
-            this.lblTitulo.Text = "Gestión y Administración de Usuarios";
-            this.lblTitulo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblTitulo.AutoSize = true;
+            lblTitulo.Dock = DockStyle.Fill;
+            lblTitulo.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTitulo.ForeColor = Color.FromArgb(44, 62, 80);
+            lblTitulo.Location = new Point(15, 12);
+            lblTitulo.Name = "lblTitulo";
+            lblTitulo.Size = new Size(804, 35);
+            lblTitulo.TabIndex = 0;
+            lblTitulo.Text = "Gestión y Administración de Usuarios";
+            lblTitulo.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // dgvUsuarios
             // 
-            this.dgvUsuarios.AllowUserToAddRows = false;
-            this.dgvUsuarios.AllowUserToDeleteRows = false;
-            this.dgvUsuarios.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvUsuarios.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(245)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvUsuarios.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvUsuarios.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvUsuarios.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvUsuarios.EnableHeadersVisualStyles = false;
-            this.dgvUsuarios.Location = new System.Drawing.Point(15, 50);
-            this.dgvUsuarios.MultiSelect = false;
-            this.dgvUsuarios.Name = "dgvUsuarios";
-            this.dgvUsuarios.ReadOnly = true;
-            this.dgvUsuarios.RowHeadersVisible = false;
-            this.dgvUsuarios.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvUsuarios.Size = new System.Drawing.Size(806, 311);
-            this.dgvUsuarios.TabIndex = 1;
-            this.dgvUsuarios.SelectionChanged += new System.EventHandler(this.dgvUsuarios_SelectionChanged);
+            dgvUsuarios.AllowUserToAddRows = false;
+            dgvUsuarios.AllowUserToDeleteRows = false;
+            dgvUsuarios.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvUsuarios.BackgroundColor = Color.White;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(240, 240, 245);
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvUsuarios.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvUsuarios.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvUsuarios.Dock = DockStyle.Fill;
+            dgvUsuarios.EnableHeadersVisualStyles = false;
+            dgvUsuarios.Location = new Point(15, 50);
+            dgvUsuarios.MultiSelect = false;
+            dgvUsuarios.Name = "dgvUsuarios";
+            dgvUsuarios.ReadOnly = true;
+            dgvUsuarios.RowHeadersVisible = false;
+            dgvUsuarios.RowHeadersWidth = 51;
+            dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvUsuarios.Size = new Size(804, 311);
+            dgvUsuarios.TabIndex = 1;
+            dgvUsuarios.SelectionChanged += dgvUsuarios_SelectionChanged;
             // 
             // grpDatos
             // 
-            this.grpDatos.Controls.Add(this.tlpDatos);
-            this.grpDatos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpDatos.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpDatos.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
-            this.grpDatos.Location = new System.Drawing.Point(15, 367);
-            this.grpDatos.Name = "grpDatos";
-            this.grpDatos.Padding = new System.Windows.Forms.Padding(10);
-            this.grpDatos.Size = new System.Drawing.Size(806, 179);
-            this.grpDatos.TabIndex = 2;
-            this.grpDatos.TabStop = false;
-            this.grpDatos.Text = "Detalle y Modificación de Usuario";
+            grpDatos.Controls.Add(tlpDatos);
+            grpDatos.Dock = DockStyle.Fill;
+            grpDatos.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            grpDatos.ForeColor = Color.FromArgb(44, 62, 80);
+            grpDatos.Location = new Point(15, 367);
+            grpDatos.Name = "grpDatos";
+            grpDatos.Padding = new Padding(10);
+            grpDatos.Size = new Size(804, 179);
+            grpDatos.TabIndex = 2;
+            grpDatos.TabStop = false;
+            grpDatos.Text = "Detalle y Modificación de Usuario";
             // 
             // tlpDatos
             // 
-            this.tlpDatos.ColumnCount = 4;
-            this.tlpDatos.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
-            this.tlpDatos.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpDatos.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 130F));
-            this.tlpDatos.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpDatos.Controls.Add(this.lblUsername, 0, 0);
-            this.tlpDatos.Controls.Add(this.txtUsername, 1, 0);
-            this.tlpDatos.Controls.Add(this.lblNombre, 0, 1);
-            this.tlpDatos.Controls.Add(this.txtNombre, 1, 1);
-            this.tlpDatos.Controls.Add(this.lblApellido, 2, 1);
-            this.tlpDatos.Controls.Add(this.txtApellido, 3, 1);
-            this.tlpDatos.Controls.Add(this.lblEmpresa, 0, 2);
-            this.tlpDatos.Controls.Add(this.cmbEmpresa, 1, 2);
-            this.tlpDatos.Controls.Add(this.chkAdmin, 2, 2);
-            this.tlpDatos.Controls.Add(this.pnlBotones, 0, 3);
-            this.tlpDatos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpDatos.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tlpDatos.Location = new System.Drawing.Point(10, 26);
-            this.tlpDatos.Name = "tlpDatos";
-            this.tlpDatos.RowCount = 4;
-            this.tlpDatos.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tlpDatos.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tlpDatos.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tlpDatos.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
-            this.tlpDatos.Size = new System.Drawing.Size(786, 143);
-            this.tlpDatos.TabIndex = 0;
+            tlpDatos.ColumnCount = 4;
+            tlpDatos.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 140F));
+            tlpDatos.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tlpDatos.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 130F));
+            tlpDatos.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tlpDatos.Controls.Add(lblUsername, 0, 0);
+            tlpDatos.Controls.Add(txtUsername, 1, 0);
+            tlpDatos.Controls.Add(lblNombre, 0, 1);
+            tlpDatos.Controls.Add(txtNombre, 1, 1);
+            tlpDatos.Controls.Add(lblApellido, 2, 1);
+            tlpDatos.Controls.Add(txtApellido, 3, 1);
+            tlpDatos.Controls.Add(lblEmpresa, 0, 2);
+            tlpDatos.Controls.Add(cmbEmpresa, 1, 2);
+            tlpDatos.Controls.Add(chkAdmin, 2, 2);
+            tlpDatos.Controls.Add(pnlBotones, 0, 3);
+            tlpDatos.Dock = DockStyle.Fill;
+            tlpDatos.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            tlpDatos.Location = new Point(10, 30);
+            tlpDatos.Name = "tlpDatos";
+            tlpDatos.RowCount = 4;
+            tlpDatos.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
+            tlpDatos.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
+            tlpDatos.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
+            tlpDatos.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
+            tlpDatos.Size = new Size(784, 139);
+            tlpDatos.TabIndex = 0;
             // 
             // lblUsername
             // 
-            this.lblUsername.AutoSize = true;
-            this.lblUsername.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblUsername.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblUsername.ForeColor = System.Drawing.Color.Black;
-            this.lblUsername.Location = new System.Drawing.Point(3, 0);
-            this.lblUsername.Name = "lblUsername";
-            this.lblUsername.Size = new System.Drawing.Size(134, 32);
-            this.lblUsername.TabIndex = 0;
-            this.lblUsername.Text = "Username Windows:";
-            this.lblUsername.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblUsername.AutoSize = true;
+            lblUsername.Dock = DockStyle.Fill;
+            lblUsername.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblUsername.ForeColor = Color.Black;
+            lblUsername.Location = new Point(3, 0);
+            lblUsername.Name = "lblUsername";
+            lblUsername.Size = new Size(134, 32);
+            lblUsername.TabIndex = 0;
+            lblUsername.Text = "Username Windows:";
+            lblUsername.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // txtUsername
             // 
-            this.txtUsername.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txtUsername.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtUsername.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtUsername.Location = new System.Drawing.Point(143, 3);
-            this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(252, 23);
-            this.txtUsername.TabIndex = 1;
+            txtUsername.CharacterCasing = CharacterCasing.Upper;
+            txtUsername.Dock = DockStyle.Fill;
+            txtUsername.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtUsername.Location = new Point(143, 3);
+            txtUsername.Name = "txtUsername";
+            txtUsername.Size = new Size(251, 27);
+            txtUsername.TabIndex = 1;
             // 
             // lblNombre
             // 
-            this.lblNombre.AutoSize = true;
-            this.lblNombre.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblNombre.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNombre.ForeColor = System.Drawing.Color.Black;
-            this.lblNombre.Location = new System.Drawing.Point(3, 32);
-            this.lblNombre.Name = "lblNombre";
-            this.lblNombre.Size = new System.Drawing.Size(134, 32);
-            this.lblNombre.TabIndex = 2;
-            this.lblNombre.Text = "Nombre:";
-            this.lblNombre.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblNombre.AutoSize = true;
+            lblNombre.Dock = DockStyle.Fill;
+            lblNombre.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblNombre.ForeColor = Color.Black;
+            lblNombre.Location = new Point(3, 32);
+            lblNombre.Name = "lblNombre";
+            lblNombre.Size = new Size(134, 32);
+            lblNombre.TabIndex = 2;
+            lblNombre.Text = "Nombre:";
+            lblNombre.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // txtNombre
             // 
-            this.txtNombre.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txtNombre.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtNombre.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNombre.Location = new System.Drawing.Point(143, 35);
-            this.txtNombre.Name = "txtNombre";
-            this.txtNombre.Size = new System.Drawing.Size(252, 23);
-            this.txtNombre.TabIndex = 3;
+            txtNombre.CharacterCasing = CharacterCasing.Upper;
+            txtNombre.Dock = DockStyle.Fill;
+            txtNombre.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtNombre.Location = new Point(143, 35);
+            txtNombre.Name = "txtNombre";
+            txtNombre.Size = new Size(251, 27);
+            txtNombre.TabIndex = 3;
             // 
             // lblApellido
             // 
-            this.lblApellido.AutoSize = true;
-            this.lblApellido.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblApellido.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblApellido.ForeColor = System.Drawing.Color.Black;
-            this.lblApellido.Location = new System.Drawing.Point(401, 32);
-            this.lblApellido.Name = "lblApellido";
-            this.lblApellido.Size = new System.Drawing.Size(124, 32);
-            this.lblApellido.TabIndex = 4;
-            this.lblApellido.Text = "Apellido:";
-            this.lblApellido.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblApellido.AutoSize = true;
+            lblApellido.Dock = DockStyle.Fill;
+            lblApellido.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblApellido.ForeColor = Color.Black;
+            lblApellido.Location = new Point(400, 32);
+            lblApellido.Name = "lblApellido";
+            lblApellido.Size = new Size(124, 32);
+            lblApellido.TabIndex = 4;
+            lblApellido.Text = "Apellido:";
+            lblApellido.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // txtApellido
             // 
-            this.txtApellido.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txtApellido.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtApellido.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtApellido.Location = new System.Drawing.Point(531, 35);
-            this.txtApellido.Name = "txtApellido";
-            this.txtApellido.Size = new System.Drawing.Size(252, 23);
-            this.txtApellido.TabIndex = 5;
+            txtApellido.CharacterCasing = CharacterCasing.Upper;
+            txtApellido.Dock = DockStyle.Fill;
+            txtApellido.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtApellido.Location = new Point(530, 35);
+            txtApellido.Name = "txtApellido";
+            txtApellido.Size = new Size(251, 27);
+            txtApellido.TabIndex = 5;
             // 
             // lblEmpresa
             // 
-            this.lblEmpresa.AutoSize = true;
-            this.lblEmpresa.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblEmpresa.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblEmpresa.ForeColor = System.Drawing.Color.Black;
-            this.lblEmpresa.Location = new System.Drawing.Point(3, 64);
-            this.lblEmpresa.Name = "lblEmpresa";
-            this.lblEmpresa.Size = new System.Drawing.Size(134, 32);
-            this.lblEmpresa.TabIndex = 6;
-            this.lblEmpresa.Text = "Empresa Defecto:";
-            this.lblEmpresa.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblEmpresa.AutoSize = true;
+            lblEmpresa.Dock = DockStyle.Fill;
+            lblEmpresa.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblEmpresa.ForeColor = Color.Black;
+            lblEmpresa.Location = new Point(3, 64);
+            lblEmpresa.Name = "lblEmpresa";
+            lblEmpresa.Size = new Size(134, 32);
+            lblEmpresa.TabIndex = 6;
+            lblEmpresa.Text = "Empresa Defecto:";
+            lblEmpresa.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // cmbEmpresa
             // 
-            this.cmbEmpresa.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmbEmpresa.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbEmpresa.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmbEmpresa.FormattingEnabled = true;
-            this.cmbEmpresa.Location = new System.Drawing.Point(143, 67);
-            this.cmbEmpresa.Name = "cmbEmpresa";
-            this.cmbEmpresa.Size = new System.Drawing.Size(252, 23);
-            this.cmbEmpresa.TabIndex = 7;
+            cmbEmpresa.Dock = DockStyle.Fill;
+            cmbEmpresa.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbEmpresa.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cmbEmpresa.FormattingEnabled = true;
+            cmbEmpresa.Location = new Point(143, 67);
+            cmbEmpresa.Name = "cmbEmpresa";
+            cmbEmpresa.Size = new Size(251, 28);
+            cmbEmpresa.TabIndex = 7;
             // 
             // chkAdmin
             // 
-            this.chkAdmin.AutoSize = true;
-            this.tlpDatos.SetColumnSpan(this.chkAdmin, 2);
-            this.chkAdmin.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chkAdmin.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkAdmin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
-            this.chkAdmin.Location = new System.Drawing.Point(401, 67);
-            this.chkAdmin.Name = "chkAdmin";
-            this.chkAdmin.Size = new System.Drawing.Size(382, 26);
-            this.chkAdmin.TabIndex = 8;
-            this.chkAdmin.Text = "Es Administrador del Sistema";
-            this.chkAdmin.UseVisualStyleBackColor = true;
+            chkAdmin.AutoSize = true;
+            tlpDatos.SetColumnSpan(chkAdmin, 2);
+            chkAdmin.Dock = DockStyle.Fill;
+            chkAdmin.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            chkAdmin.ForeColor = Color.FromArgb(44, 62, 80);
+            chkAdmin.Location = new Point(400, 67);
+            chkAdmin.Name = "chkAdmin";
+            chkAdmin.Size = new Size(381, 26);
+            chkAdmin.TabIndex = 8;
+            chkAdmin.Text = "Es Administrador del Sistema";
+            chkAdmin.UseVisualStyleBackColor = true;
             // 
             // pnlBotones
             // 
-            this.tlpDatos.SetColumnSpan(this.pnlBotones, 4);
-            this.pnlBotones.Controls.Add(this.btnNuevo);
-            this.pnlBotones.Controls.Add(this.btnGuardar);
-            this.pnlBotones.Controls.Add(this.btnEliminar);
-            this.pnlBotones.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlBotones.Location = new System.Drawing.Point(3, 99);
-            this.pnlBotones.Name = "pnlBotones";
-            this.pnlBotones.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
-            this.pnlBotones.Size = new System.Drawing.Size(780, 41);
-            this.pnlBotones.TabIndex = 9;
+            tlpDatos.SetColumnSpan(pnlBotones, 4);
+            pnlBotones.Controls.Add(btnNuevo);
+            pnlBotones.Controls.Add(btnGuardar);
+            pnlBotones.Controls.Add(btnEliminar);
+            pnlBotones.Dock = DockStyle.Fill;
+            pnlBotones.Location = new Point(3, 99);
+            pnlBotones.Name = "pnlBotones";
+            pnlBotones.Padding = new Padding(0, 4, 0, 0);
+            pnlBotones.Size = new Size(778, 37);
+            pnlBotones.TabIndex = 9;
             // 
             // btnNuevo
             // 
-            this.btnNuevo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(235)))), ((int)(((byte)(235)))));
-            this.btnNuevo.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnNuevo.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            this.btnNuevo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnNuevo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNuevo.ForeColor = System.Drawing.Color.Black;
-            this.btnNuevo.Location = new System.Drawing.Point(3, 7);
-            this.btnNuevo.Name = "btnNuevo";
-            this.btnNuevo.Size = new System.Drawing.Size(95, 28);
-            this.btnNuevo.TabIndex = 0;
-            this.btnNuevo.Text = "Nuevo";
-            this.btnNuevo.UseVisualStyleBackColor = false;
-            this.btnNuevo.Click += new System.EventHandler(this.btnNuevo_Click);
+            btnNuevo.BackColor = Color.FromArgb(235, 235, 235);
+            btnNuevo.Cursor = Cursors.Hand;
+            btnNuevo.FlatAppearance.BorderColor = Color.FromArgb(200, 200, 200);
+            btnNuevo.FlatStyle = FlatStyle.Flat;
+            btnNuevo.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnNuevo.ForeColor = Color.Black;
+            btnNuevo.Location = new Point(3, 7);
+            btnNuevo.Name = "btnNuevo";
+            btnNuevo.Size = new Size(95, 28);
+            btnNuevo.TabIndex = 0;
+            btnNuevo.Text = "Nuevo";
+            btnNuevo.UseVisualStyleBackColor = false;
+            btnNuevo.Click += btnNuevo_Click;
             // 
             // btnGuardar
             // 
-            this.btnGuardar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(3)))), ((int)(((byte)(85)))));
-            this.btnGuardar.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnGuardar.FlatAppearance.BorderSize = 0;
-            this.btnGuardar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnGuardar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGuardar.ForeColor = System.Drawing.Color.White;
-            this.btnGuardar.Location = new System.Drawing.Point(104, 7);
-            this.btnGuardar.Name = "btnGuardar";
-            this.btnGuardar.Size = new System.Drawing.Size(120, 28);
-            this.btnGuardar.TabIndex = 1;
-            this.btnGuardar.Text = "Guardar";
-            this.btnGuardar.UseVisualStyleBackColor = false;
-            this.btnGuardar.Click += new System.EventHandler(this.btnGuardar_Click);
+            btnGuardar.BackColor = Color.FromArgb(167, 3, 85);
+            btnGuardar.Cursor = Cursors.Hand;
+            btnGuardar.FlatAppearance.BorderSize = 0;
+            btnGuardar.FlatStyle = FlatStyle.Flat;
+            btnGuardar.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnGuardar.ForeColor = Color.White;
+            btnGuardar.Location = new Point(104, 7);
+            btnGuardar.Name = "btnGuardar";
+            btnGuardar.Size = new Size(120, 28);
+            btnGuardar.TabIndex = 1;
+            btnGuardar.Text = "Guardar";
+            btnGuardar.UseVisualStyleBackColor = false;
+            btnGuardar.Click += btnGuardar_Click;
             // 
             // btnEliminar
             // 
-            this.btnEliminar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(57)))), ((int)(((byte)(43)))));
-            this.btnEliminar.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnEliminar.FlatAppearance.BorderSize = 0;
-            this.btnEliminar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnEliminar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEliminar.ForeColor = System.Drawing.Color.White;
-            this.btnEliminar.Location = new System.Drawing.Point(230, 7);
-            this.btnEliminar.Name = "btnEliminar";
-            this.btnEliminar.Size = new System.Drawing.Size(110, 28);
-            this.btnEliminar.TabIndex = 2;
-            this.btnEliminar.Text = "Eliminar";
-            this.btnEliminar.UseVisualStyleBackColor = false;
-            this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
+            btnEliminar.BackColor = Color.FromArgb(192, 57, 43);
+            btnEliminar.Cursor = Cursors.Hand;
+            btnEliminar.FlatAppearance.BorderSize = 0;
+            btnEliminar.FlatStyle = FlatStyle.Flat;
+            btnEliminar.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnEliminar.ForeColor = Color.White;
+            btnEliminar.Location = new Point(230, 7);
+            btnEliminar.Name = "btnEliminar";
+            btnEliminar.Size = new Size(110, 28);
+            btnEliminar.TabIndex = 2;
+            btnEliminar.Text = "Eliminar";
+            btnEliminar.UseVisualStyleBackColor = false;
+            btnEliminar.Click += btnEliminar_Click;
             // 
             // FrmGestionUsuarios
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(834, 561);
-            this.Controls.Add(this.tlpMain);
-            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MinimumSize = new System.Drawing.Size(700, 480);
-            this.Name = "FrmGestionUsuarios";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Gestión de Usuarios";
-            this.Load += new System.EventHandler(this.FrmGestionUsuarios_Load);
-            this.tlpMain.ResumeLayout(false);
-            this.tlpMain.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvUsuarios)).EndInit();
-            this.grpDatos.ResumeLayout(false);
-            this.tlpDatos.ResumeLayout(false);
-            this.tlpDatos.PerformLayout();
-            this.pnlBotones.ResumeLayout(false);
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.White;
+            ClientSize = new Size(834, 561);
+            Controls.Add(tlpMain);
+            Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            MinimumSize = new Size(700, 480);
+            Name = "FrmGestionUsuarios";
+            StartPosition = FormStartPosition.CenterParent;
+            Text = "Gestión de Usuarios";
+            Load += FrmGestionUsuarios_Load;
+            tlpMain.ResumeLayout(false);
+            tlpMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvUsuarios).EndInit();
+            grpDatos.ResumeLayout(false);
+            tlpDatos.ResumeLayout(false);
+            tlpDatos.PerformLayout();
+            pnlBotones.ResumeLayout(false);
+            ResumeLayout(false);
 
         }
 

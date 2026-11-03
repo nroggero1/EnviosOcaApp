@@ -120,7 +120,7 @@ namespace EnviosOcaApp.Views
             grpOperador.Size = new Size(523, 99);
             grpOperador.TabIndex = 1;
             grpOperador.TabStop = false;
-            grpOperador.Text = "Datos Globales: Operador (Auditoría)";
+            grpOperador.Text = "Datos Globales: Operador";
             // 
             // lblUsuario
             // 
@@ -238,7 +238,7 @@ namespace EnviosOcaApp.Views
             btnAgregarEnvioAlLote.Name = "btnAgregarEnvioAlLote";
             btnAgregarEnvioAlLote.Size = new Size(229, 38);
             btnAgregarEnvioAlLote.TabIndex = 21;
-            btnAgregarEnvioAlLote.Text = "👇 Añadir Envío al Lote 👇";
+            btnAgregarEnvioAlLote.Text = "👇 Añadir envío al Lote 👇";
             btnAgregarEnvioAlLote.UseVisualStyleBackColor = false;
             btnAgregarEnvioAlLote.Click += btnAgregarEnvioAlLote_Click;
             // 
@@ -286,7 +286,7 @@ namespace EnviosOcaApp.Views
             grpDestino.Margin = new Padding(3, 4, 3, 4);
             grpDestino.Name = "grpDestino";
             grpDestino.Padding = new Padding(3, 4, 3, 4);
-            grpDestino.Size = new Size(462, 265);
+            grpDestino.Size = new Size(462, 337);
             grpDestino.TabIndex = 0;
             grpDestino.TabStop = false;
             grpDestino.Text = "Datos del destinatario";
@@ -481,7 +481,7 @@ namespace EnviosOcaApp.Views
             grpPaquete.Margin = new Padding(3, 4, 3, 4);
             grpPaquete.Name = "grpPaquete";
             grpPaquete.Padding = new Padding(3, 4, 3, 4);
-            grpPaquete.Size = new Size(567, 265);
+            grpPaquete.Size = new Size(567, 337);
             grpPaquete.TabIndex = 1;
             grpPaquete.TabStop = false;
             grpPaquete.Text = "Bultos del Envío (Paquetes)";
@@ -556,7 +556,6 @@ namespace EnviosOcaApp.Views
             txtValor.Name = "txtValor";
             txtValor.Size = new Size(57, 27);
             txtValor.TabIndex = 16;
-            txtValor.Text = "";
             // 
             // lblObservaciones
             // 
@@ -606,10 +605,9 @@ namespace EnviosOcaApp.Views
             dgvPaquetes.Location = new Point(11, 153);
             dgvPaquetes.Margin = new Padding(3, 4, 3, 4);
             dgvPaquetes.Name = "dgvPaquetes";
-            dgvPaquetes.ReadOnly = false;
             dgvPaquetes.RowHeadersWidth = 51;
             dgvPaquetes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPaquetes.Size = new Size(549, 140);
+            dgvPaquetes.Size = new Size(549, 212);
             dgvPaquetes.TabIndex = 20;
             // 
             // grpLote
@@ -625,7 +623,7 @@ namespace EnviosOcaApp.Views
             grpLote.Size = new Size(1055, 175);
             grpLote.TabIndex = 4;
             grpLote.TabStop = false;
-            grpLote.Text = "2. Lote Masivo (Envíos listos para transmitir)";
+            grpLote.Text = "2. Lote (Envíos listos para confirmar)";
             // 
             // dgvLoteEnvios
             // 
@@ -650,7 +648,7 @@ namespace EnviosOcaApp.Views
             btnQuitarEnvio.Name = "btnQuitarEnvio";
             btnQuitarEnvio.Size = new Size(131, 35);
             btnQuitarEnvio.TabIndex = 23;
-            btnQuitarEnvio.Text = "Quitar Sel.";
+            btnQuitarEnvio.Text = "Quitar sel.";
             btnQuitarEnvio.UseVisualStyleBackColor = true;
             btnQuitarEnvio.Click += btnQuitarEnvio_Click;
             // 
@@ -667,7 +665,7 @@ namespace EnviosOcaApp.Views
             btnGenerar.Name = "btnGenerar";
             btnGenerar.Size = new Size(229, 45);
             btnGenerar.TabIndex = 24;
-            btnGenerar.Text = "Transmitir Lote OCA";
+            btnGenerar.Text = "Confirmar lote";
             btnGenerar.UseVisualStyleBackColor = false;
             btnGenerar.Click += btnGenerar_Click;
             // 
