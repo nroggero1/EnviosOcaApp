@@ -267,7 +267,7 @@ namespace EnviosOcaApp.Views
                 oficinasCombo.AddRange(
                     _oficinas
                         .Where(x => x.Activa)
-                        .OrderBy(x => x.Nombre));
+                        );
 
                 cmbOficina.SelectedIndexChanged -=
                     CmbOficina_SelectedIndexChanged;
@@ -1185,4 +1185,3 @@ namespace EnviosOcaApp.Views
         }
     }
 }
-

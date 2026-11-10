@@ -4,6 +4,8 @@
     {
         public string Codigo { get; set; } = "";
 
+        public string Empresa { get; set; } = "";
+
         public string Nombre { get; set; } = "";
 
         public string Calle { get; set; } = "";
@@ -19,6 +21,24 @@
         public string CP { get; set; } = "";
 
         public bool Activa { get; set; } = true;
+
+
+
+
+
+        public string EmpresaAbreviada
+        {
+            get
+            {
+                return Empresa switch
+                {
+                    "SANCOR SEGUROS" => "SS",
+                    "PREVENCION ART" => "ART",
+                    "PREVENCION SALUD" => "PS",
+                    _ => Empresa
+                };
+            }
+        }
 
         public string DireccionCompleta
         {
@@ -38,7 +58,12 @@
         {
             get
             {
-                return $"{Nombre} - {Localidad}";
+                return
+                    $"[{EmpresaAbreviada}] " +
+                    $"{Nombre} | " +
+                    $"{Calle} {Numero} | " +
+                    $"{Localidad} | " +
+                    $"{Codigo}";
             }
         }
 

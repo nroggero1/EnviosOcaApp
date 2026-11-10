@@ -168,7 +168,7 @@ GenerarLoteRealAsync(
             var origenNode = new XElement("origen",
                 new XAttribute("calle", origen.Calle ?? ""),
                 new XAttribute("nro", origen.Numero ?? ""),
-                new XAttribute("piso", ""),
+                new XAttribute("piso", origen.Piso ?? ""),
                 new XAttribute("depto", ""),
                 new XAttribute("cp", origen.CP ?? ""),
                 new XAttribute("localidad", origen.Localidad ?? ""),
