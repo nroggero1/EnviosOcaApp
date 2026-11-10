@@ -1,6 +1,3 @@
-using System;
-using System.Windows.Forms;
-
 namespace EnviosOcaApp.Views
 {
     public partial class FrmAvisoInactividad : Form

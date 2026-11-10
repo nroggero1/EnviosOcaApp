@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-
 namespace EnviosOcaApp.Models
 {
     public class AppSettings
@@ -42,6 +39,14 @@ namespace EnviosOcaApp.Models
         /// </summary>
         public string RutaArchivoEmpresas { get; set; } = "Resources\\empresas.json";
 
+        /// <summary>
+        /// Ruta al archivo JSON con las oficinas/sucursales
+        /// habilitadas para retiro de envíos.
+        /// </summary>
+        public string RutaArchivoOficinas { get; set; }
+            = "Resources\\oficinas.json";
+
+
         public string OcaBaseUrl => !string.IsNullOrWhiteSpace(OcaApiUrl)
             ? OcaApiUrl
             : (EsProduccion
@@ -56,6 +61,13 @@ namespace EnviosOcaApp.Models
         public string ObtenerRutaEmpresasCompleta()
         {
             return ResolverRutaDinamica(RutaArchivoEmpresas, Path.Combine("Resources", "empresas.json"));
+        }
+
+        public string ObtenerRutaOficinasCompleta()
+        {
+            return ResolverRutaDinamica(
+                RutaArchivoOficinas,
+                Path.Combine("Resources", "oficinas.json"));
         }
 
         public string ObtenerDirectorioEtiquetasPdf()
@@ -97,7 +109,7 @@ namespace EnviosOcaApp.Models
             // Salvaguarda para entornos donde %OneDriveCommercial% no esté explícitamente seteado
             if (expandida.Contains("%OneDriveCommercial%", StringComparison.OrdinalIgnoreCase))
             {
-                string? oneDrive = Environment.GetEnvironmentVariable("OneDriveCommercial") 
+                string? oneDrive = Environment.GetEnvironmentVariable("OneDriveCommercial")
                     ?? Environment.GetEnvironmentVariable("OneDrive");
 
                 if (string.IsNullOrWhiteSpace(oneDrive))

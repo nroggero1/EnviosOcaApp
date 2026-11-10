@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-using System.Windows.Forms;
 using EnviosOcaApp.Models;
 using EnviosOcaApp.Utils;
+using System.Text.Json;
 
 namespace EnviosOcaApp.Views
 {

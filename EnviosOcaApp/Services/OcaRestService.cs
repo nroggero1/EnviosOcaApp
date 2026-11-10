@@ -1,11 +1,7 @@
-using System;
-using System.Data;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using EnviosOcaApp.Models;
+using System.Data;
+using System.Text;
+using System.Xml.Linq;
 
 namespace EnviosOcaApp.Services
 {
@@ -90,7 +86,19 @@ namespace EnviosOcaApp.Services
             }
         }
 
-        public Task<OcaResponse> GenerarLoteRealAsync(EmpresaOca empresa, string remitente, System.Collections.Generic.List<EnvioOca> lote)
+        public Task<OcaResponse>
+GenerarLoteRealAsync(
+    EmpresaOca empresa,
+    (
+        string Calle,
+        string Numero,
+        string Piso,
+        string Localidad,
+        string Provincia,
+        string CP
+    ) origen,
+    string remitente,
+    List<EnvioOca> lote)
         {
             string ape = remitente ?? "";
             string nom = "";
@@ -100,10 +108,28 @@ namespace EnviosOcaApp.Services
                 ape = partes[0];
                 nom = partes[1];
             }
-            return GenerarLoteRealAsync(empresa, ape, nom, lote);
+            return GenerarLoteRealAsync(
+    empresa,
+    origen,
+    ape,
+    nom,
+    lote);
         }
 
-        public async Task<OcaResponse> GenerarLoteRealAsync(EmpresaOca empresa, string remitenteApellido, string remitenteNombre, System.Collections.Generic.List<EnvioOca> lote)
+        public async Task<OcaResponse>
+        GenerarLoteRealAsync(
+            EmpresaOca empresa,
+            (
+                string Calle,
+                string Numero,
+                string Piso,
+                string Localidad,
+                string Provincia,
+                string CP
+            ) origen,
+            string remitenteApellido,
+            string remitenteNombre,
+            List<EnvioOca> lote)
         {
             if (empresa == null) throw new ArgumentException("La empresa es obligatoria.");
             if (lote == null || lote.Count == 0) throw new ArgumentException("El lote no puede estar vacío.");
@@ -140,13 +166,13 @@ namespace EnviosOcaApp.Services
 
             // 1. Construir el XML_Datos interno que OCA exige
             var origenNode = new XElement("origen",
-                new XAttribute("calle", empresa.CalleOrigen ?? ""),
-                new XAttribute("nro", empresa.NumeroOrigen ?? ""),
+                new XAttribute("calle", origen.Calle ?? ""),
+                new XAttribute("nro", origen.Numero ?? ""),
                 new XAttribute("piso", ""),
                 new XAttribute("depto", ""),
-                new XAttribute("cp", empresa.CpOrigen ?? ""),
-                new XAttribute("localidad", empresa.LocalidadOrigen ?? ""),
-                new XAttribute("provincia", empresa.ProvinciaOrigen ?? ""),
+                new XAttribute("cp", origen.CP ?? ""),
+                new XAttribute("localidad", origen.Localidad ?? ""),
+                new XAttribute("provincia", origen.Provincia ?? ""),
                 new XAttribute("contacto", contactoRetiro),
                 new XAttribute("email", ""),
                 new XAttribute("solicitante", solicitanteRemitente),
@@ -390,9 +416,9 @@ namespace EnviosOcaApp.Services
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             var xdoc = XDocument.Parse(responseBody);
-            
+
             var diffgram = xdoc.Descendants().FirstOrDefault(x => x.Name.LocalName == "diffgram");
-            
+
             if (diffgram == null || !diffgram.HasElements)
             {
                 return null;
@@ -464,7 +490,7 @@ namespace EnviosOcaApp.Services
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             var xdoc = XDocument.Parse(responseBody);
-            
+
             var resultNode = xdoc.Descendants().FirstOrDefault(x => x.Name.LocalName == "GetPdfDeEtiquetasPorOrdenOrNumeroEnvioResult");
 
             if (resultNode == null)
@@ -478,13 +504,13 @@ namespace EnviosOcaApp.Services
             {
                 throw new Exception("OCA respondió que no se encontraron etiquetas para el número de envío indicado.");
             }
-            
+
             if (base64pdf.Length < 100)
             {
                 throw new Exception($"Error de OCA al obtener etiqueta: {base64pdf}");
             }
 
-            string folder = _settings?.ObtenerDirectorioEtiquetasPdf() 
+            string folder = _settings?.ObtenerDirectorioEtiquetasPdf()
                 ?? System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Etiquetas_OCA");
             System.IO.Directory.CreateDirectory(folder);
 

@@ -1,8 +1,3 @@
-using System;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Windows.Forms;
 using EnviosOcaApp.Utils;
 using EnviosOcaApp.Views;
 
@@ -94,10 +89,11 @@ namespace EnviosOcaApp
         private void ValidarPermisosUsuario()
         {
             btnGestionUsuarios.Visible = false;
+            btnGestionOficinas.Visible = false;
             string usersPath = Program.ConfiguracionActual.ObtenerRutaUsuariosCompleta();
-            
+
             var usuarios = new System.Collections.Generic.List<EnviosOcaApp.Models.UsuarioApp>();
-            
+
             if (File.Exists(usersPath))
             {
                 string json = File.ReadAllText(usersPath);
@@ -105,7 +101,7 @@ namespace EnviosOcaApp
             }
 
             var currentUser = usuarios.FirstOrDefault(u => u.UsernameWindows.Equals(Environment.UserName, StringComparison.OrdinalIgnoreCase));
-            
+
             if (currentUser == null)
             {
                 using (var frmRegistro = new Views.FrmRegistroInicial())
@@ -129,7 +125,7 @@ namespace EnviosOcaApp
                         }
 
                         string newJson = System.Text.Json.JsonSerializer.Serialize(usuarios, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
-                        
+
                         Directory.CreateDirectory(Path.GetDirectoryName(usersPath)!);
                         File.WriteAllText(usersPath, newJson);
 
@@ -153,6 +149,7 @@ namespace EnviosOcaApp
             if (currentUser != null && currentUser.EsAdministrador)
             {
                 btnGestionUsuarios.Visible = true;
+                btnGestionOficinas.Visible = true;
             }
         }
 
@@ -195,6 +192,27 @@ namespace EnviosOcaApp
             {
                 frm.ConsultarTracking(codigoTracking);
             }
+        }
+
+        private void btnGestionOficinas_Click(object sender, EventArgs e)
+        {
+            if (!EsUsuarioActualAdmin())
+            {
+                MessageBox.Show(
+                    "Acceso denegado. Este módulo está restringido exclusivamente a administradores.",
+                    "Acceso Restringido",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return;
+            }
+
+            Program.AuditoriaService?.RegistrarNavegacion(
+                "Gestión de Oficinas",
+                "Ingreso al módulo");
+
+            AbrirFormularioHijo(
+                new FrmGestionOficinas());
         }
     }
 }

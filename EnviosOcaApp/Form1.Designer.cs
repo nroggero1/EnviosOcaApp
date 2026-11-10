@@ -28,6 +28,7 @@ namespace EnviosOcaApp
             pnlLogo = new Panel();
             pictureBoxLogo = new PictureBox();
             pnlContenedor = new Panel();
+            btnGestionOficinas = new Button();
             pnlMenuLateral.SuspendLayout();
             pnlLogo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).BeginInit();
@@ -36,6 +37,7 @@ namespace EnviosOcaApp
             // pnlMenuLateral
             // 
             pnlMenuLateral.BackColor = Color.FromArgb(167, 3, 85);
+            pnlMenuLateral.Controls.Add(btnGestionOficinas);
             pnlMenuLateral.Controls.Add(btnGestionUsuarios);
             pnlMenuLateral.Controls.Add(btnAuditoria);
             pnlMenuLateral.Controls.Add(btnImprimirEtiquetas);
@@ -147,8 +149,26 @@ namespace EnviosOcaApp
             pnlContenedor.Location = new Point(270, 0);
             pnlContenedor.Margin = new Padding(3, 4, 3, 4);
             pnlContenedor.Name = "pnlContenedor";
-            pnlContenedor.Size = new Size(781, 748);
+            pnlContenedor.Size = new Size(740, 748);
             pnlContenedor.TabIndex = 1;
+            // 
+            // btnGestionOficinas
+            // 
+            btnGestionOficinas.Dock = DockStyle.Top;
+            btnGestionOficinas.FlatAppearance.BorderSize = 0;
+            btnGestionOficinas.FlatStyle = FlatStyle.Flat;
+            btnGestionOficinas.Font = new Font("Microsoft Sans Serif", 10F);
+            btnGestionOficinas.ForeColor = Color.White;
+            btnGestionOficinas.Location = new Point(0, 345);
+            btnGestionOficinas.Margin = new Padding(3, 4, 3, 4);
+            btnGestionOficinas.Name = "btnGestionOficinas";
+            btnGestionOficinas.Padding = new Padding(11, 0, 0, 0);
+            btnGestionOficinas.Size = new Size(270, 53);
+            btnGestionOficinas.TabIndex = 5;
+            btnGestionOficinas.Text = "Gestión de Oficinas";
+            btnGestionOficinas.TextAlign = ContentAlignment.MiddleLeft;
+            btnGestionOficinas.UseVisualStyleBackColor = true;
+            btnGestionOficinas.Click += btnGestionOficinas_Click;
             // 
             // Form1
             // 
@@ -179,6 +199,7 @@ namespace EnviosOcaApp
         private System.Windows.Forms.Button btnGestionUsuarios;
         private System.Windows.Forms.Panel pnlContenedor;
         private System.Windows.Forms.PictureBox pictureBoxLogo;
+        private Button btnGestionOficinas;
     }
 }
 

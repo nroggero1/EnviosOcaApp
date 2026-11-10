@@ -1,13 +1,6 @@
-using System;
-using System.Data;
-using System.Drawing;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.IO;
-using System.Text.Json;
-using System.Collections.Generic;
-using System.Diagnostics;
 using EnviosOcaApp.Utils;
+using System.Diagnostics;
+using System.Text.Json;
 
 namespace EnviosOcaApp.Views
 {
@@ -201,12 +194,12 @@ namespace EnviosOcaApp.Views
             lblIngresoTracking.AutoSize = true;
             lblIngresoTracking.Anchor = AnchorStyles.Left;
             lblIngresoTracking.Margin = new Padding(3, 8, 3, 3);
-            
+
             txtTracking.Width = 200;
             txtTracking.Margin = new Padding(3, 5, 15, 3);
-            
+
             btnBuscarTracking.Margin = new Padding(3, 4, 15, 3);
-            
+
             lblEstadoTracking.AutoSize = true;
             lblEstadoTracking.Anchor = AnchorStyles.Left;
             lblEstadoTracking.Margin = new Padding(3, 8, 3, 3);
@@ -343,11 +336,11 @@ namespace EnviosOcaApp.Views
                 Padding = new Padding(5),
                 WrapContents = true
             };
-            
+
             var lblDesde = new Label { Text = "Desde:", AutoSize = true, Anchor = AnchorStyles.Left, Margin = new Padding(3, 8, 3, 3) };
             dtpDesde = new DateTimePicker { Format = DateTimePickerFormat.Short, Width = 110, Margin = new Padding(3, 5, 15, 3) };
             dtpDesde.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            
+
             var lblHasta = new Label { Text = "Hasta:", AutoSize = true, Anchor = AnchorStyles.Left, Margin = new Padding(3, 8, 3, 3) };
             dtpHasta = new DateTimePicker { Format = DateTimePickerFormat.Short, Width = 110, Margin = new Padding(3, 5, 15, 3) };
             dtpHasta.Value = DateTime.Now;
@@ -410,7 +403,7 @@ namespace EnviosOcaApp.Views
         private void CargarComboUsuarios()
         {
             if (!esAdministrador) return;
-            
+
             try
             {
                 cmbUsuario.Items.Clear();
@@ -432,7 +425,7 @@ namespace EnviosOcaApp.Views
             try
             {
                 string? usuarioFiltro = esAdministrador ? (cmbUsuario.Text == "Todos" ? null : cmbUsuario.Text) : Environment.UserName;
-                
+
                 dgvAuditoriaInterna.DataSource = Program.AuditoriaService.ObtenerHistorial(dtpDesde.Value, dtpHasta.Value, usuarioFiltro, esAdministrador);
                 dgvAuditoriaInterna.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
 
@@ -470,7 +463,7 @@ namespace EnviosOcaApp.Views
                 {
                     dgvTrackingOca.DataSource = dt;
                     lblEstadoTracking.Text = "Seguimiento descargado.";
-                    
+
                     dgvTrackingOca.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                     if (dgvTrackingOca.Columns.Contains("Estado"))
                         dgvTrackingOca.Columns["Estado"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;

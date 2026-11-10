@@ -1,10 +1,6 @@
-using System;
-using System.Diagnostics;
-using System.Drawing;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using EnviosOcaApp.Utils;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace EnviosOcaApp.Views
 {
@@ -78,7 +74,7 @@ namespace EnviosOcaApp.Views
             {
                 var dt = Program.AuditoriaService.ObtenerHistorial(null, null, Environment.UserName, true);
                 dgvRecientes.DataSource = dt;
-                
+
                 if (dgvRecientes.Columns.Count > 0)
                 {
                     dgvRecientes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
@@ -207,7 +203,7 @@ namespace EnviosOcaApp.Views
                 {
                     lblStatus.ForeColor = Color.Green;
                     lblStatus.Text = $"Orden {idOrdenRetiro} anulada exitosamente en OCA.";
-                    
+
                     Program.AuditoriaService.ActualizarEstadoOrden(nroOca, "ANULADA");
                     Program.AuditoriaService.ActualizarEstadoOrden(idOrdenRetiro.ToString(), "ANULADA");
                     Program.AuditoriaService.RegistrarNavegacion("Impresión de Etiquetas", $"Orden anulada: {idOrdenRetiro}");

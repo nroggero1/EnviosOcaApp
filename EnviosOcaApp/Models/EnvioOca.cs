@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace EnviosOcaApp.Models
 {
     public class EnvioOca

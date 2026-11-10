@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using ClosedXML.Excel;
 using EnviosOcaApp.Models;
 
@@ -27,7 +25,7 @@ namespace EnviosOcaApp.Services
         {
             try
             {
-                string jsonPath = _settings?.ObtenerRutaUsuariosCompleta() 
+                string jsonPath = _settings?.ObtenerRutaUsuariosCompleta()
                     ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "usuarios.json");
                 if (File.Exists(jsonPath))
                 {
@@ -58,13 +56,20 @@ namespace EnviosOcaApp.Services
                 {
                     if (i == maxAttempts - 1)
                         throw; // Si es el último intento, dejamos que falle
-                    
+
                     System.Threading.Thread.Sleep(delay + new Random().Next(50, 150)); // Jitter para evitar colisiones en cadena
                 }
             }
         }
 
-        public void RegistrarGeneracionEtiqueta(string empresa, string nroOrdenOca, string remitente, string destinatario, string estado)
+        public void RegistrarGeneracionEtiqueta(
+            string empresa,
+            string nroOrdenOca,
+            string remitente,
+            string destinatario,
+            string estado,
+            string tipoOrigen,
+            string origenUtilizado)
         {
             ExecuteWithRetry(() =>
             {
@@ -86,7 +91,7 @@ namespace EnviosOcaApp.Services
                     var worksheet = archivoExiste ? workbook.Worksheet(1) : workbook.Worksheets.Add("Auditoria");
 
                     // Asegurar que la Fila 1 siempre contenga los encabezados
-                    bool tieneEncabezados = !worksheet.Cell(1, 1).IsEmpty() && 
+                    bool tieneEncabezados = !worksheet.Cell(1, 1).IsEmpty() &&
                                             worksheet.Cell(1, 1).GetString().Trim().Equals("Fecha", StringComparison.OrdinalIgnoreCase);
 
                     if (!tieneEncabezados)
@@ -107,8 +112,10 @@ namespace EnviosOcaApp.Services
                         worksheet.Cell(1, 8).Value = "Estado_Operacion";
                         worksheet.Cell(1, 9).Value = "Fecha_Modificacion";
                         worksheet.Cell(1, 10).Value = "Usuario_Modificacion";
+                        worksheet.Cell(1, 11).Value = "Tipo_Origen";
+                        worksheet.Cell(1, 12).Value = "Origen_Utilizado";
 
-                        var range = worksheet.Range("A1:J1");
+                        var range = worksheet.Range("A1:L1");
                         range.Style.Font.Bold = true;
                         range.Style.Fill.BackgroundColor = XLColor.FromArgb(167, 3, 85); // Magenta institucional OCA
                         range.Style.Font.FontColor = XLColor.White;
@@ -128,6 +135,8 @@ namespace EnviosOcaApp.Services
                     worksheet.Cell(nuevaFila, 8).Value = estado;
                     worksheet.Cell(nuevaFila, 9).Value = "";
                     worksheet.Cell(nuevaFila, 10).Value = "";
+                    worksheet.Cell(nuevaFila, 11).Value = tipoOrigen;
+                    worksheet.Cell(nuevaFila, 12).Value = origenUtilizado;
 
                     worksheet.Columns().AdjustToContents();
                     workbook.SaveAs(archivoPath);
@@ -152,7 +161,7 @@ namespace EnviosOcaApp.Services
                         bool modificado = false;
 
                         // Asegurar encabezados en caso de archivo previo sin cabecera
-                        bool tieneEncabezados = !ws.Cell(1, 1).IsEmpty() && 
+                        bool tieneEncabezados = !ws.Cell(1, 1).IsEmpty() &&
                                                 ws.Cell(1, 1).GetString().Trim().Equals("Fecha", StringComparison.OrdinalIgnoreCase);
                         if (!tieneEncabezados && !ws.Cell(1, 1).IsEmpty())
                         {
@@ -209,14 +218,14 @@ namespace EnviosOcaApp.Services
 
             var dirEtiquetas = _settings.ObtenerDirectorioAuditoriaEtiquetas();
             if (!Directory.Exists(dirEtiquetas)) return dt;
-            
+
             var archivos = Directory.GetFiles(dirEtiquetas, "auditoria_*.xlsx");
 
             foreach (var archivoPath in archivos)
             {
                 try
                 {
-                    ExecuteWithRetry(() => 
+                    ExecuteWithRetry(() =>
                     {
                         using (var stream = new FileStream(archivoPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         using (var workbook = new XLWorkbook(stream))
@@ -240,7 +249,7 @@ namespace EnviosOcaApp.Services
                                 {
                                     string fechaStr = row.Cell(1).Value.ToString();
                                     string rowUser = row.Cell(3).Value.ToString();
-                                    
+
                                     // Filtro de Fecha
                                     bool fechaValida = true;
                                     if (DateTime.TryParseExact(fechaStr, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out DateTime fechaFila))
@@ -274,7 +283,7 @@ namespace EnviosOcaApp.Services
                 }
                 catch { }
             }
-            
+
             // Invertir las filas para que los más recientes salgan primero
             var dtInvertido = dt.Clone();
             for (int i = dt.Rows.Count - 1; i >= 0; i--)
@@ -296,7 +305,7 @@ namespace EnviosOcaApp.Services
             {
                 try
                 {
-                    ExecuteWithRetry(() => 
+                    ExecuteWithRetry(() =>
                     {
                         using (var stream = new FileStream(archivoPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         using (var workbook = new XLWorkbook(stream))

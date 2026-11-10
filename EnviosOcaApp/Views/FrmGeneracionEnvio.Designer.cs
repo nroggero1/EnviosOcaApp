@@ -94,7 +94,7 @@ namespace EnviosOcaApp.Views
             panelHeader.Location = new Point(0, 0);
             panelHeader.Margin = new Padding(3, 4, 3, 4);
             panelHeader.Name = "panelHeader";
-            panelHeader.Size = new Size(1086, 67);
+            panelHeader.Size = new Size(1106, 67);
             panelHeader.TabIndex = 0;
             // 
             // lblTitulo
@@ -117,7 +117,7 @@ namespace EnviosOcaApp.Views
             grpOperador.Margin = new Padding(3, 4, 3, 4);
             grpOperador.Name = "grpOperador";
             grpOperador.Padding = new Padding(3, 4, 3, 4);
-            grpOperador.Size = new Size(523, 99);
+            grpOperador.Size = new Size(533, 172);
             grpOperador.TabIndex = 1;
             grpOperador.TabStop = false;
             grpOperador.Text = "Datos Globales: Operador";
@@ -139,7 +139,7 @@ namespace EnviosOcaApp.Views
             txtUsuario.Margin = new Padding(3, 4, 3, 4);
             txtUsuario.Name = "txtUsuario";
             txtUsuario.ReadOnly = true;
-            txtUsuario.Size = new Size(386, 27);
+            txtUsuario.Size = new Size(396, 27);
             txtUsuario.TabIndex = 0;
             // 
             // tlpGlobal
@@ -155,7 +155,7 @@ namespace EnviosOcaApp.Views
             tlpGlobal.Name = "tlpGlobal";
             tlpGlobal.RowCount = 1;
             tlpGlobal.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tlpGlobal.Size = new Size(1058, 107);
+            tlpGlobal.Size = new Size(1078, 180);
             tlpGlobal.TabIndex = 0;
             // 
             // grpOrigen
@@ -165,11 +165,11 @@ namespace EnviosOcaApp.Views
             grpOrigen.Controls.Add(lblRemitente);
             grpOrigen.Controls.Add(txtRemitente);
             grpOrigen.Dock = DockStyle.Fill;
-            grpOrigen.Location = new Point(532, 4);
+            grpOrigen.Location = new Point(542, 4);
             grpOrigen.Margin = new Padding(3, 4, 3, 4);
             grpOrigen.Name = "grpOrigen";
             grpOrigen.Padding = new Padding(3, 4, 3, 4);
-            grpOrigen.Size = new Size(523, 99);
+            grpOrigen.Size = new Size(533, 172);
             grpOrigen.TabIndex = 2;
             grpOrigen.TabStop = false;
             grpOrigen.Text = "Datos Globales: Origen del Lote";
@@ -191,7 +191,7 @@ namespace EnviosOcaApp.Views
             cmbEmpresa.Location = new Point(91, 36);
             cmbEmpresa.Margin = new Padding(3, 4, 3, 4);
             cmbEmpresa.Name = "cmbEmpresa";
-            cmbEmpresa.Size = new Size(138, 28);
+            cmbEmpresa.Size = new Size(148, 28);
             cmbEmpresa.TabIndex = 0;
             // 
             // lblRemitente
@@ -217,11 +217,11 @@ namespace EnviosOcaApp.Views
             grpComposicion.Controls.Add(btnAgregarEnvioAlLote);
             grpComposicion.Controls.Add(tlpComposicion);
             grpComposicion.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            grpComposicion.Location = new Point(17, 189);
+            grpComposicion.Location = new Point(17, 265);
             grpComposicion.Margin = new Padding(3, 4, 3, 4);
             grpComposicion.Name = "grpComposicion";
             grpComposicion.Padding = new Padding(3, 4, 3, 4);
-            grpComposicion.Size = new Size(1055, 430);
+            grpComposicion.Size = new Size(1075, 430);
             grpComposicion.TabIndex = 3;
             grpComposicion.TabStop = false;
             grpComposicion.Text = "1. Composición de Envío Individual";
@@ -233,7 +233,7 @@ namespace EnviosOcaApp.Views
             btnAgregarEnvioAlLote.FlatStyle = FlatStyle.Flat;
             btnAgregarEnvioAlLote.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnAgregarEnvioAlLote.ForeColor = Color.Black;
-            btnAgregarEnvioAlLote.Location = new Point(413, 382);
+            btnAgregarEnvioAlLote.Location = new Point(423, 382);
             btnAgregarEnvioAlLote.Margin = new Padding(3, 4, 3, 4);
             btnAgregarEnvioAlLote.Name = "btnAgregarEnvioAlLote";
             btnAgregarEnvioAlLote.Size = new Size(229, 38);
@@ -256,7 +256,7 @@ namespace EnviosOcaApp.Views
             tlpComposicion.Name = "tlpComposicion";
             tlpComposicion.RowCount = 1;
             tlpComposicion.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlpComposicion.Size = new Size(1041, 345);
+            tlpComposicion.Size = new Size(1061, 345);
             tlpComposicion.TabIndex = 0;
             // 
             // grpDestino
@@ -286,7 +286,7 @@ namespace EnviosOcaApp.Views
             grpDestino.Margin = new Padding(3, 4, 3, 4);
             grpDestino.Name = "grpDestino";
             grpDestino.Padding = new Padding(3, 4, 3, 4);
-            grpDestino.Size = new Size(462, 337);
+            grpDestino.Size = new Size(471, 337);
             grpDestino.TabIndex = 0;
             grpDestino.TabStop = false;
             grpDestino.Text = "Datos del destinatario";
@@ -477,11 +477,11 @@ namespace EnviosOcaApp.Views
             grpPaquete.Controls.Add(btnQuitarPaquete);
             grpPaquete.Controls.Add(dgvPaquetes);
             grpPaquete.Dock = DockStyle.Fill;
-            grpPaquete.Location = new Point(471, 4);
+            grpPaquete.Location = new Point(480, 4);
             grpPaquete.Margin = new Padding(3, 4, 3, 4);
             grpPaquete.Name = "grpPaquete";
             grpPaquete.Padding = new Padding(3, 4, 3, 4);
-            grpPaquete.Size = new Size(567, 337);
+            grpPaquete.Size = new Size(578, 337);
             grpPaquete.TabIndex = 1;
             grpPaquete.TabStop = false;
             grpPaquete.Text = "Bultos del Envío (Paquetes)";
@@ -577,7 +577,7 @@ namespace EnviosOcaApp.Views
             // btnAgregarPaquete
             // 
             btnAgregarPaquete.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnAgregarPaquete.Location = new Point(229, 113);
+            btnAgregarPaquete.Location = new Point(240, 113);
             btnAgregarPaquete.Margin = new Padding(3, 4, 3, 4);
             btnAgregarPaquete.Name = "btnAgregarPaquete";
             btnAgregarPaquete.Size = new Size(114, 33);
@@ -589,7 +589,7 @@ namespace EnviosOcaApp.Views
             // btnQuitarPaquete
             // 
             btnQuitarPaquete.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnQuitarPaquete.Location = new Point(354, 113);
+            btnQuitarPaquete.Location = new Point(365, 113);
             btnQuitarPaquete.Margin = new Padding(3, 4, 3, 4);
             btnQuitarPaquete.Name = "btnQuitarPaquete";
             btnQuitarPaquete.Size = new Size(103, 33);
@@ -607,7 +607,7 @@ namespace EnviosOcaApp.Views
             dgvPaquetes.Name = "dgvPaquetes";
             dgvPaquetes.RowHeadersWidth = 51;
             dgvPaquetes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPaquetes.Size = new Size(549, 212);
+            dgvPaquetes.Size = new Size(560, 212);
             dgvPaquetes.TabIndex = 20;
             // 
             // grpLote
@@ -616,11 +616,11 @@ namespace EnviosOcaApp.Views
             grpLote.Controls.Add(dgvLoteEnvios);
             grpLote.Controls.Add(btnQuitarEnvio);
             grpLote.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            grpLote.Location = new Point(17, 626);
+            grpLote.Location = new Point(17, 700);
             grpLote.Margin = new Padding(3, 4, 3, 4);
             grpLote.Name = "grpLote";
             grpLote.Padding = new Padding(3, 4, 3, 4);
-            grpLote.Size = new Size(1055, 175);
+            grpLote.Size = new Size(1075, 374);
             grpLote.TabIndex = 4;
             grpLote.TabStop = false;
             grpLote.Text = "2. Lote (Envíos listos para confirmar)";
@@ -636,14 +636,14 @@ namespace EnviosOcaApp.Views
             dgvLoteEnvios.ReadOnly = true;
             dgvLoteEnvios.RowHeadersWidth = 51;
             dgvLoteEnvios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvLoteEnvios.Size = new Size(891, 138);
+            dgvLoteEnvios.Size = new Size(911, 337);
             dgvLoteEnvios.TabIndex = 22;
             // 
             // btnQuitarEnvio
             // 
             btnQuitarEnvio.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnQuitarEnvio.Font = new Font("Segoe UI", 9F);
-            btnQuitarEnvio.Location = new Point(914, 26);
+            btnQuitarEnvio.Location = new Point(934, 26);
             btnQuitarEnvio.Margin = new Padding(3, 4, 3, 4);
             btnQuitarEnvio.Name = "btnQuitarEnvio";
             btnQuitarEnvio.Size = new Size(131, 35);
@@ -660,7 +660,7 @@ namespace EnviosOcaApp.Views
             btnGenerar.FlatStyle = FlatStyle.Flat;
             btnGenerar.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Bold);
             btnGenerar.ForeColor = Color.White;
-            btnGenerar.Location = new Point(843, 808);
+            btnGenerar.Location = new Point(863, 1084);
             btnGenerar.Margin = new Padding(3, 4, 3, 4);
             btnGenerar.Name = "btnGenerar";
             btnGenerar.Size = new Size(229, 45);
@@ -675,7 +675,7 @@ namespace EnviosOcaApp.Views
             lblStatus.AutoSize = true;
             lblStatus.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
             lblStatus.ForeColor = Color.Green;
-            lblStatus.Location = new Point(23, 820);
+            lblStatus.Location = new Point(23, 1129);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(0, 18);
             lblStatus.TabIndex = 5;
@@ -686,7 +686,7 @@ namespace EnviosOcaApp.Views
             AutoScaleMode = AutoScaleMode.Font;
             AutoScroll = true;
             BackColor = Color.White;
-            ClientSize = new Size(1086, 865);
+            ClientSize = new Size(1106, 1174);
             Controls.Add(lblStatus);
             Controls.Add(btnGenerar);
             Controls.Add(grpLote);

@@ -1,14 +1,8 @@
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Windows.Forms;
-using Microsoft.Extensions.Configuration;
 using EnviosOcaApp.Models;
 using EnviosOcaApp.Services;
-using EnviosOcaApp.Views;
+using Microsoft.Extensions.Configuration;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace EnviosOcaApp
 {

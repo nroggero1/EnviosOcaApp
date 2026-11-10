@@ -5,7 +5,7 @@ namespace EnviosOcaApp.Models
         public string Nombre { get; set; } = string.Empty;
         public string Cuit { get; set; } = string.Empty;
         public string Operativa { get; set; } = string.Empty;
-        
+
         // --- Exigidos por el XML de OCA (Datos "ocultos" para el operador) ---
         public string NroCuenta { get; set; } = string.Empty;
         public string CentroCosto { get; set; } = string.Empty;

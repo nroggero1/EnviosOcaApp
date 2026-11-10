@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace EnviosOcaApp.Models
 {
     // Representa la respuesta global de la API de OCA
@@ -9,8 +7,8 @@ namespace EnviosOcaApp.Models
         public string MensajeError { get; set; } = string.Empty;
 
         // Número principal del lote devuelto por OCA
-        public string CodigoOperacion { get; set; } = string.Empty; 
-        
+        public string CodigoOperacion { get; set; } = string.Empty;
+
         // Detalle de cada guía/etiqueta generada
         public List<OcaEnvioGenerado> EnviosGenerados { get; set; } = new List<OcaEnvioGenerado>();
     }
