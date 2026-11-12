@@ -178,11 +178,22 @@ namespace EnviosOcaApp.Views
             chkSeguro.CheckedChanged -= ChkSeguro_CheckedChanged;
             chkSeguro.CheckedChanged += ChkSeguro_CheckedChanged;
 
+            Size tamanoBotonAccion = new(130, 34);
+            foreach (Button boton in new[]
+            {
+                btnAgregarEnvioAlLote,
+                btnQuitarPaquete,
+                btnAgregarPaquete,
+                btnQuitarEnvio,
+                btnGenerar
+            })
+            {
+                boton.Size = tamanoBotonAccion;
+                boton.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+                boton.Margin = new Padding(2);
+            }
+
             var flpBotones = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, FlowDirection = FlowDirection.RightToLeft, WrapContents = false };
-            btnAgregarEnvioAlLote.Text = "Agregar al lote";
-            btnAgregarEnvioAlLote.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
-            btnAgregarEnvioAlLote.Size = new Size(140, 26);
-            btnAgregarEnvioAlLote.Margin = new Padding(2);
             flpBotones.Controls.Add(btnAgregarEnvioAlLote);
             flpBotones.Controls.Add(btnQuitarPaquete);
             flpBotones.Controls.Add(btnAgregarPaquete);
@@ -230,7 +241,7 @@ namespace EnviosOcaApp.Views
                 Margin = new Padding(0)
             };
             lotLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            lotLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 144F));
+            lotLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 134F));
             lotLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             grpLote.Controls.Clear();
             dgvLoteEnvios.Dock = DockStyle.Fill;
@@ -246,16 +257,11 @@ namespace EnviosOcaApp.Views
                 Padding = new Padding(0)
             };
             accionesLote.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            accionesLote.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
-            accionesLote.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
+            accionesLote.RowStyles.Add(new RowStyle(SizeType.Absolute, 38F));
+            accionesLote.RowStyles.Add(new RowStyle(SizeType.Absolute, 38F));
             btnQuitarEnvio.Dock = DockStyle.Fill;
-            btnQuitarEnvio.Margin = new Padding(2);
             accionesLote.Controls.Add(btnQuitarEnvio, 0, 0);
-            btnGenerar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnGenerar.Dock = DockStyle.None;
-            btnGenerar.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            btnGenerar.Size = new Size(140, 26);
-            btnGenerar.Margin = new Padding(2);
+            btnGenerar.Dock = DockStyle.Fill;
             accionesLote.Controls.Add(btnGenerar, 0, 1);
             lotLayout.Controls.Add(accionesLote, 1, 0);
             grpLote.Dock = DockStyle.Fill;
@@ -328,29 +334,6 @@ namespace EnviosOcaApp.Views
                         .Deserialize<List<OficinaSucursal>>(json)
                     ?? new List<OficinaSucursal>();
 
-                var oficinasCombo =
-                    new List<OficinaSucursal>
-                    {
-                new OficinaSucursal
-                {
-                    Codigo = "__SELECCIONAR__",
-                    Nombre = "[ SELECCIONE ORIGEN ]"
-                },
-
-                new OficinaSucursal
-                {
-                    Codigo = "__MANUAL__",
-                    Nombre = "[ INGRESO MANUAL DE DIRECCIÓN ]"
-                }
-                    };
-
-                oficinasCombo.AddRange(
-                    _oficinas
-                        .Where(x => x.Activa)
-                        );
-
-                _opcionesOficina = oficinasCombo;
-
                 cmbOficina.SelectionChangeCommitted -=
                     CmbOficina_SelectionChangeCommitted;
                 cmbOficina.TextUpdate -=
@@ -371,15 +354,66 @@ namespace EnviosOcaApp.Views
                 cmbOficina.DropDown +=
                     CmbOficina_DropDown;
 
-                _oficinaSeleccionada = null;
-                _direccionManual = null;
-
-                MostrarOrigenNoSeleccionado();
-
-                cmbOficina.SelectedIndex = 0;
+                ActualizarOficinasPorEmpresa();
             }
             catch
             {
+            }
+        }
+
+        private List<OficinaSucursal> CrearOpcionesOficina(EmpresaOca? empresa)
+        {
+            var opciones = new List<OficinaSucursal>
+            {
+                new OficinaSucursal
+                {
+                    Codigo = "__SELECCIONAR__",
+                    Nombre = "[ SELECCIONE ORIGEN ]"
+                },
+                new OficinaSucursal
+                {
+                    Codigo = "__MANUAL__",
+                    Nombre = "[ INGRESO MANUAL DE DIRECCIÓN ]"
+                }
+            };
+
+            if (empresa == null)
+                return opciones;
+
+            opciones.AddRange(
+                OficinaSucursalFilter.FiltrarPorEmpresa(
+                    _oficinas,
+                    empresa.Nombre));
+
+            return opciones;
+        }
+
+        private void CmbEmpresa_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            ActualizarOficinasPorEmpresa();
+        }
+
+        private void ActualizarOficinasPorEmpresa()
+        {
+            _oficinaFiltroTimer.Stop();
+            _opcionesOficina =
+                CrearOpcionesOficina(cmbEmpresa.SelectedItem as EmpresaOca);
+
+            _oficinaSeleccionada = null;
+            _direccionManual = null;
+            MostrarOrigenNoSeleccionado();
+
+            _actualizandoFiltroOficinas = true;
+            try
+            {
+                cmbOficina.DataSource = _opcionesOficina;
+                cmbOficina.DisplayMember =
+                    nameof(OficinaSucursal.DisplayCombo);
+                cmbOficina.SelectedIndex = 0;
+            }
+            finally
+            {
+                _actualizandoFiltroOficinas = false;
             }
         }
 
@@ -818,6 +852,9 @@ namespace EnviosOcaApp.Views
 
                 CargarOficinas();
             }
+
+            cmbEmpresa.SelectedIndexChanged -= CmbEmpresa_SelectedIndexChanged;
+            cmbEmpresa.SelectedIndexChanged += CmbEmpresa_SelectedIndexChanged;
 
             // CARGAR CONFIGURACIÓN DE USUARIO ACTUAL
             string usersPath = Program.ConfiguracionActual.ObtenerRutaUsuariosCompleta();

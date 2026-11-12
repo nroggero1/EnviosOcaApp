@@ -28,8 +28,6 @@ namespace EnviosOcaApp.Views
             grpOrigen = new GroupBox();
             lblEmpresa = new Label();
             cmbEmpresa = new ComboBox();
-            lblRemitente = new Label();
-            txtRemitente = new TextBox();
             lblOficina = new Label();
             cmbOficina = new ComboBox();
             lblDireccionOficina = new Label();
@@ -37,14 +35,13 @@ namespace EnviosOcaApp.Views
             txtRemitenteApellido = new TextBox();
             lblRemitenteNombre = new Label();
             txtRemitenteNombre = new TextBox();
+            lblRemitente = new Label();
+            txtRemitente = new TextBox();
             grpComposicion = new GroupBox();
-            btnAgregarEnvioAlLote = new Button();
             tlpComposicion = new TableLayoutPanel();
             grpDestino = new GroupBox();
             lblDestinatario = new Label();
             txtDestinatario = new TextBox();
-            lblRemito = new Label();
-            txtRemito = new TextBox();
             lblCalle = new Label();
             txtCalle = new TextBox();
             lblNumero = new Label();
@@ -59,12 +56,10 @@ namespace EnviosOcaApp.Views
             txtCP = new TextBox();
             lblEmail = new Label();
             txtEmail = new TextBox();
-            lblTelefono = new Label();
-            txtTelefono = new TextBox();
             grpPaquete = new GroupBox();
+            lblDimensiones = new Label();
             lblTamanoPaquete = new Label();
             cmbTamanoPaquete = new ComboBox();
-            lblDimensiones = new Label();
             txtAlto = new TextBox();
             txtAncho = new TextBox();
             txtLargo = new TextBox();
@@ -79,7 +74,12 @@ namespace EnviosOcaApp.Views
             chkSeguro = new CheckBox();
             btnAgregarPaquete = new Button();
             btnQuitarPaquete = new Button();
+            btnAgregarEnvioAlLote = new Button();
             dgvPaquetes = new DataGridView();
+            lblRemito = new Label();
+            txtRemito = new TextBox();
+            lblTelefono = new Label();
+            txtTelefono = new TextBox();
             grpLote = new GroupBox();
             dgvLoteEnvios = new DataGridView();
             btnQuitarEnvio = new Button();
@@ -98,25 +98,27 @@ namespace EnviosOcaApp.Views
             ((System.ComponentModel.ISupportInitialize)dgvPaquetes).BeginInit();
             grpLote.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvLoteEnvios).BeginInit();
+            panelAcciones.SuspendLayout();
+            layoutPrincipal.SuspendLayout();
             SuspendLayout();
             // 
             // panelHeader
             // 
             panelHeader.BackColor = Color.FromArgb(246, 246, 247);
             panelHeader.Controls.Add(lblTitulo);
-            panelHeader.Dock = DockStyle.Top;
-            panelHeader.Location = new Point(0, 0);
+            panelHeader.Dock = DockStyle.Fill;
+            panelHeader.Location = new Point(8, 9);
             panelHeader.Margin = new Padding(3, 4, 3, 4);
             panelHeader.Name = "panelHeader";
-            panelHeader.Size = new Size(1106, 67);
+            panelHeader.Size = new Size(1115, 35);
             panelHeader.TabIndex = 0;
             // 
             // lblTitulo
             // 
             lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Bold);
+            lblTitulo.Font = new Font("Microsoft Sans Serif", 17.5F, FontStyle.Bold);
             lblTitulo.ForeColor = Color.FromArgb(167, 3, 85);
-            lblTitulo.Location = new Point(23, 17);
+            lblTitulo.Location = new Point(14, 5);
             lblTitulo.Name = "lblTitulo";
             lblTitulo.Size = new Size(549, 29);
             lblTitulo.TabIndex = 0;
@@ -127,11 +129,11 @@ namespace EnviosOcaApp.Views
             grpOperador.Controls.Add(lblUsuario);
             grpOperador.Controls.Add(txtUsuario);
             grpOperador.Dock = DockStyle.Fill;
-            grpOperador.Location = new Point(3, 4);
-            grpOperador.Margin = new Padding(3, 4, 3, 4);
+            grpOperador.Location = new Point(2, 3);
+            grpOperador.Margin = new Padding(2, 3, 2, 3);
             grpOperador.Name = "grpOperador";
             grpOperador.Padding = new Padding(3, 4, 3, 4);
-            grpOperador.Size = new Size(533, 172);
+            grpOperador.Size = new Size(388, 126);
             grpOperador.TabIndex = 1;
             grpOperador.TabStop = false;
             grpOperador.Text = "Datos Globales: Operador";
@@ -153,23 +155,23 @@ namespace EnviosOcaApp.Views
             txtUsuario.Margin = new Padding(3, 4, 3, 4);
             txtUsuario.Name = "txtUsuario";
             txtUsuario.ReadOnly = true;
-            txtUsuario.Size = new Size(396, 27);
+            txtUsuario.Size = new Size(250, 23);
             txtUsuario.TabIndex = 0;
             // 
             // tlpGlobal
             // 
-            tlpGlobal.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             tlpGlobal.ColumnCount = 2;
             tlpGlobal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35F));
             tlpGlobal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65F));
             tlpGlobal.Controls.Add(grpOperador, 0, 0);
             tlpGlobal.Controls.Add(grpOrigen, 1, 0);
-            tlpGlobal.Location = new Point(14, 75);
-            tlpGlobal.Margin = new Padding(3, 4, 3, 4);
+            tlpGlobal.Dock = DockStyle.Fill;
+            tlpGlobal.Location = new Point(5, 48);
+            tlpGlobal.Margin = new Padding(0);
             tlpGlobal.Name = "tlpGlobal";
             tlpGlobal.RowCount = 1;
             tlpGlobal.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tlpGlobal.Size = new Size(1078, 180);
+            tlpGlobal.Size = new Size(1121, 132);
             tlpGlobal.TabIndex = 0;
             // 
             // grpOrigen
@@ -184,11 +186,11 @@ namespace EnviosOcaApp.Views
             grpOrigen.Controls.Add(lblRemitenteNombre);
             grpOrigen.Controls.Add(txtRemitenteNombre);
             grpOrigen.Dock = DockStyle.Fill;
-            grpOrigen.Location = new Point(542, 4);
-            grpOrigen.Margin = new Padding(3, 4, 3, 4);
+            grpOrigen.Location = new Point(394, 3);
+            grpOrigen.Margin = new Padding(2, 3, 2, 3);
             grpOrigen.Name = "grpOrigen";
             grpOrigen.Padding = new Padding(3, 4, 3, 4);
-            grpOrigen.Size = new Size(533, 172);
+            grpOrigen.Size = new Size(725, 126);
             grpOrigen.TabIndex = 2;
             grpOrigen.TabStop = false;
             grpOrigen.Text = "Datos Globales: Origen del Lote";
@@ -196,7 +198,7 @@ namespace EnviosOcaApp.Views
             // lblEmpresa
             // 
             lblEmpresa.AutoSize = true;
-            lblEmpresa.Location = new Point(11, 40);
+            lblEmpresa.Location = new Point(8, 21);
             lblEmpresa.Name = "lblEmpresa";
             lblEmpresa.Size = new Size(69, 20);
             lblEmpresa.TabIndex = 0;
@@ -207,11 +209,67 @@ namespace EnviosOcaApp.Views
             cmbEmpresa.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cmbEmpresa.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbEmpresa.FormattingEnabled = true;
-            cmbEmpresa.Location = new Point(91, 36);
+            cmbEmpresa.Location = new Point(98, 19);
             cmbEmpresa.Margin = new Padding(3, 4, 3, 4);
             cmbEmpresa.Name = "cmbEmpresa";
-            cmbEmpresa.Size = new Size(148, 28);
+            cmbEmpresa.Size = new Size(812, 28);
             cmbEmpresa.TabIndex = 0;
+            // 
+            // lblOficina
+            // 
+            lblOficina.AutoSize = true;
+            lblOficina.Location = new Point(8, 47);
+            lblOficina.Name = "lblOficina";
+            lblOficina.Size = new Size(59, 20);
+            lblOficina.TabIndex = 1;
+            lblOficina.Text = "Oficina:";
+            // 
+            // cmbOficina
+            // 
+            cmbOficina.Location = new Point(98, 44);
+            cmbOficina.Name = "cmbOficina";
+            cmbOficina.Size = new Size(620, 28);
+            cmbOficina.TabIndex = 2;
+            // 
+            // lblDireccionOficina
+            // 
+            lblDireccionOficina.Location = new Point(11, 72);
+            lblDireccionOficina.Name = "lblDireccionOficina";
+            lblDireccionOficina.Size = new Size(704, 20);
+            lblDireccionOficina.TabIndex = 3;
+            lblDireccionOficina.Text = "Dirección de la oficina seleccionada";
+            // 
+            // lblRemitenteApellido
+            // 
+            lblRemitenteApellido.AutoSize = true;
+            lblRemitenteApellido.Location = new Point(8, 101);
+            lblRemitenteApellido.Name = "lblRemitenteApellido";
+            lblRemitenteApellido.Size = new Size(106, 20);
+            lblRemitenteApellido.TabIndex = 4;
+            lblRemitenteApellido.Text = "Ap. Remitente:";
+            // 
+            // txtRemitenteApellido
+            // 
+            txtRemitenteApellido.Location = new Point(98, 99);
+            txtRemitenteApellido.Name = "txtRemitenteApellido";
+            txtRemitenteApellido.Size = new Size(250, 23);
+            txtRemitenteApellido.TabIndex = 5;
+            // 
+            // lblRemitenteNombre
+            // 
+            lblRemitenteNombre.AutoSize = true;
+            lblRemitenteNombre.Location = new Point(357, 101);
+            lblRemitenteNombre.Name = "lblRemitenteNombre";
+            lblRemitenteNombre.Size = new Size(120, 20);
+            lblRemitenteNombre.TabIndex = 6;
+            lblRemitenteNombre.Text = "Nom. Remitente:";
+            // 
+            // txtRemitenteNombre
+            // 
+            txtRemitenteNombre.Location = new Point(465, 99);
+            txtRemitenteNombre.Name = "txtRemitenteNombre";
+            txtRemitenteNombre.Size = new Size(253, 23);
+            txtRemitenteNombre.TabIndex = 7;
             // 
             // lblRemitente
             // 
@@ -221,6 +279,7 @@ namespace EnviosOcaApp.Views
             lblRemitente.Size = new Size(80, 20);
             lblRemitente.TabIndex = 2;
             lblRemitente.Text = "Remitente:";
+            lblRemitente.Visible = false;
             // 
             // txtRemitente
             // 
@@ -229,52 +288,37 @@ namespace EnviosOcaApp.Views
             txtRemitente.Name = "txtRemitente";
             txtRemitente.Size = new Size(182, 27);
             txtRemitente.TabIndex = 1;
+            txtRemitente.Visible = false;
             // 
             // grpComposicion
             // 
-            grpComposicion.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             grpComposicion.Controls.Add(tlpComposicion);
-            grpComposicion.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            grpComposicion.Location = new Point(17, 265);
-            grpComposicion.Margin = new Padding(3, 4, 3, 4);
+            grpComposicion.Dock = DockStyle.Fill;
+            grpComposicion.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold);
+            grpComposicion.Location = new Point(7, 183);
+            grpComposicion.Margin = new Padding(2, 3, 2, 3);
             grpComposicion.Name = "grpComposicion";
             grpComposicion.Padding = new Padding(3, 4, 3, 4);
-            grpComposicion.Size = new Size(1075, 430);
+            grpComposicion.Size = new Size(1117, 327);
             grpComposicion.TabIndex = 3;
             grpComposicion.TabStop = false;
             grpComposicion.Text = "1. Composición de Envío Individual";
             // 
-            // btnAgregarEnvioAlLote
-            // 
-            btnAgregarEnvioAlLote.Anchor = AnchorStyles.Bottom;
-            btnAgregarEnvioAlLote.BackColor = Color.LightBlue;
-            btnAgregarEnvioAlLote.FlatStyle = FlatStyle.Flat;
-            btnAgregarEnvioAlLote.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnAgregarEnvioAlLote.ForeColor = Color.Black;
-            btnAgregarEnvioAlLote.Location = new Point(423, 382);
-            btnAgregarEnvioAlLote.Margin = new Padding(3, 4, 3, 4);
-            btnAgregarEnvioAlLote.Name = "btnAgregarEnvioAlLote";
-            btnAgregarEnvioAlLote.Size = new Size(229, 38);
-            btnAgregarEnvioAlLote.TabIndex = 21;
-            btnAgregarEnvioAlLote.Text = "👇 Añadir envío al Lote 👇";
-            btnAgregarEnvioAlLote.UseVisualStyleBackColor = false;
-            btnAgregarEnvioAlLote.Click += btnAgregarEnvioAlLote_Click;
-            // 
             // tlpComposicion
             // 
-            tlpComposicion.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             tlpComposicion.ColumnCount = 2;
-            tlpComposicion.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45F));
-            tlpComposicion.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 55F));
+            tlpComposicion.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tlpComposicion.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tlpComposicion.Controls.Add(grpDestino, 0, 0);
             tlpComposicion.Controls.Add(grpPaquete, 1, 0);
-            tlpComposicion.Font = new Font("Segoe UI", 9F);
-            tlpComposicion.Location = new Point(7, 29);
-            tlpComposicion.Margin = new Padding(3, 4, 3, 4);
+            tlpComposicion.Dock = DockStyle.Fill;
+            tlpComposicion.Font = new Font("Segoe UI", 11.25F);
+            tlpComposicion.Location = new Point(3, 24);
+            tlpComposicion.Margin = new Padding(0);
             tlpComposicion.Name = "tlpComposicion";
             tlpComposicion.RowCount = 1;
             tlpComposicion.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlpComposicion.Size = new Size(1061, 345);
+            tlpComposicion.Size = new Size(1111, 299);
             tlpComposicion.TabIndex = 0;
             // 
             // grpDestino
@@ -299,8 +343,8 @@ namespace EnviosOcaApp.Views
             grpDestino.Location = new Point(3, 4);
             grpDestino.Margin = new Padding(3, 4, 3, 4);
             grpDestino.Name = "grpDestino";
-            grpDestino.Padding = new Padding(3, 4, 3, 4);
-            grpDestino.Size = new Size(471, 337);
+            grpDestino.Padding = new Padding(6, 5, 6, 5);
+            grpDestino.Size = new Size(549, 291);
             grpDestino.TabIndex = 0;
             grpDestino.TabStop = false;
             grpDestino.Text = "Datos del destinatario";
@@ -308,7 +352,7 @@ namespace EnviosOcaApp.Views
             // lblDestinatario
             // 
             lblDestinatario.AutoSize = true;
-            lblDestinatario.Location = new Point(11, 73);
+            lblDestinatario.Location = new Point(9, 25);
             lblDestinatario.Name = "lblDestinatario";
             lblDestinatario.Size = new Size(89, 20);
             lblDestinatario.TabIndex = 0;
@@ -316,33 +360,16 @@ namespace EnviosOcaApp.Views
             // 
             // txtDestinatario
             // 
-            txtDestinatario.Location = new Point(120, 69);
+            txtDestinatario.Location = new Point(112, 21);
             txtDestinatario.Margin = new Padding(3, 4, 3, 4);
             txtDestinatario.Name = "txtDestinatario";
-            txtDestinatario.Size = new Size(319, 27);
+            txtDestinatario.Size = new Size(422, 27);
             txtDestinatario.TabIndex = 3;
-            // 
-            // lblRemito
-            // 
-            lblRemito.AutoSize = true;
-            lblRemito.Location = new Point(11, 33);
-            lblRemito.Name = "lblRemito";
-            lblRemito.Size = new Size(88, 20);
-            lblRemito.TabIndex = 4;
-            lblRemito.Text = "Ref/Remito:";
-            // 
-            // txtRemito
-            // 
-            txtRemito.Location = new Point(120, 29);
-            txtRemito.Margin = new Padding(3, 4, 3, 4);
-            txtRemito.Name = "txtRemito";
-            txtRemito.Size = new Size(319, 27);
-            txtRemito.TabIndex = 2;
             // 
             // lblCalle
             // 
             lblCalle.AutoSize = true;
-            lblCalle.Location = new Point(11, 113);
+            lblCalle.Location = new Point(9, 57);
             lblCalle.Name = "lblCalle";
             lblCalle.Size = new Size(45, 20);
             lblCalle.TabIndex = 2;
@@ -350,16 +377,16 @@ namespace EnviosOcaApp.Views
             // 
             // txtCalle
             // 
-            txtCalle.Location = new Point(69, 109);
+            txtCalle.Location = new Point(112, 53);
             txtCalle.Margin = new Padding(3, 4, 3, 4);
             txtCalle.Name = "txtCalle";
-            txtCalle.Size = new Size(114, 27);
+            txtCalle.Size = new Size(422, 27);
             txtCalle.TabIndex = 4;
             // 
             // lblNumero
             // 
             lblNumero.AutoSize = true;
-            lblNumero.Location = new Point(194, 113);
+            lblNumero.Location = new Point(9, 89);
             lblNumero.Name = "lblNumero";
             lblNumero.Size = new Size(37, 20);
             lblNumero.TabIndex = 4;
@@ -367,16 +394,16 @@ namespace EnviosOcaApp.Views
             // 
             // txtNumero
             // 
-            txtNumero.Location = new Point(246, 109);
+            txtNumero.Location = new Point(112, 85);
             txtNumero.Margin = new Padding(3, 4, 3, 4);
             txtNumero.Name = "txtNumero";
-            txtNumero.Size = new Size(45, 27);
+            txtNumero.Size = new Size(194, 27);
             txtNumero.TabIndex = 5;
             // 
             // lblPiso
             // 
             lblPiso.AutoSize = true;
-            lblPiso.Location = new Point(303, 113);
+            lblPiso.Location = new Point(312, 89);
             lblPiso.Name = "lblPiso";
             lblPiso.Size = new Size(39, 20);
             lblPiso.TabIndex = 6;
@@ -384,16 +411,16 @@ namespace EnviosOcaApp.Views
             // 
             // txtPiso
             // 
-            txtPiso.Location = new Point(354, 109);
+            txtPiso.Location = new Point(360, 85);
             txtPiso.Margin = new Padding(3, 4, 3, 4);
             txtPiso.Name = "txtPiso";
-            txtPiso.Size = new Size(45, 27);
+            txtPiso.Size = new Size(174, 27);
             txtPiso.TabIndex = 6;
             // 
             // lblLocalidad
             // 
             lblLocalidad.AutoSize = true;
-            lblLocalidad.Location = new Point(11, 153);
+            lblLocalidad.Location = new Point(9, 121);
             lblLocalidad.Name = "lblLocalidad";
             lblLocalidad.Size = new Size(77, 20);
             lblLocalidad.TabIndex = 8;
@@ -401,16 +428,16 @@ namespace EnviosOcaApp.Views
             // 
             // txtLocalidad
             // 
-            txtLocalidad.Location = new Point(103, 149);
+            txtLocalidad.Location = new Point(112, 117);
             txtLocalidad.Margin = new Padding(3, 4, 3, 4);
             txtLocalidad.Name = "txtLocalidad";
-            txtLocalidad.Size = new Size(114, 27);
+            txtLocalidad.Size = new Size(422, 27);
             txtLocalidad.TabIndex = 7;
             // 
             // lblProvincia
             // 
             lblProvincia.AutoSize = true;
-            lblProvincia.Location = new Point(223, 153);
+            lblProvincia.Location = new Point(9, 153);
             lblProvincia.Name = "lblProvincia";
             lblProvincia.Size = new Size(41, 20);
             lblProvincia.TabIndex = 10;
@@ -418,16 +445,16 @@ namespace EnviosOcaApp.Views
             // 
             // txtProvincia
             // 
-            txtProvincia.Location = new Point(274, 149);
+            txtProvincia.Location = new Point(112, 149);
             txtProvincia.Margin = new Padding(3, 4, 3, 4);
             txtProvincia.Name = "txtProvincia";
-            txtProvincia.Size = new Size(79, 27);
+            txtProvincia.Size = new Size(194, 27);
             txtProvincia.TabIndex = 8;
             // 
             // lblCP
             // 
             lblCP.AutoSize = true;
-            lblCP.Location = new Point(360, 153);
+            lblCP.Location = new Point(312, 153);
             lblCP.Name = "lblCP";
             lblCP.Size = new Size(29, 20);
             lblCP.TabIndex = 12;
@@ -435,16 +462,16 @@ namespace EnviosOcaApp.Views
             // 
             // txtCP
             // 
-            txtCP.Location = new Point(400, 149);
+            txtCP.Location = new Point(360, 149);
             txtCP.Margin = new Padding(3, 4, 3, 4);
             txtCP.Name = "txtCP";
-            txtCP.Size = new Size(45, 27);
+            txtCP.Size = new Size(174, 27);
             txtCP.TabIndex = 9;
             // 
             // lblEmail
             // 
             lblEmail.AutoSize = true;
-            lblEmail.Location = new Point(11, 193);
+            lblEmail.Location = new Point(9, 185);
             lblEmail.Name = "lblEmail";
             lblEmail.Size = new Size(55, 20);
             lblEmail.TabIndex = 14;
@@ -452,28 +479,11 @@ namespace EnviosOcaApp.Views
             // 
             // txtEmail
             // 
-            txtEmail.Location = new Point(80, 189);
+            txtEmail.Location = new Point(112, 181);
             txtEmail.Margin = new Padding(3, 4, 3, 4);
             txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(148, 27);
+            txtEmail.Size = new Size(422, 27);
             txtEmail.TabIndex = 10;
-            // 
-            // lblTelefono
-            // 
-            lblTelefono.AutoSize = true;
-            lblTelefono.Location = new Point(234, 193);
-            lblTelefono.Name = "lblTelefono";
-            lblTelefono.Size = new Size(31, 20);
-            lblTelefono.TabIndex = 16;
-            lblTelefono.Text = "Tel:";
-            // 
-            // txtTelefono
-            // 
-            txtTelefono.Location = new Point(280, 189);
-            txtTelefono.Margin = new Padding(3, 4, 3, 4);
-            txtTelefono.Name = "txtTelefono";
-            txtTelefono.Size = new Size(125, 27);
-            txtTelefono.TabIndex = 11;
             // 
             // grpPaquete
             // 
@@ -497,11 +507,11 @@ namespace EnviosOcaApp.Views
             grpPaquete.Controls.Add(btnAgregarEnvioAlLote);
             grpPaquete.Controls.Add(dgvPaquetes);
             grpPaquete.Dock = DockStyle.Fill;
-            grpPaquete.Location = new Point(480, 4);
+            grpPaquete.Location = new Point(558, 4);
             grpPaquete.Margin = new Padding(3, 4, 3, 4);
             grpPaquete.Name = "grpPaquete";
-            grpPaquete.Padding = new Padding(3, 4, 3, 4);
-            grpPaquete.Size = new Size(578, 337);
+            grpPaquete.Padding = new Padding(6, 5, 6, 5);
+            grpPaquete.Size = new Size(550, 291);
             grpPaquete.TabIndex = 1;
             grpPaquete.TabStop = false;
             grpPaquete.Text = "Bultos del Envío (Paquetes)";
@@ -509,43 +519,78 @@ namespace EnviosOcaApp.Views
             // lblDimensiones
             // 
             lblDimensiones.AutoSize = true;
-            lblDimensiones.Location = new Point(11, 33);
+            lblDimensiones.Location = new Point(9, 57);
             lblDimensiones.Name = "lblDimensiones";
-            lblDimensiones.Size = new Size(184, 20);
+            lblDimensiones.Size = new Size(77, 20);
             lblDimensiones.TabIndex = 0;
-            lblDimensiones.Text = "Alto x Ancho x Largo (cm):";
+            lblDimensiones.Text = "Dim. (cm):";
+            // 
+            // lblTamanoPaquete
+            // 
+            lblTamanoPaquete.AutoSize = true;
+            lblTamanoPaquete.Location = new Point(9, 25);
+            lblTamanoPaquete.Name = "lblTamanoPaquete";
+            lblTamanoPaquete.Size = new Size(103, 20);
+            lblTamanoPaquete.TabIndex = 1;
+            lblTamanoPaquete.Text = "Tamaño Bulto:";
+            // 
+            // cmbTamanoPaquete
+            // 
+            cmbTamanoPaquete.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbTamanoPaquete.Location = new Point(112, 21);
+            cmbTamanoPaquete.Name = "cmbTamanoPaquete";
+            cmbTamanoPaquete.Size = new Size(422, 28);
+            cmbTamanoPaquete.TabIndex = 2;
             // 
             // txtAlto
             // 
-            txtAlto.Location = new Point(229, 29);
+            txtAlto.Location = new Point(112, 53);
             txtAlto.Margin = new Padding(3, 4, 3, 4);
             txtAlto.Name = "txtAlto";
-            txtAlto.Size = new Size(39, 27);
+            txtAlto.Size = new Size(41, 27);
             txtAlto.TabIndex = 12;
             txtAlto.Text = "10";
             // 
             // txtAncho
             // 
-            txtAncho.Location = new Point(274, 29);
+            txtAncho.Location = new Point(170, 53);
             txtAncho.Margin = new Padding(3, 4, 3, 4);
             txtAncho.Name = "txtAncho";
-            txtAncho.Size = new Size(39, 27);
+            txtAncho.Size = new Size(41, 27);
             txtAncho.TabIndex = 13;
             txtAncho.Text = "10";
             // 
             // txtLargo
             // 
-            txtLargo.Location = new Point(320, 29);
+            txtLargo.Location = new Point(229, 53);
             txtLargo.Margin = new Padding(3, 4, 3, 4);
             txtLargo.Name = "txtLargo";
-            txtLargo.Size = new Size(39, 27);
+            txtLargo.Size = new Size(41, 27);
             txtLargo.TabIndex = 14;
             txtLargo.Text = "10";
+            // 
+            // lblMultiplicadorDimensiones1
+            // 
+            lblMultiplicadorDimensiones1.AutoSize = true;
+            lblMultiplicadorDimensiones1.Location = new Point(155, 57);
+            lblMultiplicadorDimensiones1.Name = "lblMultiplicadorDimensiones1";
+            lblMultiplicadorDimensiones1.Size = new Size(16, 20);
+            lblMultiplicadorDimensiones1.TabIndex = 15;
+            lblMultiplicadorDimensiones1.Text = "x";
+            // 
+            // lblMultiplicadorDimensiones2
+            // 
+            lblMultiplicadorDimensiones2.AutoSize = true;
+            lblMultiplicadorDimensiones2.Location = new Point(213, 57);
+            lblMultiplicadorDimensiones2.Name = "lblMultiplicadorDimensiones2";
+            lblMultiplicadorDimensiones2.Size = new Size(16, 20);
+            lblMultiplicadorDimensiones2.TabIndex = 16;
+            lblMultiplicadorDimensiones2.Text = "x";
             // 
             // lblPeso
             // 
             lblPeso.AutoSize = true;
-            lblPeso.Location = new Point(371, 33);
+            lblPeso.Location = new Point(277, 57);
             lblPeso.Name = "lblPeso";
             lblPeso.Size = new Size(72, 20);
             lblPeso.TabIndex = 4;
@@ -553,17 +598,17 @@ namespace EnviosOcaApp.Views
             // 
             // txtPeso
             // 
-            txtPeso.Location = new Point(457, 29);
+            txtPeso.Location = new Point(330, 53);
             txtPeso.Margin = new Padding(3, 4, 3, 4);
             txtPeso.Name = "txtPeso";
-            txtPeso.Size = new Size(45, 27);
+            txtPeso.Size = new Size(204, 27);
             txtPeso.TabIndex = 15;
             txtPeso.Text = "1";
             // 
             // lblValor
             // 
             lblValor.AutoSize = true;
-            lblValor.Location = new Point(11, 73);
+            lblValor.Location = new Point(9, 89);
             lblValor.Name = "lblValor";
             lblValor.Size = new Size(58, 20);
             lblValor.TabIndex = 6;
@@ -571,16 +616,16 @@ namespace EnviosOcaApp.Views
             // 
             // txtValor
             // 
-            txtValor.Location = new Point(86, 69);
+            txtValor.Location = new Point(112, 85);
             txtValor.Margin = new Padding(3, 4, 3, 4);
             txtValor.Name = "txtValor";
-            txtValor.Size = new Size(57, 27);
+            txtValor.Size = new Size(150, 27);
             txtValor.TabIndex = 16;
             // 
             // lblObservaciones
             // 
             lblObservaciones.AutoSize = true;
-            lblObservaciones.Location = new Point(154, 73);
+            lblObservaciones.Location = new Point(277, 89);
             lblObservaciones.Name = "lblObservaciones";
             lblObservaciones.Size = new Size(108, 20);
             lblObservaciones.TabIndex = 8;
@@ -588,19 +633,28 @@ namespace EnviosOcaApp.Views
             // 
             // txtObservaciones
             // 
-            txtObservaciones.Location = new Point(286, 69);
+            txtObservaciones.Location = new Point(371, 85);
             txtObservaciones.Margin = new Padding(3, 4, 3, 4);
             txtObservaciones.Name = "txtObservaciones";
-            txtObservaciones.Size = new Size(171, 27);
+            txtObservaciones.Size = new Size(163, 27);
             txtObservaciones.TabIndex = 17;
+            // 
+            // chkSeguro
+            // 
+            chkSeguro.AutoSize = true;
+            chkSeguro.Location = new Point(9, 119);
+            chkSeguro.Name = "chkSeguro";
+            chkSeguro.Size = new Size(130, 24);
+            chkSeguro.TabIndex = 18;
+            chkSeguro.Text = "Asegurar Envío";
             // 
             // btnAgregarPaquete
             // 
             btnAgregarPaquete.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnAgregarPaquete.Location = new Point(240, 113);
+            btnAgregarPaquete.Location = new Point(180, 115);
             btnAgregarPaquete.Margin = new Padding(3, 4, 3, 4);
             btnAgregarPaquete.Name = "btnAgregarPaquete";
-            btnAgregarPaquete.Size = new Size(114, 33);
+            btnAgregarPaquete.Size = new Size(91, 33);
             btnAgregarPaquete.TabIndex = 18;
             btnAgregarPaquete.Text = "+ Bulto";
             btnAgregarPaquete.UseVisualStyleBackColor = true;
@@ -609,39 +663,93 @@ namespace EnviosOcaApp.Views
             // btnQuitarPaquete
             // 
             btnQuitarPaquete.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnQuitarPaquete.Location = new Point(365, 113);
+            btnQuitarPaquete.Location = new Point(278, 115);
             btnQuitarPaquete.Margin = new Padding(3, 4, 3, 4);
             btnQuitarPaquete.Name = "btnQuitarPaquete";
-            btnQuitarPaquete.Size = new Size(103, 33);
+            btnQuitarPaquete.Size = new Size(86, 33);
             btnQuitarPaquete.TabIndex = 19;
             btnQuitarPaquete.Text = "- Quitar";
             btnQuitarPaquete.UseVisualStyleBackColor = true;
             btnQuitarPaquete.Click += btnQuitarPaquete_Click;
             // 
+            // btnAgregarEnvioAlLote
+            // 
+            btnAgregarEnvioAlLote.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnAgregarEnvioAlLote.BackColor = Color.LightBlue;
+            btnAgregarEnvioAlLote.FlatStyle = FlatStyle.Flat;
+            btnAgregarEnvioAlLote.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold);
+            btnAgregarEnvioAlLote.ForeColor = Color.Black;
+            btnAgregarEnvioAlLote.Location = new Point(368, 115);
+            btnAgregarEnvioAlLote.Margin = new Padding(3, 4, 3, 4);
+            btnAgregarEnvioAlLote.Name = "btnAgregarEnvioAlLote";
+            btnAgregarEnvioAlLote.Size = new Size(139, 33);
+            btnAgregarEnvioAlLote.TabIndex = 21;
+            btnAgregarEnvioAlLote.Text = "Agregar al lote";
+            btnAgregarEnvioAlLote.UseVisualStyleBackColor = false;
+            btnAgregarEnvioAlLote.Click += btnAgregarEnvioAlLote_Click;
+            // 
             // dgvPaquetes
             // 
             dgvPaquetes.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvPaquetes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvPaquetes.Location = new Point(11, 153);
+            dgvPaquetes.Location = new Point(9, 149);
             dgvPaquetes.Margin = new Padding(3, 4, 3, 4);
             dgvPaquetes.Name = "dgvPaquetes";
             dgvPaquetes.RowHeadersWidth = 51;
             dgvPaquetes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPaquetes.Size = new Size(560, 212);
+            dgvPaquetes.Size = new Size(496, 99);
             dgvPaquetes.TabIndex = 20;
+            // 
+            // lblRemito
+            // 
+            lblRemito.AutoSize = true;
+            lblRemito.Location = new Point(11, 33);
+            lblRemito.Name = "lblRemito";
+            lblRemito.Size = new Size(88, 20);
+            lblRemito.TabIndex = 4;
+            lblRemito.Text = "Ref/Remito:";
+            lblRemito.Visible = false;
+            // 
+            // txtRemito
+            // 
+            txtRemito.Location = new Point(120, 29);
+            txtRemito.Margin = new Padding(3, 4, 3, 4);
+            txtRemito.Name = "txtRemito";
+            txtRemito.Size = new Size(319, 27);
+            txtRemito.TabIndex = 2;
+            txtRemito.Visible = false;
+            // 
+            // lblTelefono
+            // 
+            lblTelefono.AutoSize = true;
+            lblTelefono.Location = new Point(234, 193);
+            lblTelefono.Name = "lblTelefono";
+            lblTelefono.Size = new Size(31, 20);
+            lblTelefono.TabIndex = 16;
+            lblTelefono.Text = "Tel:";
+            lblTelefono.Visible = false;
+            // 
+            // txtTelefono
+            // 
+            txtTelefono.Location = new Point(280, 189);
+            txtTelefono.Margin = new Padding(3, 4, 3, 4);
+            txtTelefono.Name = "txtTelefono";
+            txtTelefono.Size = new Size(125, 27);
+            txtTelefono.TabIndex = 11;
+            txtTelefono.Visible = false;
             // 
             // grpLote
             // 
-            grpLote.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             grpLote.Controls.Add(dgvLoteEnvios);
             grpLote.Controls.Add(btnQuitarEnvio);
             grpLote.Controls.Add(btnGenerar);
-            grpLote.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            grpLote.Location = new Point(17, 700);
-            grpLote.Margin = new Padding(3, 4, 3, 4);
+            grpLote.Dock = DockStyle.Fill;
+            grpLote.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold);
+            grpLote.Location = new Point(7, 516);
+            grpLote.Margin = new Padding(2, 3, 2, 3);
             grpLote.Name = "grpLote";
             grpLote.Padding = new Padding(3, 4, 3, 4);
-            grpLote.Size = new Size(1075, 374);
+            grpLote.Size = new Size(1117, 137);
             grpLote.TabIndex = 4;
             grpLote.TabStop = false;
             grpLote.Text = "2. Lote (Envíos listos para confirmar)";
@@ -650,24 +758,24 @@ namespace EnviosOcaApp.Views
             // 
             dgvLoteEnvios.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvLoteEnvios.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvLoteEnvios.Font = new Font("Segoe UI", 9F);
-            dgvLoteEnvios.Location = new Point(11, 26);
+            dgvLoteEnvios.Font = new Font("Segoe UI", 11.25F);
+            dgvLoteEnvios.Location = new Point(9, 21);
             dgvLoteEnvios.Margin = new Padding(3, 4, 3, 4);
             dgvLoteEnvios.Name = "dgvLoteEnvios";
             dgvLoteEnvios.ReadOnly = true;
             dgvLoteEnvios.RowHeadersWidth = 51;
             dgvLoteEnvios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvLoteEnvios.Size = new Size(911, 337);
+            dgvLoteEnvios.Size = new Size(958, 108);
             dgvLoteEnvios.TabIndex = 22;
             // 
             // btnQuitarEnvio
             // 
             btnQuitarEnvio.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnQuitarEnvio.Font = new Font("Segoe UI", 9F);
-            btnQuitarEnvio.Location = new Point(934, 26);
+            btnQuitarEnvio.Font = new Font("Segoe UI", 11.25F);
+            btnQuitarEnvio.Location = new Point(974, 21);
             btnQuitarEnvio.Margin = new Padding(3, 4, 3, 4);
             btnQuitarEnvio.Name = "btnQuitarEnvio";
-            btnQuitarEnvio.Size = new Size(131, 35);
+            btnQuitarEnvio.Size = new Size(130, 39);
             btnQuitarEnvio.TabIndex = 23;
             btnQuitarEnvio.Text = "Quitar sel.";
             btnQuitarEnvio.UseVisualStyleBackColor = true;
@@ -675,16 +783,16 @@ namespace EnviosOcaApp.Views
             // 
             // btnGenerar
             // 
-            btnGenerar.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnGenerar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnGenerar.BackColor = Color.FromArgb(167, 3, 85);
             btnGenerar.FlatAppearance.BorderSize = 0;
             btnGenerar.FlatStyle = FlatStyle.Flat;
-            btnGenerar.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Bold);
+            btnGenerar.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold);
             btnGenerar.ForeColor = Color.White;
-            btnGenerar.Location = new Point(863, 1084);
+            btnGenerar.Location = new Point(974, 68);
             btnGenerar.Margin = new Padding(3, 4, 3, 4);
             btnGenerar.Name = "btnGenerar";
-            btnGenerar.Size = new Size(229, 45);
+            btnGenerar.Size = new Size(130, 35);
             btnGenerar.TabIndex = 24;
             btnGenerar.Text = "Confirmar lote";
             btnGenerar.UseVisualStyleBackColor = false;
@@ -692,196 +800,57 @@ namespace EnviosOcaApp.Views
             // 
             // lblStatus
             // 
-            lblStatus.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblStatus.AutoSize = true;
-            lblStatus.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
+            lblStatus.Dock = DockStyle.Fill;
+            lblStatus.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold);
             lblStatus.ForeColor = Color.Green;
-            lblStatus.Location = new Point(23, 1129);
+            lblStatus.Location = new Point(3, 0);
             lblStatus.Name = "lblStatus";
-            lblStatus.Size = new Size(0, 18);
+            lblStatus.Size = new Size(1109, 31);
             lblStatus.TabIndex = 5;
-            // Base layout visible in the WinForms designer. Runtime layout keeps its responsive behavior.
-            //
-            // Final layout geometry
-            //
-            panelHeader.Location = new Point(2, 2);
-            panelHeader.Size = new Size(1128, 38);
-            lblTitulo.Location = new Point(14, 6);
-
-            tlpGlobal.Location = new Point(2, 42);
-            tlpGlobal.Margin = new Padding(0);
-            tlpGlobal.Size = new Size(1128, 132);
-            tlpGlobal.ColumnStyles.Clear();
-            tlpGlobal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35F));
-            tlpGlobal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65F));
-            grpOperador.Margin = new Padding(2);
-            grpOrigen.Margin = new Padding(2);
-
-            lblRemitente.Visible = false;
-            txtRemitente.Visible = false;
-            lblOficina.AutoSize = true;
-            lblOficina.Location = new Point(8, 47);
-            lblOficina.Text = "Oficina:";
-            cmbOficina.DropDownStyle = ComboBoxStyle.DropDown;
-            cmbOficina.Location = new Point(98, 44);
-            cmbOficina.Size = new Size(620, 28);
-            lblDireccionOficina.AutoSize = false;
-            lblDireccionOficina.Location = new Point(12, 72);
-            lblDireccionOficina.Size = new Size(704, 20);
-            lblRemitenteApellido.AutoSize = true;
-            lblRemitenteApellido.Location = new Point(8, 101);
-            lblRemitenteApellido.Text = "Ap. Remitente:";
-            txtRemitenteApellido.Location = new Point(98, 98);
-            txtRemitenteApellido.Size = new Size(250, 27);
-            lblRemitenteNombre.AutoSize = true;
-            lblRemitenteNombre.Location = new Point(356, 101);
-            lblRemitenteNombre.Text = "Nom. Remitente:";
-            txtRemitenteNombre.Location = new Point(465, 98);
-            txtRemitenteNombre.Size = new Size(253, 27);
-            lblEmpresa.Location = new Point(8, 22);
-            cmbEmpresa.Location = new Point(98, 19);
-            cmbEmpresa.Size = new Size(620, 28);
-            lblDireccionOficina.Location = new Point(12, 72);
-            lblDireccionOficina.Size = new Size(704, 20);
-            lblDireccionOficina.Text = "Dirección de la oficina seleccionada";
-
-            grpComposicion.Location = new Point(2, 176);
-            grpComposicion.Margin = new Padding(2);
-            grpComposicion.Size = new Size(1128, 326);
-            tlpComposicion.Dock = DockStyle.Fill;
-            tlpComposicion.Location = new Point(4, 22);
-            tlpComposicion.Margin = new Padding(0);
-            tlpComposicion.Size = new Size(1120, 300);
-            tlpComposicion.ColumnStyles.Clear();
-            tlpComposicion.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tlpComposicion.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            grpDestino.Padding = new Padding(6);
-            grpPaquete.Padding = new Padding(6);
-
-            lblRemito.Visible = false;
-            txtRemito.Visible = false;
-            lblTelefono.Visible = false;
-            txtTelefono.Visible = false;
-            lblDestinatario.Location = new Point(9, 25);
-            txtDestinatario.Location = new Point(112, 22);
-            txtDestinatario.Size = new Size(422, 27);
-            lblCalle.Location = new Point(9, 57);
-            txtCalle.Location = new Point(112, 54);
-            txtCalle.Size = new Size(422, 27);
-            lblNumero.Location = new Point(9, 89);
-            txtNumero.Location = new Point(112, 86);
-            txtNumero.Size = new Size(194, 27);
-            lblPiso.Location = new Point(312, 89);
-            txtPiso.Location = new Point(360, 86);
-            txtPiso.Size = new Size(174, 27);
-            lblLocalidad.Location = new Point(9, 121);
-            txtLocalidad.Location = new Point(112, 118);
-            txtLocalidad.Size = new Size(422, 27);
-            lblProvincia.Location = new Point(9, 153);
-            txtProvincia.Location = new Point(112, 150);
-            txtProvincia.Size = new Size(194, 27);
-            lblCP.Location = new Point(312, 153);
-            txtCP.Location = new Point(360, 150);
-            txtCP.Size = new Size(174, 27);
-            lblEmail.Location = new Point(9, 185);
-            txtEmail.Location = new Point(112, 182);
-            txtEmail.Size = new Size(422, 27);
-
-            lblTamanoPaquete.Location = new Point(9, 25);
-            lblTamanoPaquete.Text = "Tamaño Bulto:";
-            lblTamanoPaquete.AutoSize = true;
-            cmbTamanoPaquete.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbTamanoPaquete.Location = new Point(112, 22);
-            cmbTamanoPaquete.Size = new Size(422, 28);
-            lblDimensiones.Location = new Point(9, 57);
-            lblDimensiones.Text = "Dim. (cm):";
-            txtAlto.Location = new Point(112, 54);
-            txtAlto.Size = new Size(40, 27);
-            lblMultiplicadorDimensiones1.AutoSize = true;
-            lblMultiplicadorDimensiones1.Location = new Point(155, 57);
-            lblMultiplicadorDimensiones1.Text = "x";
-            txtAncho.Location = new Point(170, 54);
-            txtAncho.Size = new Size(40, 27);
-            lblMultiplicadorDimensiones2.AutoSize = true;
-            lblMultiplicadorDimensiones2.Location = new Point(213, 57);
-            lblMultiplicadorDimensiones2.Text = "x";
-            txtLargo.Location = new Point(228, 54);
-            txtLargo.Size = new Size(40, 27);
-            lblPeso.Location = new Point(276, 57);
-            txtPeso.Location = new Point(330, 54);
-            txtPeso.Size = new Size(204, 27);
-            lblValor.Location = new Point(9, 89);
-            txtValor.Location = new Point(112, 86);
-            txtValor.Size = new Size(150, 27);
-            lblObservaciones.Location = new Point(276, 89);
-            txtObservaciones.Location = new Point(371, 86);
-            txtObservaciones.Size = new Size(163, 27);
-            chkSeguro.AutoSize = true;
-            chkSeguro.Location = new Point(9, 119);
-            chkSeguro.Text = "Asegurar Envío";
-            btnAgregarPaquete.Location = new Point(209, 115);
-            btnAgregarPaquete.Size = new Size(92, 26);
-            btnQuitarPaquete.Location = new Point(307, 115);
-            btnQuitarPaquete.Size = new Size(86, 26);
-            btnAgregarEnvioAlLote.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnAgregarEnvioAlLote.Location = new Point(397, 115);
-            btnAgregarEnvioAlLote.Size = new Size(140, 26);
-            btnAgregarEnvioAlLote.Text = "Agregar al lote";
-            dgvPaquetes.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvPaquetes.Location = new Point(9, 149);
-            dgvPaquetes.Size = new Size(525, 144);
-
-            grpLote.Location = new Point(2, 504);
-            grpLote.Margin = new Padding(2);
-            grpLote.Size = new Size(1128, 148);
-            dgvLoteEnvios.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvLoteEnvios.Location = new Point(9, 22);
-            dgvLoteEnvios.Size = new Size(970, 114);
-            btnQuitarEnvio.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnQuitarEnvio.Location = new Point(986, 22);
-            btnQuitarEnvio.Size = new Size(130, 26);
-            btnGenerar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnGenerar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnGenerar.Location = new Point(986, 53);
-            btnGenerar.Size = new Size(130, 26);
-            lblStatus.Location = new Point(7, 657);
-            lblStatus.Size = new Size(1120, 30);
-            lblStatus.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-
+            // 
+            // panelAcciones
+            // 
+            panelAcciones.ColumnCount = 1;
+            panelAcciones.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 1115F));
+            panelAcciones.Controls.Add(lblStatus, 0, 0);
+            panelAcciones.Dock = DockStyle.Fill;
+            panelAcciones.Location = new Point(8, 659);
+            panelAcciones.Name = "panelAcciones";
+            panelAcciones.RowCount = 1;
+            panelAcciones.RowStyles.Add(new RowStyle(SizeType.Absolute, 31F));
+            panelAcciones.Size = new Size(1115, 30);
+            panelAcciones.TabIndex = 5;
+            // 
+            // layoutPrincipal
+            // 
             layoutPrincipal.ColumnCount = 1;
-            layoutPrincipal.RowCount = 5;
             layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
-            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 132F));
-            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
-            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
-            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 34F));
             layoutPrincipal.Controls.Add(panelHeader, 0, 0);
             layoutPrincipal.Controls.Add(tlpGlobal, 0, 1);
             layoutPrincipal.Controls.Add(grpComposicion, 0, 2);
             layoutPrincipal.Controls.Add(grpLote, 0, 3);
-            panelAcciones.ColumnCount = 1;
-            panelAcciones.RowCount = 1;
-            panelAcciones.Dock = DockStyle.Fill;
-            panelAcciones.Controls.Add(lblStatus, 0, 0);
             layoutPrincipal.Controls.Add(panelAcciones, 0, 4);
-            layoutPrincipal.Padding = new Padding(5);
-            layoutPrincipal.Margin = new Padding(0);
             layoutPrincipal.Dock = DockStyle.Fill;
-            panelHeader.Dock = DockStyle.Fill;
-            tlpGlobal.Dock = DockStyle.Fill;
-            grpComposicion.Dock = DockStyle.Fill;
-            grpLote.Dock = DockStyle.Fill;
-            lblStatus.Dock = DockStyle.Fill;
-
+            layoutPrincipal.Location = new Point(0, 0);
+            layoutPrincipal.Margin = new Padding(0);
+            layoutPrincipal.Name = "layoutPrincipal";
+            layoutPrincipal.Padding = new Padding(5, 5, 5, 5);
+            layoutPrincipal.RowCount = 5;
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 43F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 132F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
+            layoutPrincipal.Size = new Size(1131, 697);
+            layoutPrincipal.TabIndex = 0;
             // 
             // FrmGeneracionEnvio
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            AutoScroll = false;
             BackColor = Color.White;
-            ClientSize = new Size(1132, 697);
+            ClientSize = new Size(1131, 697);
             Controls.Add(layoutPrincipal);
             FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(3, 4, 3, 4);
@@ -904,8 +873,10 @@ namespace EnviosOcaApp.Views
             ((System.ComponentModel.ISupportInitialize)dgvPaquetes).EndInit();
             grpLote.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvLoteEnvios).EndInit();
+            panelAcciones.ResumeLayout(false);
+            panelAcciones.PerformLayout();
+            layoutPrincipal.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         private System.Windows.Forms.Panel panelHeader;
