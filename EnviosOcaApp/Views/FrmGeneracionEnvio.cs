@@ -1,4 +1,6 @@
 using EnviosOcaApp.Models;
+using EnviosOcaApp.Utils;
+using EnviosOcaApp.Validators;
 using System.ComponentModel;
 
 namespace EnviosOcaApp.Views
@@ -8,34 +10,22 @@ namespace EnviosOcaApp.Views
         private BindingList<PaqueteOca> listaPaquetesActual;
         private BindingList<EnvioOca> listaLoteEnvios;
         private TableLayoutPanel? _tlpOrigen;
-        private Label lblRemitenteApellido = new Label { Text = "Ap. Remitente:", AutoSize = true };
-        private TextBox txtRemitenteApellido = new TextBox();
-        private Label lblRemitenteNombre = new Label { Text = "Nom. Remitente:", AutoSize = true };
-        private TextBox txtRemitenteNombre = new TextBox();
         private OficinaSucursal? _oficinaSeleccionada;
         private DireccionOrigenManual? _direccionManual;
 
-        private Label lblOficina = new Label
-        {
-            Text = "Oficina:",
-            AutoSize = true
-        };
-
-        private ComboBox cmbOficina = new ComboBox
-        {
-            DropDownStyle = ComboBoxStyle.DropDownList
-        };
-
-        private Label lblDireccionOficina = new Label
-        {
-            AutoSize = true
-        };
-
         private List<OficinaSucursal> _oficinas = new();
+        private List<OficinaSucursal> _opcionesOficina = new();
+        private bool _actualizandoFiltroOficinas;
+        private readonly System.Windows.Forms.Timer _oficinaFiltroTimer = new()
+        {
+            Interval = 180
+        };
 
         public FrmGeneracionEnvio()
         {
             InitializeComponent();
+            _oficinaFiltroTimer.Tick += OficinaFiltroTimer_Tick;
+            Disposed += (_, _) => _oficinaFiltroTimer.Dispose();
             listaPaquetesActual = new BindingList<PaqueteOca>();
             listaLoteEnvios = new BindingList<EnvioOca>();
             OrganizarLayoutResponsivo();
@@ -43,68 +33,67 @@ namespace EnviosOcaApp.Views
 
         private void OrganizarLayoutResponsivo()
         {
-            // Layout de Datos Globales manejado ahora en ConfigurarLayoutDatosGlobales()
             var tlpGlobal = (TableLayoutPanel)this.Controls.Find("tlpGlobal", true)[0];
+            tlpGlobal.Dock = DockStyle.Fill;
+            tlpGlobal.Margin = new Padding(0);
 
-            // 1. Recreamos el layout de Destino con una TableLayoutPanel de 6 columnas (4 filas)
             var tlpDestino = new TableLayoutPanel
             {
                 Dock = DockStyle.Top,
-                ColumnCount = 6,
-                RowCount = 4,
-                AutoSize = true,
-                Padding = new Padding(5)
+                ColumnCount = 4,
+                RowCount = 6,
+                AutoSize = false,
+                Height = 200,
+                Padding = new Padding(3),
+                Margin = new Padding(0)
             };
             tlpDestino.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            tlpDestino.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
+            tlpDestino.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tlpDestino.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            tlpDestino.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
-            tlpDestino.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            tlpDestino.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
+            tlpDestino.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 6; i++)
             {
-                tlpDestino.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+                tlpDestino.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
             }
 
-            // Ocultar campos de Remito y Teléfono en la interfaz
             lblRemito.Visible = false;
             txtRemito.Visible = false;
             lblTelefono.Visible = false;
             txtTelefono.Visible = false;
 
-            // Fila 0: Destinatario
             tlpDestino.Controls.Add(lblDestinatario, 0, 0);
             tlpDestino.Controls.Add(txtDestinatario, 1, 0);
-            tlpDestino.SetColumnSpan(txtDestinatario, 5);
+            tlpDestino.SetColumnSpan(txtDestinatario, 3);
             txtDestinatario.Dock = DockStyle.Fill;
 
-            // Fila 1: Calle, Número, Piso
             tlpDestino.Controls.Add(lblCalle, 0, 1);
             tlpDestino.Controls.Add(txtCalle, 1, 1);
             txtCalle.Dock = DockStyle.Fill;
-            tlpDestino.Controls.Add(lblNumero, 2, 1);
-            tlpDestino.Controls.Add(txtNumero, 3, 1);
+            tlpDestino.SetColumnSpan(txtCalle, 3);
+
+            tlpDestino.Controls.Add(lblNumero, 0, 2);
+            tlpDestino.Controls.Add(txtNumero, 1, 2);
             txtNumero.Dock = DockStyle.Fill;
-            tlpDestino.Controls.Add(lblPiso, 4, 1);
-            tlpDestino.Controls.Add(txtPiso, 5, 1);
+            tlpDestino.Controls.Add(lblPiso, 2, 2);
+            tlpDestino.Controls.Add(txtPiso, 3, 2);
             txtPiso.Dock = DockStyle.Fill;
 
-            // Fila 2: Localidad, Provincia, CP
-            tlpDestino.Controls.Add(lblLocalidad, 0, 2);
-            tlpDestino.Controls.Add(txtLocalidad, 1, 2);
+            tlpDestino.Controls.Add(lblLocalidad, 0, 3);
+            tlpDestino.Controls.Add(txtLocalidad, 1, 3);
             txtLocalidad.Dock = DockStyle.Fill;
-            tlpDestino.Controls.Add(lblProvincia, 2, 2);
-            tlpDestino.Controls.Add(txtProvincia, 3, 2);
+            tlpDestino.SetColumnSpan(txtLocalidad, 3);
+
+            tlpDestino.Controls.Add(lblProvincia, 0, 4);
+            tlpDestino.Controls.Add(txtProvincia, 1, 4);
             txtProvincia.Dock = DockStyle.Fill;
-            tlpDestino.Controls.Add(lblCP, 4, 2);
-            tlpDestino.Controls.Add(txtCP, 5, 2);
+            tlpDestino.Controls.Add(lblCP, 2, 4);
+            tlpDestino.Controls.Add(txtCP, 3, 4);
             txtCP.Dock = DockStyle.Fill;
 
-            // Fila 3: Contacto (Email)
-            tlpDestino.Controls.Add(lblEmail, 0, 3);
-            tlpDestino.Controls.Add(txtEmail, 1, 3);
-            tlpDestino.SetColumnSpan(txtEmail, 5);
+            tlpDestino.Controls.Add(lblEmail, 0, 5);
+            tlpDestino.Controls.Add(txtEmail, 1, 5);
+            tlpDestino.SetColumnSpan(txtEmail, 3);
             txtEmail.Dock = DockStyle.Fill;
 
             foreach (Control c in tlpDestino.Controls)
@@ -117,18 +106,20 @@ namespace EnviosOcaApp.Views
             }
 
             var grpComposicion = (GroupBox)this.Controls.Find("grpComposicion", true)[0];
+            grpComposicion.Dock = DockStyle.Fill;
+            grpComposicion.Margin = new Padding(2);
             var grpDestino = (GroupBox)grpComposicion.Controls.Find("grpDestino", true)[0];
             grpDestino.Controls.Clear();
             grpDestino.Controls.Add(tlpDestino);
 
-            // 2. Recreamos el layout de Paquete
             var tlpPaquete = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 4,
                 RowCount = 5,
                 AutoSize = false,
-                Padding = new Padding(4)
+                Padding = new Padding(3),
+                Margin = new Padding(0)
             };
             tlpPaquete.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             tlpPaquete.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50f));
@@ -141,7 +132,6 @@ namespace EnviosOcaApp.Views
             tlpPaquete.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             tlpPaquete.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
 
-            // Fila 0: Selector de Tamaño de Bulto
             lblTamanoPaquete = new Label { Text = "Tamaño Bulto:", AutoSize = true };
             cmbTamanoPaquete = new ComboBox
             {
@@ -152,7 +142,6 @@ namespace EnviosOcaApp.Views
             tlpPaquete.Controls.Add(cmbTamanoPaquete, 1, 0);
             tlpPaquete.SetColumnSpan(cmbTamanoPaquete, 3);
 
-            // Fila 1: Dimensiones y Peso
             var flpDim = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Margin = new Padding(0), WrapContents = false };
             txtAlto.Width = 40; txtAncho.Width = 40; txtLargo.Width = 40;
             flpDim.Controls.Add(txtAlto);
@@ -160,7 +149,7 @@ namespace EnviosOcaApp.Views
             flpDim.Controls.Add(txtAncho);
             flpDim.Controls.Add(new Label { Text = "x", AutoSize = true, TextAlign = ContentAlignment.MiddleCenter });
             flpDim.Controls.Add(txtLargo);
-            lblDimensiones.Text = "Dimensiones (cm):";
+            lblDimensiones.Text = "Dim. (cm):";
 
             tlpPaquete.Controls.Add(lblDimensiones, 0, 1);
             tlpPaquete.Controls.Add(flpDim, 1, 1);
@@ -169,7 +158,6 @@ namespace EnviosOcaApp.Views
             tlpPaquete.Controls.Add(txtPeso, 3, 1);
             txtPeso.Dock = DockStyle.Fill;
 
-            // Fila 2: Valor y Observaciones
             tlpPaquete.Controls.Add(lblValor, 0, 2);
             tlpPaquete.Controls.Add(txtValor, 1, 2);
             txtValor.Dock = DockStyle.Fill;
@@ -178,14 +166,12 @@ namespace EnviosOcaApp.Views
             tlpPaquete.Controls.Add(txtObservaciones, 3, 2);
             txtObservaciones.Dock = DockStyle.Fill;
 
-            // Fila 3: Seguro y Botones
             var flpOpciones = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, WrapContents = false };
             chkPrioritario = new CheckBox { Text = "Envío Prioritario", AutoSize = true, Checked = true, Visible = false };
             chkSeguro = new CheckBox { Text = "Asegurar Envío", AutoSize = true, Checked = false };
             // El check prioritario no se muestra (default = TRUE && visible = false)
             flpOpciones.Controls.Add(chkSeguro);
             tlpPaquete.Controls.Add(flpOpciones, 0, 3);
-            tlpPaquete.SetColumnSpan(flpOpciones, 2);
 
             txtValor.TextChanged -= TxtValor_TextChanged;
             txtValor.TextChanged += TxtValor_TextChanged;
@@ -193,13 +179,17 @@ namespace EnviosOcaApp.Views
             chkSeguro.CheckedChanged += ChkSeguro_CheckedChanged;
 
             var flpBotones = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, FlowDirection = FlowDirection.RightToLeft, WrapContents = false };
+            btnAgregarEnvioAlLote.Text = "Agregar al lote";
+            btnAgregarEnvioAlLote.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            btnAgregarEnvioAlLote.Size = new Size(140, 26);
+            btnAgregarEnvioAlLote.Margin = new Padding(2);
+            flpBotones.Controls.Add(btnAgregarEnvioAlLote);
             flpBotones.Controls.Add(btnQuitarPaquete);
             flpBotones.Controls.Add(btnAgregarPaquete);
-            tlpPaquete.Controls.Add(flpBotones, 2, 3);
-            tlpPaquete.SetColumnSpan(flpBotones, 2);
+            tlpPaquete.Controls.Add(flpBotones, 1, 3);
+            tlpPaquete.SetColumnSpan(flpBotones, 3);
 
-            // Fila 4: Grilla
-            dgvPaquetes.MinimumSize = new Size(0, 100);
+            dgvPaquetes.MinimumSize = new Size(0, 60);
             tlpPaquete.Controls.Add(dgvPaquetes, 0, 4);
             tlpPaquete.SetColumnSpan(dgvPaquetes, 4);
             dgvPaquetes.Dock = DockStyle.Fill;
@@ -216,17 +206,107 @@ namespace EnviosOcaApp.Views
             }
 
             var grpPaquete = (GroupBox)grpComposicion.Controls.Find("grpPaquete", true)[0];
+            grpPaquete.Dock = DockStyle.Fill;
             grpPaquete.Controls.Clear();
             grpPaquete.Controls.Add(tlpPaquete);
 
             cmbTamanoPaquete.SelectedIndexChanged -= CmbTamanoPaquete_SelectedIndexChanged;
             cmbTamanoPaquete.SelectedIndexChanged += CmbTamanoPaquete_SelectedIndexChanged;
+
+            tlpComposicion.Dock = DockStyle.Fill;
+            tlpComposicion.Margin = new Padding(0);
+            tlpComposicion.ColumnStyles.Clear();
+            tlpComposicion.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tlpComposicion.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            grpComposicion.Controls.Clear();
+            grpComposicion.Controls.Add(tlpComposicion);
+
+            var lotLayout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 1,
+                Padding = new Padding(4),
+                Margin = new Padding(0)
+            };
+            lotLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            lotLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 144F));
+            lotLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            grpLote.Controls.Clear();
+            dgvLoteEnvios.Dock = DockStyle.Fill;
+            dgvLoteEnvios.Margin = new Padding(2);
+            lotLayout.Controls.Add(dgvLoteEnvios, 0, 0);
+
+            var accionesLote = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                ColumnCount = 1,
+                RowCount = 2,
+                Margin = new Padding(0),
+                Padding = new Padding(0)
+            };
+            accionesLote.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            accionesLote.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
+            accionesLote.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
+            btnQuitarEnvio.Dock = DockStyle.Fill;
+            btnQuitarEnvio.Margin = new Padding(2);
+            accionesLote.Controls.Add(btnQuitarEnvio, 0, 0);
+            btnGenerar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btnGenerar.Dock = DockStyle.None;
+            btnGenerar.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnGenerar.Size = new Size(140, 26);
+            btnGenerar.Margin = new Padding(2);
+            accionesLote.Controls.Add(btnGenerar, 0, 1);
+            lotLayout.Controls.Add(accionesLote, 1, 0);
+            grpLote.Dock = DockStyle.Fill;
+            grpLote.Margin = new Padding(2);
+            grpLote.Controls.Add(lotLayout);
+
+            var panelAcciones = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 1,
+                RowCount = 1,
+                Margin = new Padding(0),
+                Padding = new Padding(2, 0, 2, 0)
+            };
+            panelAcciones.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            panelAcciones.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            lblStatus.Dock = DockStyle.Fill;
+            lblStatus.AutoEllipsis = true;
+            lblStatus.TextAlign = ContentAlignment.MiddleLeft;
+            panelAcciones.Controls.Add(lblStatus, 0, 0);
+
+            var layoutPrincipal = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 1,
+                RowCount = 5,
+                Padding = new Padding(5),
+                Margin = new Padding(0)
+            };
+            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 132F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 34F));
+
+            panelHeader.Dock = DockStyle.Fill;
+            panelHeader.Margin = new Padding(2);
+            lblTitulo.Location = new Point(14, 6);
+            layoutPrincipal.Controls.Add(panelHeader, 0, 0);
+            layoutPrincipal.Controls.Add(tlpGlobal, 0, 1);
+            layoutPrincipal.Controls.Add(grpComposicion, 0, 2);
+            layoutPrincipal.Controls.Add(grpLote, 0, 3);
+            layoutPrincipal.Controls.Add(panelAcciones, 0, 4);
+
+            AutoScroll = false;
+            Controls.Clear();
+            Controls.Add(layoutPrincipal);
         }
 
         private CheckBox chkPrioritario = null!;
-        private CheckBox chkSeguro = null!;
-        private Label lblTamanoPaquete = null!;
-        private ComboBox cmbTamanoPaquete = null!;
         private bool _actualizandoSeguro = false;
 
         private void CargarOficinas()
@@ -269,17 +349,27 @@ namespace EnviosOcaApp.Views
                         .Where(x => x.Activa)
                         );
 
-                cmbOficina.SelectedIndexChanged -=
-                    CmbOficina_SelectedIndexChanged;
+                _opcionesOficina = oficinasCombo;
+
+                cmbOficina.SelectionChangeCommitted -=
+                    CmbOficina_SelectionChangeCommitted;
+                cmbOficina.TextUpdate -=
+                    CmbOficina_TextUpdate;
+                cmbOficina.DropDown -=
+                    CmbOficina_DropDown;
 
                 cmbOficina.DataSource =
-                    oficinasCombo;
+                    _opcionesOficina;
 
                 cmbOficina.DisplayMember =
                     nameof(OficinaSucursal.DisplayCombo);
 
-                cmbOficina.SelectedIndexChanged +=
-                    CmbOficina_SelectedIndexChanged;
+                cmbOficina.SelectionChangeCommitted +=
+                    CmbOficina_SelectionChangeCommitted;
+                cmbOficina.TextUpdate +=
+                    CmbOficina_TextUpdate;
+                cmbOficina.DropDown +=
+                    CmbOficina_DropDown;
 
                 _oficinaSeleccionada = null;
                 _direccionManual = null;
@@ -293,15 +383,19 @@ namespace EnviosOcaApp.Views
             }
         }
 
-        private void CmbOficina_SelectedIndexChanged(
+        private void CmbOficina_SelectionChangeCommitted(
             object? sender,
             EventArgs e)
         {
+            _oficinaFiltroTimer.Stop();
+
             if (cmbOficina.SelectedItem
                 is not OficinaSucursal oficina)
             {
                 return;
             }
+
+            RestaurarListaOficinas(oficina);
 
             // ==========================
             // PLACEHOLDER
@@ -364,6 +458,102 @@ namespace EnviosOcaApp.Views
             lblDireccionOficina.Text =
                 oficina.DireccionCompleta;
         }
+
+        private void CmbOficina_TextUpdate(
+            object? sender,
+            EventArgs e)
+        {
+            if (_actualizandoFiltroOficinas)
+                return;
+
+            _oficinaSeleccionada = null;
+            _direccionManual = null;
+            MostrarOrigenNoSeleccionado();
+
+            _oficinaFiltroTimer.Stop();
+            _oficinaFiltroTimer.Start();
+        }
+
+        private void OficinaFiltroTimer_Tick(object? sender, EventArgs e)
+        {
+            _oficinaFiltroTimer.Stop();
+
+            string texto = cmbOficina.Text;
+            int inicioSeleccion = cmbOficina.SelectionStart;
+            int largoSeleccion = cmbOficina.SelectionLength;
+            var opcionesFiltradas = string.IsNullOrWhiteSpace(texto)
+                ? _opcionesOficina
+                : _opcionesOficina
+                    .Where(oficina => OficinaSucursalFilter.Matches(oficina, texto))
+                    .ToList();
+
+            _oficinaSeleccionada = null;
+            _direccionManual = null;
+            MostrarOrigenNoSeleccionado();
+
+            _actualizandoFiltroOficinas = true;
+            try
+            {
+                cmbOficina.BeginUpdate();
+                try
+                {
+                    cmbOficina.DataSource = opcionesFiltradas;
+                    cmbOficina.DisplayMember =
+                        nameof(OficinaSucursal.DisplayCombo);
+                    cmbOficina.SelectedIndex = -1;
+                    cmbOficina.Text = texto;
+                    cmbOficina.SelectionStart =
+                        Math.Min(inicioSeleccion, cmbOficina.Text.Length);
+                    cmbOficina.SelectionLength =
+                        Math.Min(
+                            largoSeleccion,
+                            cmbOficina.Text.Length - cmbOficina.SelectionStart);
+                }
+                finally
+                {
+                    cmbOficina.EndUpdate();
+                }
+            }
+            finally
+            {
+                _actualizandoFiltroOficinas = false;
+            }
+
+            cmbOficina.DroppedDown = true;
+        }
+
+        private void CmbOficina_DropDown(object? sender, EventArgs e)
+        {
+            if (_actualizandoFiltroOficinas
+                || _oficinaFiltroTimer.Enabled
+                || cmbOficina.SelectedItem is not OficinaSucursal oficina
+                || ReferenceEquals(cmbOficina.DataSource, _opcionesOficina))
+            {
+                return;
+            }
+
+            RestaurarListaOficinas(oficina);
+        }
+
+        private void RestaurarListaOficinas(OficinaSucursal oficina)
+        {
+            if (ReferenceEquals(cmbOficina.DataSource, _opcionesOficina))
+                return;
+
+            _actualizandoFiltroOficinas = true;
+            try
+            {
+                cmbOficina.DataSource = _opcionesOficina;
+                cmbOficina.DisplayMember =
+                    nameof(OficinaSucursal.DisplayCombo);
+                cmbOficina.SelectedItem = oficina;
+            }
+            finally
+            {
+                _actualizandoFiltroOficinas = false;
+            }
+        }
+
         private void CmbTamanoPaquete_SelectedIndexChanged(object? sender, EventArgs e)
         {
             if (cmbTamanoPaquete.SelectedItem is TipoBultoOca tipo)
@@ -479,8 +669,9 @@ namespace EnviosOcaApp.Views
             lblUsuario.Margin = new Padding(10, 3, 3, 3);
 
             txtUsuario.Dock = DockStyle.None;
-            txtUsuario.Anchor = AnchorStyles.Left | AnchorStyles.Right; // Centra verticalmente y expande a los lados
-            txtUsuario.Margin = new Padding(3, 3, 15, 3);
+            txtUsuario.Anchor = AnchorStyles.Left;
+            txtUsuario.Width = 230;
+            txtUsuario.Margin = new Padding(3, 3, 8, 3);
 
             tlpOperador.Controls.Add(lblUsuario, 0, 0);
             tlpOperador.Controls.Add(txtUsuario, 1, 0);
@@ -493,74 +684,79 @@ namespace EnviosOcaApp.Views
                 Dock = DockStyle.Fill,
                 ColumnCount = 4,
                 RowCount = 4,
-                Padding = new Padding(0, 4, 0, 0)
+                Padding = new Padding(2, 1, 2, 1),
+                Margin = new Padding(0)
             };
             _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.Percent, 24F));
+            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.Percent, 24F));
+            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.Percent, 22F));
+            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
 
             lblEmpresa.AutoSize = true;
             lblEmpresa.Anchor = AnchorStyles.Left;
-            lblEmpresa.Margin = new Padding(8, 2, 3, 2);
+            lblEmpresa.Margin = new Padding(5, 1, 3, 1);
 
-            cmbEmpresa.Dock = DockStyle.None;
-            cmbEmpresa.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            cmbEmpresa.Margin = new Padding(3, 2, 10, 2);
+            cmbEmpresa.Dock = DockStyle.Fill;
+            cmbEmpresa.Margin = new Padding(2, 1, 4, 1);
 
             lblRemitenteApellido.AutoSize = true;
             lblRemitenteApellido.Anchor = AnchorStyles.Left;
-            lblRemitenteApellido.Margin = new Padding(8, 2, 3, 2);
+            lblRemitenteApellido.Margin = new Padding(5, 1, 2, 1);
             lblRemitenteApellido.Text = "Ap. Remitente:";
 
             txtRemitenteApellido.Dock = DockStyle.None;
             txtRemitenteApellido.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            txtRemitenteApellido.Margin = new Padding(3, 2, 10, 2);
+            txtRemitenteApellido.Margin = new Padding(2, 1, 4, 1);
 
             lblRemitenteNombre.AutoSize = true;
             lblRemitenteNombre.Anchor = AnchorStyles.Left;
-            lblRemitenteNombre.Margin = new Padding(8, 2, 3, 2);
+            lblRemitenteNombre.Margin = new Padding(5, 1, 2, 1);
             lblRemitenteNombre.Text = "Nom. Remitente:";
 
             txtRemitenteNombre.Dock = DockStyle.None;
             txtRemitenteNombre.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            txtRemitenteNombre.Margin = new Padding(3, 2, 10, 2);
+            txtRemitenteNombre.Margin = new Padding(2, 1, 4, 1);
 
             _tlpOrigen.Controls.Add(lblEmpresa, 0, 0);
             _tlpOrigen.Controls.Add(cmbEmpresa, 1, 0);
             _tlpOrigen.SetColumnSpan(cmbEmpresa, 3);
-
             lblOficina.Anchor = AnchorStyles.Left;
-
-            cmbOficina.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-
-            lblDireccionOficina.AutoSize = false;
-            lblDireccionOficina.Height = 60;
-            lblDireccionOficina.Dock = DockStyle.Fill;
-            lblDireccionOficina.TextAlign = ContentAlignment.MiddleLeft;
-            lblDireccionOficina.Margin = new Padding(8, 4, 3, 4);
-
-
+            lblOficina.Margin = new Padding(4, 1, 2, 1);
+            cmbOficina.Dock = DockStyle.Fill;
+            cmbOficina.Margin = new Padding(2, 1, 4, 1);
             _tlpOrigen.Controls.Add(lblOficina, 0, 1);
             _tlpOrigen.Controls.Add(cmbOficina, 1, 1);
             _tlpOrigen.SetColumnSpan(cmbOficina, 3);
 
+            lblDireccionOficina.AutoSize = false;
+            lblDireccionOficina.Height = 22;
+            lblDireccionOficina.Dock = DockStyle.Fill;
+            lblDireccionOficina.TextAlign = ContentAlignment.MiddleLeft;
+            lblDireccionOficina.AutoEllipsis = true;
+            lblDireccionOficina.Margin = new Padding(5, 1, 4, 1);
             _tlpOrigen.Controls.Add(lblDireccionOficina, 0, 2);
             _tlpOrigen.SetColumnSpan(lblDireccionOficina, 4);
 
             _tlpOrigen.Controls.Add(lblRemitenteApellido, 0, 3);
-
             _tlpOrigen.Controls.Add(txtRemitenteApellido, 1, 3);
-
             _tlpOrigen.Controls.Add(lblRemitenteNombre, 2, 3);
-
             _tlpOrigen.Controls.Add(txtRemitenteNombre, 3, 3);
 
             grpOrigen.Controls.Add(_tlpOrigen);
+            cmbEmpresa.SizeChanged += (_, _) =>
+            {
+                if (cmbEmpresa.Width > 0)
+                    cmbEmpresa.DropDownWidth = cmbEmpresa.Width;
+            };
+            cmbOficina.SizeChanged += (_, _) =>
+            {
+                if (cmbOficina.Width > 0)
+                    cmbOficina.DropDownWidth = cmbOficina.Width;
+            };
 
         }
 
@@ -903,26 +1099,53 @@ namespace EnviosOcaApp.Views
                 listaPaquetesActual.Remove(pq);
             }
         }
+
+        private bool ValidarRemitenteYOrigen()
+        {
+            var errores = new List<string>();
+
+            if (cmbEmpresa.SelectedItem is EmpresaOca empresa)
+            {
+                errores.AddRange(
+                    EnvioOcaValidator.ValidarRemitente(
+                        empresa,
+                        txtRemitenteApellido.Text,
+                        txtRemitenteNombre.Text));
+            }
+            else
+            {
+                errores.Add("Debe seleccionar una empresa remitente.");
+            }
+
+            if (_oficinaSeleccionada == null && _direccionManual == null)
+            {
+                errores.Add("Debe seleccionar una oficina de origen o ingresar una dirección manual.");
+            }
+            else
+            {
+                errores.AddRange(
+                    EnvioOcaValidator.ValidarOrigen(
+                        ObtenerOrigenSeleccionado()));
+            }
+
+            if (errores.Count == 0)
+                return true;
+
+            MessageBox.Show(
+                "Revise los datos del remitente y del origen:\n\n- " + string.Join("\n- ", errores),
+                "Datos incompletos",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+
+            return false;
+        }
+
         private void btnAgregarEnvioAlLote_Click(object sender, EventArgs e)
 
         {
 
-            if (_oficinaSeleccionada == null && _direccionManual == null)
-            {
-                MessageBox.Show(
-                    "Debe seleccionar una oficina o ingresar una dirección manual.",
-                    "Dato requerido",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-
+            if (!ValidarRemitenteYOrigen())
                 return;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtDestinatario.Text) || listaPaquetesActual.Count == 0)
-            {
-                MessageBox.Show("Debe indicar al menos un destinatario y un bulto.", "Datos Faltantes", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
 
             // Remito obligatorio asignado automáticamente (usuario de Windows)
             string remito = txtRemito.Text.Trim();
@@ -946,17 +1169,28 @@ namespace EnviosOcaApp.Views
             {
                 IdOperativa = idOperativa,
                 Remito = remito,
-                NombreDestinatario = txtDestinatario.Text,
-                Calle = txtCalle.Text,
-                Numero = txtNumero.Text,
-                Piso = txtPiso.Text,
-                Localidad = txtLocalidad.Text,
-                Provincia = txtProvincia.Text,
-                CP = txtCP.Text,
-                Email = txtEmail.Text,
-                Telefono = txtTelefono.Text,
+                NombreDestinatario = txtDestinatario.Text.Trim(),
+                Calle = txtCalle.Text.Trim(),
+                Numero = txtNumero.Text.Trim(),
+                Piso = txtPiso.Text.Trim(),
+                Localidad = txtLocalidad.Text.Trim(),
+                Provincia = txtProvincia.Text.Trim(),
+                CP = txtCP.Text.Trim(),
+                Email = txtEmail.Text.Trim(),
+                Telefono = txtTelefono.Text.Trim(),
                 Paquetes = listaPaquetesActual.ToList()
             };
+
+            List<string> erroresEnvio = EnvioOcaValidator.ValidarEnvio(envio);
+            if (erroresEnvio.Count > 0)
+            {
+                MessageBox.Show(
+                    "Revise los datos obligatorios del destinatario y del envío:\n\n- " + string.Join("\n- ", erroresEnvio),
+                    "Datos incompletos",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
 
             listaLoteEnvios.Add(envio);
 
@@ -1021,6 +1255,9 @@ namespace EnviosOcaApp.Views
                 return;
             }
 
+            if (!ValidarRemitenteYOrigen())
+                return;
+
             if (cmbEmpresa.SelectedItem is not EmpresaOca empresaSeleccionada)
             {
                 MessageBox.Show(
@@ -1029,6 +1266,23 @@ namespace EnviosOcaApp.Views
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
 
+                return;
+            }
+
+            var erroresLote = new List<string>();
+            for (int i = 0; i < listaLoteEnvios.Count; i++)
+            {
+                List<string> erroresEnvio = EnvioOcaValidator.ValidarEnvio(listaLoteEnvios[i]);
+                erroresLote.AddRange(erroresEnvio.Select(error => $"Envío {i + 1}: {error}"));
+            }
+
+            if (erroresLote.Count > 0)
+            {
+                MessageBox.Show(
+                    "No se puede confirmar el lote. Revise los siguientes datos:\n\n- " + string.Join("\n- ", erroresLote),
+                    "Lote incompleto",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 

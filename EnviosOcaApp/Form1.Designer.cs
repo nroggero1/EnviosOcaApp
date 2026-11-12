@@ -178,7 +178,7 @@ namespace EnviosOcaApp
             Controls.Add(pnlContenedor);
             Controls.Add(pnlMenuLateral);
             Margin = new Padding(3, 4, 3, 4);
-            MinimumSize = new Size(912, 651);
+            MinimumSize = new Size(760, 500);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Menú Principal - Envios OCA";

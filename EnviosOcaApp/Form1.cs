@@ -10,7 +10,36 @@ namespace EnviosOcaApp
         public Form1()
         {
             InitializeComponent();
+            Resize += Form1_Resize;
+            AjustarMenuLateral();
             this.FormClosing += Form1_FormClosing;
+        }
+
+        private void Form1_Resize(object? sender, EventArgs e)
+        {
+            AjustarMenuLateral();
+        }
+
+        private void AjustarMenuLateral()
+        {
+            if (pnlMenuLateral == null || pictureBoxLogo == null)
+                return;
+
+            pnlMenuLateral.Width = Math.Min(220, Math.Max(185, ClientSize.Width / 6));
+            pictureBoxLogo.Width = pnlMenuLateral.ClientSize.Width;
+
+            int buttonHeight = (int)Math.Round(32F * DeviceDpi / 96F);
+            foreach (Button button in new[]
+            {
+                btnGenerarEnvios,
+                btnImprimirEtiquetas,
+                btnAuditoria,
+                btnGestionUsuarios,
+                btnGestionOficinas
+            })
+            {
+                button.Height = buttonHeight;
+            }
         }
 
         private void Form1_FormClosing(object? sender, FormClosingEventArgs e)

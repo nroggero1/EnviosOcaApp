@@ -13,6 +13,104 @@ namespace EnviosOcaApp.Views
         public FrmGestionOficinas()
         {
             InitializeComponent();
+            OrganizarLayoutResponsivo();
+        }
+
+        private void OrganizarLayoutResponsivo()
+        {
+            var layoutDatos = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 4,
+                RowCount = 5,
+                Padding = new Padding(4),
+                Margin = new Padding(0)
+            };
+            layoutDatos.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            layoutDatos.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            layoutDatos.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            layoutDatos.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            for (int i = 0; i < 5; i++)
+                layoutDatos.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+
+            Control[,] campos =
+            {
+                { lblCodigo, txtCodigo, lblNombre, txtNombre },
+                { lblCalle, txtCalle, lblNumero, txtNumero },
+                { lblPiso, txtPiso, lblLocalidad, txtLocalidad },
+                { lblProvincia, txtProvincia, lblCP, txtCP }
+            };
+
+            for (int row = 0; row < 4; row++)
+            {
+                for (int column = 0; column < 4; column++)
+                {
+                    Control control = campos[row, column];
+                    control.Margin = new Padding(3, 1, 3, 1);
+                    if (control is Label label)
+                    {
+                        label.Dock = DockStyle.Fill;
+                        label.TextAlign = ContentAlignment.MiddleLeft;
+                    }
+                    else
+                    {
+                        control.Dock = DockStyle.Fill;
+                    }
+                    layoutDatos.Controls.Add(control, column, row);
+                }
+            }
+
+            chkActiva.Margin = new Padding(3, 1, 3, 1);
+            chkActiva.Anchor = AnchorStyles.Left;
+            layoutDatos.Controls.Add(chkActiva, 0, 4);
+            layoutDatos.SetColumnSpan(chkActiva, 4);
+
+            grpDatos.Controls.Clear();
+            grpDatos.Dock = DockStyle.Fill;
+            grpDatos.Margin = new Padding(2);
+            grpDatos.Controls.Add(layoutDatos);
+
+            var acciones = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false,
+                Margin = new Padding(0),
+                Padding = new Padding(2)
+            };
+            foreach (Button boton in new[] { btnNuevo, btnGuardar, btnDesactivar })
+            {
+                boton.Margin = new Padding(2);
+                acciones.Controls.Add(boton);
+            }
+
+            var layoutPrincipal = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 1,
+                RowCount = 4,
+                Padding = new Padding(8),
+                Margin = new Padding(0)
+            };
+            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 188F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
+
+            panelHeader.Dock = DockStyle.Fill;
+            panelHeader.Margin = new Padding(2);
+            lblTitulo.Location = new Point(14, 6);
+            dgvOficinas.Dock = DockStyle.Fill;
+            dgvOficinas.Margin = new Padding(2);
+
+            layoutPrincipal.Controls.Add(panelHeader, 0, 0);
+            layoutPrincipal.Controls.Add(dgvOficinas, 0, 1);
+            layoutPrincipal.Controls.Add(grpDatos, 0, 2);
+            layoutPrincipal.Controls.Add(acciones, 0, 3);
+
+            Controls.Clear();
+            Controls.Add(layoutPrincipal);
         }
 
         private void FrmGestionOficinas_Load(object sender, EventArgs e)
