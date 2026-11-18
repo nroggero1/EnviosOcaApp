@@ -1281,9 +1281,26 @@ namespace EnviosOcaApp.Views
             // Envío prioritario siempre activo por defecto (default = TRUE && visible = false)
             chkPrioritario.Checked = true;
 
-            // Operativa: Prioritario con seguro (416557) o Prioritario sin seguro (283228)
             bool tieneSeguro = chkSeguro.Checked || listaPaquetesActual.Any(p => p.Valor > 0);
-            int idOperativa = tieneSeguro ? 416557 : 283228;
+            int idOperativa;
+            if (tieneSeguro)
+            {
+                idOperativa = 416557;
+            }
+            else if (!int.TryParse(
+                         empresaSeleccionada.Operativa?.Trim(),
+                         System.Globalization.NumberStyles.None,
+                         System.Globalization.CultureInfo.InvariantCulture,
+                         out idOperativa)
+                     || idOperativa <= 0)
+            {
+                MessageBox.Show(
+                    "La empresa seleccionada no tiene una operativa numérica válida configurada para envíos sin seguro.",
+                    "Operativa inválida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
 
             var envio = new EnvioOca
             {
