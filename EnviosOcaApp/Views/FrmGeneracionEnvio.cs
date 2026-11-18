@@ -347,8 +347,8 @@ namespace EnviosOcaApp.Views
                         .Deserialize<List<OficinaSucursal>>(json)
                     ?? new List<OficinaSucursal>();
 
-                cmbOficina.SelectionChangeCommitted -=
-                    CmbOficina_SelectionChangeCommitted;
+                cmbOficina.SelectedIndexChanged -=
+                    CmbOficina_SelectedIndexChanged;
                 cmbOficina.TextUpdate -=
                     CmbOficina_TextUpdate;
                 cmbOficina.DropDown -=
@@ -360,8 +360,8 @@ namespace EnviosOcaApp.Views
                 cmbOficina.DisplayMember =
                     nameof(OficinaSucursal.DisplayCombo);
 
-                cmbOficina.SelectionChangeCommitted +=
-                    CmbOficina_SelectionChangeCommitted;
+                cmbOficina.SelectedIndexChanged +=
+                    CmbOficina_SelectedIndexChanged;
                 cmbOficina.TextUpdate +=
                     CmbOficina_TextUpdate;
                 cmbOficina.DropDown +=
@@ -430,10 +430,13 @@ namespace EnviosOcaApp.Views
             }
         }
 
-        private void CmbOficina_SelectionChangeCommitted(
+        private void CmbOficina_SelectedIndexChanged(
             object? sender,
             EventArgs e)
         {
+            if (_actualizandoFiltroOficinas)
+                return;
+
             _oficinaFiltroTimer.Stop();
 
             if (cmbOficina.SelectedItem
@@ -512,6 +515,15 @@ namespace EnviosOcaApp.Views
         {
             if (_actualizandoFiltroOficinas)
                 return;
+
+            if (cmbOficina.SelectedItem is OficinaSucursal oficina
+                && string.Equals(
+                    cmbOficina.Text,
+                    oficina.DisplayCombo,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
 
             _oficinaSeleccionada = null;
             _direccionManual = null;
@@ -1165,6 +1177,7 @@ namespace EnviosOcaApp.Views
         private bool ValidarRemitenteYOrigen()
         {
             var errores = new List<string>();
+            SincronizarOficinaSeleccionadaDesdeCombo();
 
             if (cmbEmpresa.SelectedItem is EmpresaOca empresa)
             {
@@ -1200,6 +1213,22 @@ namespace EnviosOcaApp.Views
                 MessageBoxIcon.Warning);
 
             return false;
+        }
+
+        private void SincronizarOficinaSeleccionadaDesdeCombo()
+        {
+            if (_oficinaSeleccionada != null
+                || _direccionManual != null
+                || cmbOficina.SelectedItem is not OficinaSucursal oficina
+                || oficina.Codigo == "__SELECCIONAR__"
+                || oficina.EsIngresoManual)
+            {
+                return;
+            }
+
+            _oficinaSeleccionada = oficina;
+            lblDireccionOficina.ForeColor = Color.Black;
+            lblDireccionOficina.Text = oficina.DireccionCompleta;
         }
 
         private void btnAgregarEnvioAlLote_Click(object sender, EventArgs e)
