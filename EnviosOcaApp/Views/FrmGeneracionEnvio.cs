@@ -12,6 +12,8 @@ namespace EnviosOcaApp.Views
         private TableLayoutPanel? _tlpOrigen;
         private OficinaSucursal? _oficinaSeleccionada;
         private DireccionOrigenManual? _direccionManual;
+        private EmpresaOca? _empresaLote;
+        private bool _restaurandoEmpresaLote;
 
         private List<OficinaSucursal> _oficinas = new();
         private List<OficinaSucursal> _opcionesOficina = new();
@@ -403,6 +405,30 @@ namespace EnviosOcaApp.Views
 
         private void CmbEmpresa_SelectedIndexChanged(object? sender, EventArgs e)
         {
+            if (_restaurandoEmpresaLote)
+                return;
+
+            if (_empresaLote != null
+                && !ReferenceEquals(cmbEmpresa.SelectedItem, _empresaLote))
+            {
+                _restaurandoEmpresaLote = true;
+                try
+                {
+                    cmbEmpresa.SelectedItem = _empresaLote;
+                }
+                finally
+                {
+                    _restaurandoEmpresaLote = false;
+                }
+
+                MessageBox.Show(
+                    "No se puede cambiar la empresa mientras el lote tenga envíos. Quite los envíos actuales para seleccionar otra empresa.",
+                    "Empresa del lote",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
             ActualizarOficinasPorEmpresa();
         }
 
@@ -1179,7 +1205,7 @@ namespace EnviosOcaApp.Views
             var errores = new List<string>();
             SincronizarOficinaSeleccionadaDesdeCombo();
 
-            if (cmbEmpresa.SelectedItem is EmpresaOca empresa)
+            if (ObtenerEmpresaSeleccionadaParaLote() is EmpresaOca empresa)
             {
                 errores.AddRange(
                     EnvioOcaValidator.ValidarRemitente(
@@ -1238,6 +1264,9 @@ namespace EnviosOcaApp.Views
             if (!ValidarRemitenteYOrigen())
                 return;
 
+            if (ObtenerEmpresaSeleccionadaParaLote() is not EmpresaOca empresaSeleccionada)
+                return;
+
             // Remito obligatorio asignado automáticamente (usuario de Windows)
             string remito = txtRemito.Text.Trim();
             if (string.IsNullOrWhiteSpace(remito))
@@ -1283,6 +1312,7 @@ namespace EnviosOcaApp.Views
                 return;
             }
 
+            _empresaLote ??= empresaSeleccionada;
             listaLoteEnvios.Add(envio);
 
             // Limpiamos los campos del destino
@@ -1321,7 +1351,15 @@ namespace EnviosOcaApp.Views
                 {
                     listaLoteEnvios.Remove(env);
                 }
+
+                if (listaLoteEnvios.Count == 0)
+                    _empresaLote = null;
             }
+        }
+
+        private EmpresaOca? ObtenerEmpresaSeleccionadaParaLote()
+        {
+            return _empresaLote ?? cmbEmpresa.SelectedItem as EmpresaOca;
         }
 
         private void MostrarOrigenNoSeleccionado()
@@ -1349,7 +1387,7 @@ namespace EnviosOcaApp.Views
             if (!ValidarRemitenteYOrigen())
                 return;
 
-            if (cmbEmpresa.SelectedItem is not EmpresaOca empresaSeleccionada)
+            if (ObtenerEmpresaSeleccionadaParaLote() is not EmpresaOca empresaSeleccionada)
             {
                 MessageBox.Show(
                     "Debe seleccionar una empresa válida.",
@@ -1521,6 +1559,7 @@ namespace EnviosOcaApp.Views
                     MessageBoxIcon.Information);
 
                 listaLoteEnvios.Clear();
+                _empresaLote = null;
             }
             catch (Exception ex)
             {
