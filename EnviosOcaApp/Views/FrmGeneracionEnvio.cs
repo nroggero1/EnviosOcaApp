@@ -36,6 +36,9 @@ namespace EnviosOcaApp.Views
             var tlpGlobal = (TableLayoutPanel)this.Controls.Find("tlpGlobal", true)[0];
             tlpGlobal.Dock = DockStyle.Fill;
             tlpGlobal.Margin = new Padding(0);
+            tlpGlobal.ColumnStyles.Clear();
+            tlpGlobal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
+            tlpGlobal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
 
             var tlpDestino = new TableLayoutPanel
             {
@@ -121,9 +124,9 @@ namespace EnviosOcaApp.Views
                 Padding = new Padding(3),
                 Margin = new Padding(0)
             };
-            tlpPaquete.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            tlpPaquete.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 85F));
             tlpPaquete.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50f));
-            tlpPaquete.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            tlpPaquete.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 85F));
             tlpPaquete.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50f));
 
             tlpPaquete.RowStyles.Add(new RowStyle(SizeType.AutoSize));
@@ -132,7 +135,7 @@ namespace EnviosOcaApp.Views
             tlpPaquete.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             tlpPaquete.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
 
-            lblTamanoPaquete = new Label { Text = "Tamaño Bulto:", AutoSize = true };
+            lblTamanoPaquete = new Label { Text = "Tamaño:", AutoSize = false };
             cmbTamanoPaquete = new ComboBox
             {
                 DropDownStyle = ComboBoxStyle.DropDownList,
@@ -143,13 +146,26 @@ namespace EnviosOcaApp.Views
             tlpPaquete.SetColumnSpan(cmbTamanoPaquete, 3);
 
             var flpDim = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Margin = new Padding(0), WrapContents = false };
-            txtAlto.Width = 40; txtAncho.Width = 40; txtLargo.Width = 40;
+            txtAlto.Width = 27; txtAncho.Width = 27; txtLargo.Width = 27;
+            txtAlto.Margin = Padding.Empty;
+            txtAncho.Margin = Padding.Empty;
+            txtLargo.Margin = Padding.Empty;
             flpDim.Controls.Add(txtAlto);
-            flpDim.Controls.Add(new Label { Text = "x", AutoSize = true, TextAlign = ContentAlignment.MiddleCenter });
+            flpDim.Controls.Add(new Label { Text = "x", AutoSize = false, Width = 10, Font = new Font("Segoe UI", 9F), TextAlign = ContentAlignment.MiddleCenter, Margin = new Padding(1, 0, 1, 0) });
             flpDim.Controls.Add(txtAncho);
-            flpDim.Controls.Add(new Label { Text = "x", AutoSize = true, TextAlign = ContentAlignment.MiddleCenter });
+            flpDim.Controls.Add(new Label { Text = "x", AutoSize = false, Width = 10, Font = new Font("Segoe UI", 9F), TextAlign = ContentAlignment.MiddleCenter, Margin = new Padding(1, 0, 1, 0) });
             flpDim.Controls.Add(txtLargo);
             lblDimensiones.Text = "Dim. (cm):";
+            lblDimensiones.AutoSize = false;
+            lblPeso.Text = "Peso (kg):";
+            lblPeso.AutoSize = false;
+            lblValor.AutoSize = false;
+            lblObservaciones.Text = "Obs.:";
+            lblObservaciones.AutoSize = false;
+            foreach (Label label in new[] { lblTamanoPaquete, lblDimensiones, lblPeso, lblValor, lblObservaciones })
+            {
+                label.Font = new Font("Segoe UI", 9F);
+            }
 
             tlpPaquete.Controls.Add(lblDimensiones, 0, 1);
             tlpPaquete.Controls.Add(flpDim, 1, 1);
@@ -168,7 +184,7 @@ namespace EnviosOcaApp.Views
 
             var flpOpciones = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, WrapContents = false };
             chkPrioritario = new CheckBox { Text = "Envío Prioritario", AutoSize = true, Checked = true, Visible = false };
-            chkSeguro = new CheckBox { Text = "Asegurar Envío", AutoSize = true, Checked = false };
+            chkSeguro = new CheckBox { Text = "Seguro", AccessibleName = "Asegurar envío", AutoSize = false, Checked = false, Width = 75, Height = 29, Font = new Font("Segoe UI", 9F) };
             // El check prioritario no se muestra (default = TRUE && visible = false)
             flpOpciones.Controls.Add(chkSeguro);
             tlpPaquete.Controls.Add(flpOpciones, 0, 3);
@@ -178,20 +194,17 @@ namespace EnviosOcaApp.Views
             chkSeguro.CheckedChanged -= ChkSeguro_CheckedChanged;
             chkSeguro.CheckedChanged += ChkSeguro_CheckedChanged;
 
-            Size tamanoBotonAccion = new(130, 34);
-            foreach (Button boton in new[]
+            btnAgregarPaquete.Size = new Size(80, 34);
+            btnQuitarPaquete.Size = new Size(80, 34);
+            btnAgregarEnvioAlLote.Size = new Size(124, 34);
+            foreach (Button boton in new[] { btnAgregarEnvioAlLote, btnQuitarPaquete, btnAgregarPaquete, btnQuitarEnvio, btnGenerar })
             {
-                btnAgregarEnvioAlLote,
-                btnQuitarPaquete,
-                btnAgregarPaquete,
-                btnQuitarEnvio,
-                btnGenerar
-            })
-            {
-                boton.Size = tamanoBotonAccion;
                 boton.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
                 boton.Margin = new Padding(2);
             }
+            btnAgregarEnvioAlLote.Margin = Padding.Empty;
+            btnQuitarPaquete.Margin = Padding.Empty;
+            btnAgregarPaquete.Margin = Padding.Empty;
 
             var flpBotones = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, FlowDirection = FlowDirection.RightToLeft, WrapContents = false };
             flpBotones.Controls.Add(btnAgregarEnvioAlLote);
@@ -705,6 +718,7 @@ namespace EnviosOcaApp.Views
             txtUsuario.Dock = DockStyle.None;
             txtUsuario.Anchor = AnchorStyles.Left;
             txtUsuario.Width = 230;
+            txtUsuario.Font = new Font("Segoe UI", 9F);
             txtUsuario.Margin = new Padding(3, 3, 8, 3);
 
             tlpOperador.Controls.Add(lblUsuario, 0, 0);
@@ -949,6 +963,17 @@ namespace EnviosOcaApp.Views
             if (dgvPaquetes.Columns.Contains("Observaciones")) dgvPaquetes.Columns["Observaciones"].HeaderText = "Observaciones";
 
             dgvPaquetes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvPaquetes.ScrollBars = ScrollBars.Both;
+            foreach (DataGridViewColumn column in dgvPaquetes.Columns)
+            {
+                column.MinimumWidth = column.Name switch
+                {
+                    "Tamano" => 85,
+                    "Alto" or "Ancho" or "Largo" or "Peso" => 85,
+                    "Valor" or "Observaciones" => 115,
+                    _ => 70
+                };
+            }
 
             dgvPaquetes.DataError -= DgvPaquetes_DataError;
             dgvPaquetes.DataError += DgvPaquetes_DataError;

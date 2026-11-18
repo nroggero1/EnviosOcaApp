@@ -12,6 +12,18 @@ namespace EnviosOcaApp.Views
         {
             InitializeComponent();
             ConfigurarContextMenu();
+            lblTipDobleClic.Text = "Doble clic: Seguimiento | Clic derecho: opciones";
+            lblTipDobleClic.AutoSize = false;
+            lblTipDobleClic.AutoEllipsis = true;
+            grpRecientes.Resize += (_, _) => AjustarAnchoAyuda();
+            AjustarAnchoAyuda();
+        }
+
+        private void AjustarAnchoAyuda()
+        {
+            lblTipDobleClic.Width = Math.Max(
+                0,
+                btnAnularEnvio.Left - lblTipDobleClic.Left - 8);
         }
 
         private void ConfigurarContextMenu()
