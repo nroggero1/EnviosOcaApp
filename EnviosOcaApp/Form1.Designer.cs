@@ -21,6 +21,7 @@ namespace EnviosOcaApp
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             pnlMenuLateral = new Panel();
+            btnGestionOficinas = new Button();
             btnGestionUsuarios = new Button();
             btnAuditoria = new Button();
             btnImprimirEtiquetas = new Button();
@@ -28,7 +29,6 @@ namespace EnviosOcaApp
             pnlLogo = new Panel();
             pictureBoxLogo = new PictureBox();
             pnlContenedor = new Panel();
-            btnGestionOficinas = new Button();
             pnlMenuLateral.SuspendLayout();
             pnlLogo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).BeginInit();
@@ -45,23 +45,38 @@ namespace EnviosOcaApp
             pnlMenuLateral.Controls.Add(pnlLogo);
             pnlMenuLateral.Dock = DockStyle.Left;
             pnlMenuLateral.Location = new Point(0, 0);
-            pnlMenuLateral.Margin = new Padding(3, 4, 3, 4);
             pnlMenuLateral.Name = "pnlMenuLateral";
-            pnlMenuLateral.Size = new Size(270, 748);
+            pnlMenuLateral.Size = new Size(236, 577);
             pnlMenuLateral.TabIndex = 0;
+            // 
+            // btnGestionOficinas
+            // 
+            btnGestionOficinas.Dock = DockStyle.Top;
+            btnGestionOficinas.FlatAppearance.BorderSize = 0;
+            btnGestionOficinas.FlatStyle = FlatStyle.Flat;
+            btnGestionOficinas.Font = new Font("Microsoft Sans Serif", 6.4F);
+            btnGestionOficinas.ForeColor = Color.White;
+            btnGestionOficinas.Location = new Point(0, 260);
+            btnGestionOficinas.Name = "btnGestionOficinas";
+            btnGestionOficinas.Padding = new Padding(10, 0, 0, 0);
+            btnGestionOficinas.Size = new Size(236, 40);
+            btnGestionOficinas.TabIndex = 5;
+            btnGestionOficinas.Text = "Gestión de Oficinas";
+            btnGestionOficinas.TextAlign = ContentAlignment.MiddleLeft;
+            btnGestionOficinas.UseVisualStyleBackColor = true;
+            btnGestionOficinas.Click += btnGestionOficinas_Click;
             // 
             // btnGestionUsuarios
             // 
             btnGestionUsuarios.Dock = DockStyle.Top;
             btnGestionUsuarios.FlatAppearance.BorderSize = 0;
             btnGestionUsuarios.FlatStyle = FlatStyle.Flat;
-            btnGestionUsuarios.Font = new Font("Microsoft Sans Serif", 10F);
+            btnGestionUsuarios.Font = new Font("Microsoft Sans Serif", 6.4F);
             btnGestionUsuarios.ForeColor = Color.White;
-            btnGestionUsuarios.Location = new Point(0, 292);
-            btnGestionUsuarios.Margin = new Padding(3, 4, 3, 4);
+            btnGestionUsuarios.Location = new Point(0, 220);
             btnGestionUsuarios.Name = "btnGestionUsuarios";
-            btnGestionUsuarios.Padding = new Padding(11, 0, 0, 0);
-            btnGestionUsuarios.Size = new Size(270, 53);
+            btnGestionUsuarios.Padding = new Padding(10, 0, 0, 0);
+            btnGestionUsuarios.Size = new Size(236, 40);
             btnGestionUsuarios.TabIndex = 4;
             btnGestionUsuarios.Text = "Gestión de Usuarios";
             btnGestionUsuarios.TextAlign = ContentAlignment.MiddleLeft;
@@ -73,13 +88,12 @@ namespace EnviosOcaApp
             btnAuditoria.Dock = DockStyle.Top;
             btnAuditoria.FlatAppearance.BorderSize = 0;
             btnAuditoria.FlatStyle = FlatStyle.Flat;
-            btnAuditoria.Font = new Font("Microsoft Sans Serif", 10F);
+            btnAuditoria.Font = new Font("Microsoft Sans Serif", 6.4F);
             btnAuditoria.ForeColor = Color.White;
-            btnAuditoria.Location = new Point(0, 239);
-            btnAuditoria.Margin = new Padding(3, 4, 3, 4);
+            btnAuditoria.Location = new Point(0, 180);
             btnAuditoria.Name = "btnAuditoria";
-            btnAuditoria.Padding = new Padding(11, 0, 0, 0);
-            btnAuditoria.Size = new Size(270, 53);
+            btnAuditoria.Padding = new Padding(10, 0, 0, 0);
+            btnAuditoria.Size = new Size(236, 40);
             btnAuditoria.TabIndex = 3;
             btnAuditoria.Text = "Historial y Seguimiento";
             btnAuditoria.TextAlign = ContentAlignment.MiddleLeft;
@@ -91,13 +105,12 @@ namespace EnviosOcaApp
             btnImprimirEtiquetas.Dock = DockStyle.Top;
             btnImprimirEtiquetas.FlatAppearance.BorderSize = 0;
             btnImprimirEtiquetas.FlatStyle = FlatStyle.Flat;
-            btnImprimirEtiquetas.Font = new Font("Microsoft Sans Serif", 10F);
+            btnImprimirEtiquetas.Font = new Font("Microsoft Sans Serif", 6.4F);
             btnImprimirEtiquetas.ForeColor = Color.White;
-            btnImprimirEtiquetas.Location = new Point(0, 186);
-            btnImprimirEtiquetas.Margin = new Padding(3, 4, 3, 4);
+            btnImprimirEtiquetas.Location = new Point(0, 140);
             btnImprimirEtiquetas.Name = "btnImprimirEtiquetas";
-            btnImprimirEtiquetas.Padding = new Padding(11, 0, 0, 0);
-            btnImprimirEtiquetas.Size = new Size(270, 53);
+            btnImprimirEtiquetas.Padding = new Padding(10, 0, 0, 0);
+            btnImprimirEtiquetas.Size = new Size(236, 40);
             btnImprimirEtiquetas.TabIndex = 2;
             btnImprimirEtiquetas.Text = "Impresión de Etiquetas";
             btnImprimirEtiquetas.TextAlign = ContentAlignment.MiddleLeft;
@@ -109,13 +122,12 @@ namespace EnviosOcaApp
             btnGenerarEnvios.Dock = DockStyle.Top;
             btnGenerarEnvios.FlatAppearance.BorderSize = 0;
             btnGenerarEnvios.FlatStyle = FlatStyle.Flat;
-            btnGenerarEnvios.Font = new Font("Microsoft Sans Serif", 10F);
+            btnGenerarEnvios.Font = new Font("Microsoft Sans Serif", 6.4F);
             btnGenerarEnvios.ForeColor = Color.White;
-            btnGenerarEnvios.Location = new Point(0, 133);
-            btnGenerarEnvios.Margin = new Padding(3, 4, 3, 4);
+            btnGenerarEnvios.Location = new Point(0, 100);
             btnGenerarEnvios.Name = "btnGenerarEnvios";
-            btnGenerarEnvios.Padding = new Padding(11, 0, 0, 0);
-            btnGenerarEnvios.Size = new Size(270, 53);
+            btnGenerarEnvios.Padding = new Padding(10, 0, 0, 0);
+            btnGenerarEnvios.Size = new Size(236, 40);
             btnGenerarEnvios.TabIndex = 1;
             btnGenerarEnvios.Text = "Generación de Envío";
             btnGenerarEnvios.TextAlign = ContentAlignment.MiddleLeft;
@@ -127,17 +139,17 @@ namespace EnviosOcaApp
             pnlLogo.Controls.Add(pictureBoxLogo);
             pnlLogo.Dock = DockStyle.Top;
             pnlLogo.Location = new Point(0, 0);
-            pnlLogo.Margin = new Padding(3, 4, 3, 4);
             pnlLogo.Name = "pnlLogo";
-            pnlLogo.Size = new Size(270, 133);
+            pnlLogo.Size = new Size(236, 100);
             pnlLogo.TabIndex = 0;
             // 
             // pictureBoxLogo
             // 
             pictureBoxLogo.Image = (Image)resources.GetObject("pictureBoxLogo.Image");
-            pictureBoxLogo.Location = new Point(0, 9);
+            pictureBoxLogo.Location = new Point(0, 7);
+            pictureBoxLogo.Margin = new Padding(3, 2, 3, 2);
             pictureBoxLogo.Name = "pictureBoxLogo";
-            pictureBoxLogo.Size = new Size(270, 85);
+            pictureBoxLogo.Size = new Size(236, 64);
             pictureBoxLogo.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBoxLogo.TabIndex = 0;
             pictureBoxLogo.TabStop = false;
@@ -146,39 +158,19 @@ namespace EnviosOcaApp
             // 
             pnlContenedor.BackColor = Color.FromArgb(246, 246, 247);
             pnlContenedor.Dock = DockStyle.Fill;
-            pnlContenedor.Location = new Point(270, 0);
-            pnlContenedor.Margin = new Padding(3, 4, 3, 4);
+            pnlContenedor.Location = new Point(236, 0);
             pnlContenedor.Name = "pnlContenedor";
-            pnlContenedor.Size = new Size(740, 748);
+            pnlContenedor.Size = new Size(652, 577);
             pnlContenedor.TabIndex = 1;
-            // 
-            // btnGestionOficinas
-            // 
-            btnGestionOficinas.Dock = DockStyle.Top;
-            btnGestionOficinas.FlatAppearance.BorderSize = 0;
-            btnGestionOficinas.FlatStyle = FlatStyle.Flat;
-            btnGestionOficinas.Font = new Font("Microsoft Sans Serif", 10F);
-            btnGestionOficinas.ForeColor = Color.White;
-            btnGestionOficinas.Location = new Point(0, 345);
-            btnGestionOficinas.Margin = new Padding(3, 4, 3, 4);
-            btnGestionOficinas.Name = "btnGestionOficinas";
-            btnGestionOficinas.Padding = new Padding(11, 0, 0, 0);
-            btnGestionOficinas.Size = new Size(270, 53);
-            btnGestionOficinas.TabIndex = 5;
-            btnGestionOficinas.Text = "Gestión de Oficinas";
-            btnGestionOficinas.TextAlign = ContentAlignment.MiddleLeft;
-            btnGestionOficinas.UseVisualStyleBackColor = true;
-            btnGestionOficinas.Click += btnGestionOficinas_Click;
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1010, 748);
+            ClientSize = new Size(888, 577);
             Controls.Add(pnlContenedor);
             Controls.Add(pnlMenuLateral);
-            Margin = new Padding(3, 4, 3, 4);
-            MinimumSize = new Size(760, 500);
+            MinimumSize = new Size(667, 387);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Menú Principal - Envios OCA";
