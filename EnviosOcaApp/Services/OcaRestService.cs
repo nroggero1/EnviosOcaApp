@@ -202,9 +202,11 @@ GenerarLoteRealAsync(
                 if (apellido.Length > 30) apellido = apellido.Substring(0, 30);
                 if (nombre.Length > 30) nombre = nombre.Substring(0, 30);
 
+                bool tieneSeguro = envio.IdOperativa == 416557
+                    || envio.Paquetes.Any(paquete => paquete.Valor > 0);
                 string idOperativaFinal = (_settings != null && !_settings.EsProduccion)
                     ? "64665"
-                    : (envio.IdOperativa > 0 ? envio.IdOperativa.ToString() : operativa);
+                    : (tieneSeguro ? "416557" : operativa);
 
                 var envioNode = new XElement("envio",
                     new XAttribute("idoperativa", idOperativaFinal),

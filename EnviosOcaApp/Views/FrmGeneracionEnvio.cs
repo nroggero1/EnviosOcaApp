@@ -1200,12 +1200,12 @@ namespace EnviosOcaApp.Views
             }
         }
 
-        private bool ValidarRemitenteYOrigen()
+        private bool ValidarRemitenteYOrigen(EmpresaOca? empresaConfigurada = null)
         {
             var errores = new List<string>();
             SincronizarOficinaSeleccionadaDesdeCombo();
 
-            if (ObtenerEmpresaSeleccionadaParaLote() is EmpresaOca empresa)
+            if ((empresaConfigurada ?? ObtenerEmpresaSeleccionadaParaLote()) is EmpresaOca empresa)
             {
                 errores.AddRange(
                     EnvioOcaValidator.ValidarRemitente(
@@ -1374,9 +1374,68 @@ namespace EnviosOcaApp.Views
             }
         }
 
+        private static bool EsEnvioConSeguro(EnvioOca envio)
+        {
+            return envio.IdOperativa == 416557
+                || envio.Paquetes.Any(paquete => paquete.Valor > 0);
+        }
+
         private EmpresaOca? ObtenerEmpresaSeleccionadaParaLote()
         {
             return _empresaLote ?? cmbEmpresa.SelectedItem as EmpresaOca;
+        }
+
+        private bool TryRecargarEmpresa(
+            EmpresaOca empresaSeleccionada,
+            out EmpresaOca empresaActualizada)
+        {
+            empresaActualizada = empresaSeleccionada;
+            try
+            {
+                string path = Program.ConfiguracionActual.ObtenerRutaEmpresasCompleta();
+                string json = System.IO.File.ReadAllText(path);
+                var empresas =
+                    System.Text.Json.JsonSerializer.Deserialize<List<EmpresaOca>>(json);
+
+                bool buscarPorCuit =
+                    !string.IsNullOrWhiteSpace(empresaSeleccionada.Cuit);
+                string identificador = buscarPorCuit
+                    ? empresaSeleccionada.Cuit
+                    : empresaSeleccionada.Nombre;
+
+                var empresaActual = empresas?.FirstOrDefault(empresa =>
+                    string.Equals(
+                        (buscarPorCuit
+                            ? empresa.Cuit
+                            : empresa.Nombre)?.Trim() ?? string.Empty,
+                        identificador.Trim(),
+                        StringComparison.OrdinalIgnoreCase));
+
+                if (empresaActual == null)
+                {
+                    MessageBox.Show(
+                        "La empresa seleccionada ya no está en el archivo de configuración. Actualice la lista de empresas antes de generar el lote.",
+                        "Configuración de empresas",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return false;
+                }
+
+                empresaActualizada = empresaActual;
+                return true;
+            }
+            catch (Exception ex) when (
+                ex is System.IO.IOException
+                || ex is UnauthorizedAccessException
+                || ex is System.Text.Json.JsonException)
+            {
+                MessageBox.Show(
+                    "No se pudo recargar el archivo de configuración de empresas. Verifique que esté disponible y tenga formato válido.",
+                    "Configuración de empresas",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return false;
+            }
         }
 
         private void MostrarOrigenNoSeleccionado()
@@ -1401,10 +1460,7 @@ namespace EnviosOcaApp.Views
                 return;
             }
 
-            if (!ValidarRemitenteYOrigen())
-                return;
-
-            if (ObtenerEmpresaSeleccionadaParaLote() is not EmpresaOca empresaSeleccionada)
+            if (ObtenerEmpresaSeleccionadaParaLote() is not EmpresaOca empresaElegida)
             {
                 MessageBox.Show(
                     "Debe seleccionar una empresa válida.",
@@ -1414,6 +1470,37 @@ namespace EnviosOcaApp.Views
 
                 return;
             }
+
+            if (!TryRecargarEmpresa(empresaElegida, out var empresaSeleccionada)
+                || !ValidarRemitenteYOrigen(empresaSeleccionada))
+            {
+                return;
+            }
+
+            int operativaSinSeguro = 0;
+            if (listaLoteEnvios.Any(envio => !EsEnvioConSeguro(envio))
+                && (!int.TryParse(
+                        empresaSeleccionada.Operativa?.Trim(),
+                        System.Globalization.NumberStyles.None,
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        out operativaSinSeguro)
+                    || operativaSinSeguro <= 0))
+            {
+                MessageBox.Show(
+                    "La empresa seleccionada no tiene una operativa numérica válida configurada para envíos sin seguro.",
+                    "Operativa inválida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            foreach (var envio in listaLoteEnvios)
+            {
+                envio.IdOperativa = EsEnvioConSeguro(envio)
+                    ? 416557
+                    : operativaSinSeguro;
+            }
+            dgvLoteEnvios.Refresh();
 
             var erroresLote = new List<string>();
             for (int i = 0; i < listaLoteEnvios.Count; i++)
