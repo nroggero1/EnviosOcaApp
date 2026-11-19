@@ -122,7 +122,7 @@ namespace EnviosOcaApp.Views
             lblTitulo.Name = "lblTitulo";
             lblTitulo.Size = new Size(549, 29);
             lblTitulo.TabIndex = 0;
-            lblTitulo.Text = "Generación de Envíos OCA (Multidestinatario)";
+            lblTitulo.Text = "Generación de Envíos OCA";
             // 
             // grpOperador
             // 

@@ -38,9 +38,20 @@ namespace EnviosOcaApp.Views
             var tlpGlobal = (TableLayoutPanel)this.Controls.Find("tlpGlobal", true)[0];
             tlpGlobal.Dock = DockStyle.Fill;
             tlpGlobal.Margin = new Padding(0);
+            var grpOperador = (GroupBox)tlpGlobal.Controls.Find("grpOperador", true)[0];
+            var grpOrigen = (GroupBox)tlpGlobal.Controls.Find("grpOrigen", true)[0];
+            ConfigurarLayoutEncabezado(grpOperador);
+            ConfigurarLayoutOrigen(grpOrigen);
+
+            tlpGlobal.Controls.Clear();
+            tlpGlobal.ColumnCount = 1;
+            tlpGlobal.RowCount = 1;
             tlpGlobal.ColumnStyles.Clear();
-            tlpGlobal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
-            tlpGlobal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
+            tlpGlobal.RowStyles.Clear();
+            tlpGlobal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlpGlobal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            grpOrigen.Dock = DockStyle.Fill;
+            tlpGlobal.Controls.Add(grpOrigen, 0, 0);
 
             var tlpDestino = new TableLayoutPanel
             {
@@ -244,6 +255,9 @@ namespace EnviosOcaApp.Views
             tlpComposicion.ColumnStyles.Clear();
             tlpComposicion.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tlpComposicion.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tlpComposicion.SizeChanged += (_, _) =>
+                AjustarColumnasComposicion(tlpComposicion);
+            AjustarColumnasComposicion(tlpComposicion);
             grpComposicion.Controls.Clear();
             grpComposicion.Controls.Add(tlpComposicion);
 
@@ -309,8 +323,8 @@ namespace EnviosOcaApp.Views
             layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
             layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 132F));
-            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
-            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 62F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 38F));
             layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 34F));
 
             panelHeader.Dock = DockStyle.Fill;
@@ -321,10 +335,173 @@ namespace EnviosOcaApp.Views
             layoutPrincipal.Controls.Add(grpComposicion, 0, 2);
             layoutPrincipal.Controls.Add(grpLote, 0, 3);
             layoutPrincipal.Controls.Add(panelAcciones, 0, 4);
+            layoutPrincipal.SizeChanged += (_, _) => AjustarProporcionSecciones(layoutPrincipal);
+            AjustarProporcionSecciones(layoutPrincipal);
+            lblDireccionOficina.SizeChanged += (_, _) =>
+            {
+                layoutPrincipal.RowStyles[1].Height =
+                    132F + Math.Max(0, lblDireccionOficina.Height - 24);
+            };
 
             AutoScroll = false;
             Controls.Clear();
             Controls.Add(layoutPrincipal);
+        }
+
+        private void ConfigurarLayoutEncabezado(GroupBox grpOperador)
+        {
+            grpOperador.Controls.Remove(lblUsuario);
+            grpOperador.Controls.Remove(txtUsuario);
+
+            var encabezado = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 1,
+                Padding = new Padding(8, 0, 8, 0),
+                Margin = Padding.Empty
+            };
+            encabezado.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
+            encabezado.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
+            encabezado.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+
+            lblTitulo.AutoSize = false;
+            lblTitulo.Dock = DockStyle.Fill;
+            lblTitulo.AutoEllipsis = true;
+            lblTitulo.TextAlign = ContentAlignment.MiddleLeft;
+            lblTitulo.Margin = Padding.Empty;
+
+            var operador = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 1,
+                Margin = new Padding(4, 0, 0, 0)
+            };
+            operador.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            operador.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            operador.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+
+            lblUsuario.Dock = DockStyle.Fill;
+            lblUsuario.TextAlign = ContentAlignment.MiddleLeft;
+            lblUsuario.Margin = new Padding(3);
+            txtUsuario.Dock = DockStyle.Fill;
+            txtUsuario.Margin = new Padding(3);
+            operador.Controls.Add(lblUsuario, 0, 0);
+            operador.Controls.Add(txtUsuario, 1, 0);
+
+            encabezado.Controls.Add(lblTitulo, 0, 0);
+            encabezado.Controls.Add(operador, 1, 0);
+            panelHeader.Controls.Clear();
+            panelHeader.Controls.Add(encabezado);
+            panelHeader.SizeChanged += (_, _) =>
+            {
+                float tamanoFuente = panelHeader.ClientSize.Width < 900 ? 13F : 17.5F;
+                if (lblTitulo.Font.Size != tamanoFuente)
+                {
+                    lblTitulo.Font = new Font(
+                        lblTitulo.Font.FontFamily,
+                        tamanoFuente,
+                        lblTitulo.Font.Style);
+                }
+            };
+        }
+
+        private static void AjustarProporcionSecciones(TableLayoutPanel layoutPrincipal)
+        {
+            bool alturaCompacta = layoutPrincipal.ClientSize.Height < 780;
+            layoutPrincipal.RowStyles[2].Height = alturaCompacta ? 68F : 65F;
+            layoutPrincipal.RowStyles[3].Height = alturaCompacta ? 32F : 35F;
+        }
+
+        private static void AjustarColumnasComposicion(TableLayoutPanel tlpComposicion)
+        {
+            float porcentajeDestino =
+                tlpComposicion.ClientSize.Width < 1000 ? 50F : 45F;
+            tlpComposicion.ColumnStyles[0].Width = porcentajeDestino;
+            tlpComposicion.ColumnStyles[1].Width = 100F - porcentajeDestino;
+        }
+
+        private void ConfigurarLayoutOrigen(GroupBox grpOrigen)
+        {
+            _tlpOrigen = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 4,
+                RowCount = 3,
+                Padding = new Padding(3),
+                Margin = Padding.Empty,
+                GrowStyle = TableLayoutPanelGrowStyle.FixedSize
+            };
+            _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+            grpOrigen.Controls.Clear();
+            grpOrigen.Controls.Add(_tlpOrigen);
+
+            foreach (Label label in new[] { lblEmpresa, lblOficina })
+            {
+                label.Dock = DockStyle.Fill;
+                label.TextAlign = ContentAlignment.MiddleLeft;
+                label.Margin = new Padding(3);
+            }
+
+            foreach (ComboBox comboBox in new[] { cmbEmpresa, cmbOficina })
+            {
+                comboBox.Dock = DockStyle.Fill;
+                comboBox.Margin = new Padding(3);
+            }
+            cmbEmpresa.SizeChanged += (_, _) =>
+            {
+                if (cmbEmpresa.Width > 0)
+                    cmbEmpresa.DropDownWidth = cmbEmpresa.Width;
+            };
+            cmbOficina.SizeChanged += (_, _) =>
+            {
+                if (cmbOficina.Width > 0)
+                    cmbOficina.DropDownWidth = cmbOficina.Width;
+            };
+
+            lblDireccionOficina.AutoSize = true;
+            lblDireccionOficina.Dock = DockStyle.Fill;
+            lblDireccionOficina.Margin = new Padding(3, 0, 3, 0);
+            lblDireccionOficina.TextAlign = ContentAlignment.MiddleLeft;
+            lblDireccionOficina.MaximumSize =
+                new Size(Math.Max(1, _tlpOrigen.ClientSize.Width - 12), 0);
+            _tlpOrigen.SizeChanged += (_, _) =>
+            {
+                lblDireccionOficina.MaximumSize =
+                    new Size(Math.Max(1, _tlpOrigen.ClientSize.Width - 12), 0);
+            };
+
+            foreach (Label label in new[] { lblRemitenteApellido, lblRemitenteNombre })
+            {
+                label.Dock = DockStyle.Fill;
+                label.TextAlign = ContentAlignment.MiddleLeft;
+                label.Margin = new Padding(3);
+            }
+
+            foreach (TextBox textBox in new[] { txtRemitenteApellido, txtRemitenteNombre })
+            {
+                textBox.Dock = DockStyle.Fill;
+                textBox.Margin = new Padding(3);
+            }
+
+            _tlpOrigen.Controls.Add(lblEmpresa, 0, 0);
+            _tlpOrigen.Controls.Add(cmbEmpresa, 1, 0);
+            _tlpOrigen.Controls.Add(lblOficina, 2, 0);
+            _tlpOrigen.Controls.Add(cmbOficina, 3, 0);
+            _tlpOrigen.Controls.Add(lblDireccionOficina, 0, 1);
+            _tlpOrigen.SetColumnSpan(lblDireccionOficina, 4);
+            _tlpOrigen.Controls.Add(lblRemitenteApellido, 0, 2);
+            _tlpOrigen.Controls.Add(txtRemitenteApellido, 1, 2);
+            _tlpOrigen.Controls.Add(lblRemitenteNombre, 2, 2);
+            _tlpOrigen.Controls.Add(txtRemitenteNombre, 3, 2);
         }
 
         private CheckBox chkPrioritario = null!;
@@ -735,117 +912,6 @@ namespace EnviosOcaApp.Views
 
 
 
-        private void ConfigurarLayoutDatosGlobales()
-        {
-            // grpOperador
-            grpOperador.Controls.Clear();
-            var tlpOperador = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 2,
-                RowCount = 1,
-                Padding = new Padding(0)
-            };
-            tlpOperador.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            tlpOperador.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-
-            lblUsuario.AutoSize = true;
-            lblUsuario.Anchor = AnchorStyles.Left; // Esto centra verticalmente de forma automática
-            lblUsuario.Margin = new Padding(10, 3, 3, 3);
-
-            txtUsuario.Dock = DockStyle.None;
-            txtUsuario.Anchor = AnchorStyles.Left;
-            txtUsuario.Width = 230;
-            txtUsuario.Font = new Font("Segoe UI", 9F);
-            txtUsuario.Margin = new Padding(3, 3, 8, 3);
-
-            tlpOperador.Controls.Add(lblUsuario, 0, 0);
-            tlpOperador.Controls.Add(txtUsuario, 1, 0);
-            grpOperador.Controls.Add(tlpOperador);
-
-            // grpOrigen
-            grpOrigen.Controls.Clear();
-            _tlpOrigen = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 4,
-                RowCount = 4,
-                Padding = new Padding(2, 1, 2, 1),
-                Margin = new Padding(0)
-            };
-            _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            _tlpOrigen.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.Percent, 24F));
-            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.Percent, 24F));
-            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.Percent, 22F));
-            _tlpOrigen.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
-
-            lblEmpresa.AutoSize = true;
-            lblEmpresa.Anchor = AnchorStyles.Left;
-            lblEmpresa.Margin = new Padding(5, 1, 3, 1);
-
-            cmbEmpresa.Dock = DockStyle.Fill;
-            cmbEmpresa.Margin = new Padding(2, 1, 4, 1);
-
-            lblRemitenteApellido.AutoSize = true;
-            lblRemitenteApellido.Anchor = AnchorStyles.Left;
-            lblRemitenteApellido.Margin = new Padding(5, 1, 2, 1);
-            lblRemitenteApellido.Text = "Ap. Remitente:";
-
-            txtRemitenteApellido.Dock = DockStyle.None;
-            txtRemitenteApellido.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            txtRemitenteApellido.Margin = new Padding(2, 1, 4, 1);
-
-            lblRemitenteNombre.AutoSize = true;
-            lblRemitenteNombre.Anchor = AnchorStyles.Left;
-            lblRemitenteNombre.Margin = new Padding(5, 1, 2, 1);
-            lblRemitenteNombre.Text = "Nom. Remitente:";
-
-            txtRemitenteNombre.Dock = DockStyle.None;
-            txtRemitenteNombre.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            txtRemitenteNombre.Margin = new Padding(2, 1, 4, 1);
-
-            _tlpOrigen.Controls.Add(lblEmpresa, 0, 0);
-            _tlpOrigen.Controls.Add(cmbEmpresa, 1, 0);
-            _tlpOrigen.SetColumnSpan(cmbEmpresa, 3);
-            lblOficina.Anchor = AnchorStyles.Left;
-            lblOficina.Margin = new Padding(4, 1, 2, 1);
-            cmbOficina.Dock = DockStyle.Fill;
-            cmbOficina.Margin = new Padding(2, 1, 4, 1);
-            _tlpOrigen.Controls.Add(lblOficina, 0, 1);
-            _tlpOrigen.Controls.Add(cmbOficina, 1, 1);
-            _tlpOrigen.SetColumnSpan(cmbOficina, 3);
-
-            lblDireccionOficina.AutoSize = false;
-            lblDireccionOficina.Height = 22;
-            lblDireccionOficina.Dock = DockStyle.Fill;
-            lblDireccionOficina.TextAlign = ContentAlignment.MiddleLeft;
-            lblDireccionOficina.AutoEllipsis = true;
-            lblDireccionOficina.Margin = new Padding(5, 1, 4, 1);
-            _tlpOrigen.Controls.Add(lblDireccionOficina, 0, 2);
-            _tlpOrigen.SetColumnSpan(lblDireccionOficina, 4);
-
-            _tlpOrigen.Controls.Add(lblRemitenteApellido, 0, 3);
-            _tlpOrigen.Controls.Add(txtRemitenteApellido, 1, 3);
-            _tlpOrigen.Controls.Add(lblRemitenteNombre, 2, 3);
-            _tlpOrigen.Controls.Add(txtRemitenteNombre, 3, 3);
-
-            grpOrigen.Controls.Add(_tlpOrigen);
-            cmbEmpresa.SizeChanged += (_, _) =>
-            {
-                if (cmbEmpresa.Width > 0)
-                    cmbEmpresa.DropDownWidth = cmbEmpresa.Width;
-            };
-            cmbOficina.SizeChanged += (_, _) =>
-            {
-                if (cmbOficina.Width > 0)
-                    cmbOficina.DropDownWidth = cmbOficina.Width;
-            };
-
-        }
-
         private (
     string Calle,
     string Numero,
@@ -891,7 +957,6 @@ namespace EnviosOcaApp.Views
                 return;
 
             EnviosOcaApp.Utils.UiHelper.ForzarMayusculasEnControles(this);
-            ConfigurarLayoutDatosGlobales();
             txtUsuario.Text = Environment.UserName;
 
             string path = Program.ConfiguracionActual.ObtenerRutaEmpresasCompleta();
@@ -1000,18 +1065,29 @@ namespace EnviosOcaApp.Views
             if (dgvPaquetes.Columns.Contains("Valor")) dgvPaquetes.Columns["Valor"].HeaderText = "Valor Declarado ($)";
             if (dgvPaquetes.Columns.Contains("Observaciones")) dgvPaquetes.Columns["Observaciones"].HeaderText = "Observaciones";
 
-            dgvPaquetes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvPaquetes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvPaquetes.ScrollBars = ScrollBars.Both;
+            dgvPaquetes.RowHeadersWidth = 40;
+            dgvLoteEnvios.RowHeadersWidth = 40;
             foreach (DataGridViewColumn column in dgvPaquetes.Columns)
             {
-                column.MinimumWidth = column.Name switch
+                int anchoColumna = column.Name switch
                 {
-                    "Tamano" => 85,
-                    "Alto" or "Ancho" or "Largo" or "Peso" => 85,
-                    "Valor" or "Observaciones" => 115,
+                    "Tamano" => 110,
+                    "Alto" or "Ancho" or "Largo" or "Peso" => 60,
+                    "Valor" => 90,
+                    "Observaciones" => 80,
                     _ => 70
                 };
+                column.MinimumWidth = anchoColumna;
+                column.Width = anchoColumna;
             }
+            dgvPaquetes.SizeChanged += (_, _) => AjustarColumnasPaquetes();
+            AjustarColumnasPaquetes();
+            if (dgvPaquetes.Columns.Contains("Valor"))
+                dgvPaquetes.Columns["Valor"].HeaderText = "Valor ($)";
+            if (dgvPaquetes.Columns.Contains("Observaciones"))
+                dgvPaquetes.Columns["Observaciones"].HeaderText = "Obs.";
 
             dgvPaquetes.DataError -= DgvPaquetes_DataError;
             dgvPaquetes.DataError += DgvPaquetes_DataError;
@@ -1024,6 +1100,25 @@ namespace EnviosOcaApp.Views
 
             dgvPaquetes.EditingControlShowing -= DgvPaquetes_EditingControlShowing;
             dgvPaquetes.EditingControlShowing += DgvPaquetes_EditingControlShowing;
+        }
+
+        private void AjustarColumnasPaquetes()
+        {
+            if (dgvPaquetes.Columns.Count == 0)
+                return;
+
+            int anchoMinimo = dgvPaquetes.RowHeadersWidth
+                + dgvPaquetes.Columns.Cast<DataGridViewColumn>()
+                    .Sum(columna => columna.MinimumWidth);
+            if (dgvPaquetes.ClientSize.Width >= anchoMinimo)
+            {
+                dgvPaquetes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                return;
+            }
+
+            dgvPaquetes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            foreach (DataGridViewColumn columna in dgvPaquetes.Columns)
+                columna.Width = columna.MinimumWidth;
         }
 
         private void DgvPaquetes_DataError(object? sender, DataGridViewDataErrorEventArgs e)
