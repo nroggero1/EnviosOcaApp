@@ -28,7 +28,8 @@ namespace EnviosOcaApp.Validators
         {
             var errores = new List<string>();
 
-            AgregarErrorCampoObligatorio(errores, "Calle de origen", origen.Calle, 30);
+            if (string.IsNullOrWhiteSpace(origen.Calle))
+                errores.Add("Calle de origen: es obligatorio.");
             AgregarErrorCampoObligatorio(errores, "Número de origen", origen.Numero, 5);
             AgregarErrorCampoObligatorio(errores, "Código postal de origen", origen.CP, 4);
             AgregarErrorCampoObligatorio(errores, "Localidad de origen", origen.Localidad, 30);
