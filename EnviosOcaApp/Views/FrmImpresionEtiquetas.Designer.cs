@@ -137,11 +137,13 @@ namespace EnviosOcaApp.Views
             this.dgvRecientes.AllowUserToAddRows = false;
             this.dgvRecientes.AllowUserToDeleteRows = false;
             this.dgvRecientes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvRecientes.BackgroundColor = System.Drawing.Color.White;
             this.dgvRecientes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvRecientes.Location = new System.Drawing.Point(15, 50);
             this.dgvRecientes.MultiSelect = false;
             this.dgvRecientes.Name = "dgvRecientes";
             this.dgvRecientes.ReadOnly = true;
+            this.dgvRecientes.RowHeadersWidth = 36;
             this.dgvRecientes.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.dgvRecientes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvRecientes.Size = new System.Drawing.Size(730, 210);

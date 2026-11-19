@@ -16,6 +16,7 @@ namespace EnviosOcaApp.Views
         private DataView? _vistaHistorial;
         private FlowLayoutPanel _panelFiltrosAdmin = null!;
         private FlowLayoutPanel _panelPaginacion = null!;
+        private readonly List<Control> _controlesFiltrosAdmin = new();
         private DateTimePicker _dtpDesde = null!;
         private DateTimePicker _dtpHasta = null!;
         private ComboBox _cmbUsuario = null!;
@@ -30,6 +31,7 @@ namespace EnviosOcaApp.Views
             ConfigurarContextMenu();
             ConfigurarFiltrosAdmin();
             ConfigurarPaginacion();
+            dgvRecientes.RowTemplate.Height = 32;
             lblTipDobleClic.Text = "Doble clic: Seguimiento | Clic derecho: opciones";
             lblTipDobleClic.AutoSize = false;
             lblTipDobleClic.AutoEllipsis = true;
@@ -51,8 +53,8 @@ namespace EnviosOcaApp.Views
                 FlowDirection = FlowDirection.LeftToRight,
                 Location = new Point(15, 18),
                 Height = 30,
-                WrapContents = false,
-                Visible = false
+                WrapContents = true,
+                Visible = true
             };
 
             var lblDesde = new Label { Text = "Desde:", AutoSize = true, Margin = new Padding(3, 8, 3, 3) };
@@ -60,6 +62,7 @@ namespace EnviosOcaApp.Views
             {
                 Format = DateTimePickerFormat.Short,
                 ShowCheckBox = true,
+                Checked = false,
                 Width = 125,
                 Margin = new Padding(3, 3, 8, 3)
             };
@@ -69,6 +72,7 @@ namespace EnviosOcaApp.Views
             {
                 Format = DateTimePickerFormat.Short,
                 ShowCheckBox = true,
+                Checked = false,
                 Width = 125,
                 Margin = new Padding(3, 3, 8, 3)
             };
@@ -91,6 +95,14 @@ namespace EnviosOcaApp.Views
             _panelFiltrosAdmin.Controls.Add(lblUsuario);
             _panelFiltrosAdmin.Controls.Add(_cmbUsuario);
             _panelFiltrosAdmin.Controls.Add(_btnFiltrar);
+            _controlesFiltrosAdmin.AddRange(new Control[]
+            {
+                lblDesde, _dtpDesde, lblHasta, _dtpHasta, lblUsuario, _cmbUsuario, _btnFiltrar
+            });
+
+            btnRefrescar.Anchor = AnchorStyles.None;
+            btnRefrescar.Margin = new Padding(3, 2, 3, 3);
+            _panelFiltrosAdmin.Controls.Add(btnRefrescar);
             grpRecientes.Controls.Add(_panelFiltrosAdmin);
         }
 
@@ -142,10 +154,14 @@ namespace EnviosOcaApp.Views
             if (_panelPaginacion == null || _panelFiltrosAdmin == null)
                 return;
 
-            _panelFiltrosAdmin.Width = Math.Max(0, btnRefrescar.Left - _panelFiltrosAdmin.Left - 8);
+            _panelFiltrosAdmin.Width = Math.Max(0, grpRecientes.ClientSize.Width - _panelFiltrosAdmin.Left - 15);
+            _panelFiltrosAdmin.PerformLayout();
+            _panelFiltrosAdmin.Height = Math.Max(
+                30,
+                _panelFiltrosAdmin.GetPreferredSize(new Size(_panelFiltrosAdmin.Width, 0)).Height);
             _panelPaginacion.Top = btnAnularEnvio.Top - _panelPaginacion.Height - 5;
 
-            int gridTop = _esAdministrador ? 54 : 50;
+            int gridTop = _panelFiltrosAdmin.Bottom + 6;
             dgvRecientes.Top = gridTop;
             dgvRecientes.Height = Math.Max(30, _panelPaginacion.Top - dgvRecientes.Top - 6);
         }
@@ -194,6 +210,16 @@ namespace EnviosOcaApp.Views
                     }
                 }
             };
+            dgvRecientes.CellToolTipTextNeeded += (_, e) =>
+            {
+                if (e.RowIndex >= 0
+                    && e.ColumnIndex >= 0
+                    && e.RowIndex < dgvRecientes.Rows.Count
+                    && e.ColumnIndex < dgvRecientes.Columns.Count)
+                {
+                    e.ToolTipText = dgvRecientes.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString() ?? string.Empty;
+                }
+            };
         }
 
         private void FrmImpresionEtiquetas_Load(object sender, EventArgs e)
@@ -203,7 +229,9 @@ namespace EnviosOcaApp.Views
 
             EnviosOcaApp.Utils.UiHelper.ForzarMayusculasEnControles(this);
             _esAdministrador = Program.AuditoriaService.EsAdministrador(Environment.UserName);
-            _panelFiltrosAdmin.Visible = _esAdministrador;
+            foreach (Control control in _controlesFiltrosAdmin)
+                control.Visible = _esAdministrador;
+
             if (_esAdministrador)
             {
                 _cmbUsuario.Items.Clear();
@@ -325,8 +353,8 @@ namespace EnviosOcaApp.Views
 
             dgvRecientes.DataSource = pagina;
             dgvRecientes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            dgvRecientes.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            dgvRecientes.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            dgvRecientes.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            dgvRecientes.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
 
             if (dgvRecientes.Columns.Contains("__FechaOrden"))
                 dgvRecientes.Columns["__FechaOrden"].Visible = false;
