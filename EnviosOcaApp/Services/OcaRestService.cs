@@ -523,15 +523,52 @@ GenerarLoteRealAsync(
             return pdfPath;
         }
 
-        public async Task<(bool Exito, string Mensaje)> AnularOrdenGeneradaAsync(int idOrdenRetiro)
+        public async Task<(bool Exito, string Mensaje)> AnularOrdenGeneradaAsync(
+            int idOrdenRetiro,
+            string empresaNombre)
         {
-            string usuarioOca = (_settings != null && !_settings.EsProduccion)
-                ? "test@oca.com.ar"
-                : "sschechtel@prevencionart.com.ar";
+            string usuarioOca;
+            string passwordOca;
+            if (!_settings.EsProduccion)
+            {
+                usuarioOca = "test@oca.com.ar";
+                passwordOca = "123456";
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(empresaNombre))
+                    return (false, "No se pudo identificar la empresa que generó la orden.");
 
-            string passwordOca = (_settings != null && !_settings.EsProduccion)
-                ? "123456"
-                : "Corresponsalia04";
+                try
+                {
+                    string path = _settings.ObtenerRutaEmpresasCompleta();
+                    string json = await System.IO.File.ReadAllTextAsync(path);
+                    var empresas = System.Text.Json.JsonSerializer.Deserialize<List<EmpresaOca>>(json);
+                    var empresa = empresas?.FirstOrDefault(item =>
+                        string.Equals(
+                            item.Nombre?.Trim(),
+                            empresaNombre.Trim(),
+                            StringComparison.OrdinalIgnoreCase));
+
+                    if (empresa == null)
+                        return (false, "La empresa de la orden no está disponible en la configuración actual.");
+                    if (string.IsNullOrWhiteSpace(empresa.Usuario)
+                        || string.IsNullOrWhiteSpace(empresa.Password))
+                    {
+                        return (false, "La empresa de la orden no tiene credenciales OCA configuradas.");
+                    }
+
+                    usuarioOca = empresa.Usuario;
+                    passwordOca = empresa.Password;
+                }
+                catch (Exception ex) when (
+                    ex is System.IO.IOException
+                    || ex is UnauthorizedAccessException
+                    || ex is System.Text.Json.JsonException)
+                {
+                    return (false, "No se pudo leer la configuración actual de empresas para anular la orden.");
+                }
+            }
 
             var formValues = new System.Collections.Generic.Dictionary<string, string>
             {

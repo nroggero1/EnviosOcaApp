@@ -165,6 +165,18 @@ namespace EnviosOcaApp.Views
             }
 
             string nroOca = dgvRecientes.Columns.Contains("Nro_Orden_OCA") ? row.Cells["Nro_Orden_OCA"].Value?.ToString() ?? "" : "";
+            string empresa = dgvRecientes.Columns.Contains("Empresa_Seleccionada")
+                ? row.Cells["Empresa_Seleccionada"].Value?.ToString() ?? ""
+                : "";
+            if (string.IsNullOrWhiteSpace(empresa))
+            {
+                MessageBox.Show(
+                    "No se pudo determinar la empresa que generó esta orden.",
+                    "Empresa no identificada",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
             string destinatario = dgvRecientes.Columns.Contains("Destinatario") ? row.Cells["Destinatario"].Value?.ToString() ?? "" : "";
 
             // 1. Extraer o resolver el número numérico de Orden de Retiro
@@ -210,7 +222,7 @@ namespace EnviosOcaApp.Views
 
             try
             {
-                var (exito, mensaje) = await Program.OcaService.AnularOrdenGeneradaAsync(idOrdenRetiro);
+                var (exito, mensaje) = await Program.OcaService.AnularOrdenGeneradaAsync(idOrdenRetiro, empresa);
                 if (exito)
                 {
                     lblStatus.ForeColor = Color.Green;

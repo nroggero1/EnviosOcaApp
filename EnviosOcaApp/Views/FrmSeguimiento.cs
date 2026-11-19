@@ -111,6 +111,18 @@ namespace EnviosOcaApp.Views
             }
 
             string nroOca = dgvAuditoriaInterna.Columns.Contains("Nro_Orden_OCA") ? row.Cells["Nro_Orden_OCA"].Value?.ToString() ?? "" : "";
+            string empresa = dgvAuditoriaInterna.Columns.Contains("Empresa_Seleccionada")
+                ? row.Cells["Empresa_Seleccionada"].Value?.ToString() ?? ""
+                : "";
+            if (string.IsNullOrWhiteSpace(empresa))
+            {
+                MessageBox.Show(
+                    "No se pudo determinar la empresa que generó esta orden.",
+                    "Empresa no identificada",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
             string destinatario = dgvAuditoriaInterna.Columns.Contains("Destinatario") ? row.Cells["Destinatario"].Value?.ToString() ?? "" : "";
 
             int idOrdenRetiro = 0;
@@ -149,7 +161,7 @@ namespace EnviosOcaApp.Views
 
             try
             {
-                var (exito, mensaje) = await Program.OcaService.AnularOrdenGeneradaAsync(idOrdenRetiro);
+                var (exito, mensaje) = await Program.OcaService.AnularOrdenGeneradaAsync(idOrdenRetiro, empresa);
                 if (exito)
                 {
                     Program.AuditoriaService.ActualizarEstadoOrden(nroOca, "ANULADA");
@@ -267,6 +279,17 @@ namespace EnviosOcaApp.Views
                     }
                 }
 
+                string empresa = ObtenerEmpresaParaOrden(idOrden);
+                if (string.IsNullOrWhiteSpace(empresa))
+                {
+                    MessageBox.Show(
+                        "No se encontró la empresa que generó esta orden en la auditoría. No se realizará la anulación con credenciales de otra empresa.",
+                        "Empresa no identificada",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
                 var confirm = MessageBox.Show($"¿Está seguro de que desea anular la Orden de Retiro N° {idOrden} ante OCA?\nEsta acción cancelará la orden de retiro formalmente.", "Confirmar Anulación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confirm != DialogResult.Yes) return;
 
@@ -276,7 +299,7 @@ namespace EnviosOcaApp.Views
 
                 try
                 {
-                    var (exito, mensaje) = await Program.OcaService.AnularOrdenGeneradaAsync(idOrden);
+                    var (exito, mensaje) = await Program.OcaService.AnularOrdenGeneradaAsync(idOrden, empresa);
                     if (exito)
                     {
                         lblEstadoTracking.Text = "Orden anulada con éxito.";
@@ -418,6 +441,42 @@ namespace EnviosOcaApp.Views
         private void BtnFiltrar_Click(object? sender, EventArgs e)
         {
             CargarDatosAuditoria();
+        }
+
+        private string ObtenerEmpresaParaOrden(int idOrden)
+        {
+            foreach (DataGridViewRow row in dgvAuditoriaInterna.Rows)
+            {
+                if (row.IsNewRow)
+                    continue;
+
+                string empresa = dgvAuditoriaInterna.Columns.Contains("Empresa_Seleccionada")
+                    ? row.Cells["Empresa_Seleccionada"].Value?.ToString() ?? ""
+                    : "";
+                if (string.IsNullOrWhiteSpace(empresa))
+                    continue;
+
+                string nroOca = dgvAuditoriaInterna.Columns.Contains("Nro_Orden_OCA")
+                    ? row.Cells["Nro_Orden_OCA"].Value?.ToString() ?? ""
+                    : "";
+                if (int.TryParse(nroOca, out int idDirecto) && idDirecto == idOrden)
+                    return empresa;
+
+                string destinatario = dgvAuditoriaInterna.Columns.Contains("Destinatario")
+                    ? row.Cells["Destinatario"].Value?.ToString() ?? ""
+                    : "";
+                var match = System.Text.RegularExpressions.Regex.Match(
+                    destinatario,
+                    @"(?:OR|OrdenRetiro|Orden):\s*(\d+)");
+                if (match.Success
+                    && int.TryParse(match.Groups[1].Value, out int idMatch)
+                    && idMatch == idOrden)
+                {
+                    return empresa;
+                }
+            }
+
+            return string.Empty;
         }
 
         private void CargarDatosAuditoria()
