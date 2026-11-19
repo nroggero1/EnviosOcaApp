@@ -31,7 +31,14 @@ namespace EnviosOcaApp
             btnImprimirEtiquetas.Text = "Impresión de Etiquetas";
             btnAuditoria.Text = "Historial y Seguimiento";
             float fontSize = menuCompacto ? 9F : 10F;
-            foreach (Button button in new[] { btnImprimirEtiquetas, btnAuditoria })
+            foreach (Button button in new[]
+            {
+                btnGenerarEnvios,
+                btnImprimirEtiquetas,
+                btnAuditoria,
+                btnGestionUsuarios,
+                btnGestionOficinas
+            })
             {
                 if (button.Font.Size != fontSize)
                     button.Font = new Font(button.Font.FontFamily, fontSize, button.Font.Style);
