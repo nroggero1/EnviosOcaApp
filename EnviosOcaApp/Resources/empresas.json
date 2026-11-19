@@ -17,7 +17,7 @@
   {
     "Nombre": "Prevención ART",
     "Cuit": "30-68436191-7",
-    "Operativa": "283228",
+    "Operativa": "378976",
     "NroCuenta": "112198/000",
     "CentroCosto": "1",
     "CalleOrigen": "Lainez",
@@ -26,13 +26,13 @@
     "ProvinciaOrigen": "Santa Fe",
     "CpOrigen": "2322",
     "ContactoOrigen": "CORRESPONSALIA",
-    "Usuario": "sschechtel@prevencionart.com.ar",
-    "Password": "Corresponsalia04"
+    "Usuario": "corresponsalia@gruposancorseguros.com",
+    "Password": "Corresponsalia 04"
   },
   {
     "Nombre": "Prevención Salud",
     "Cuit": "30-71304500-0",
-    "Operativa": "283228",
+    "Operativa": "378978",
     "NroCuenta": "149191/000",
     "CentroCosto": "1",
     "CalleOrigen": "Lainez",
@@ -41,7 +41,8 @@
     "ProvinciaOrigen": "Santa Fe",
     "CpOrigen": "2322",
     "ContactoOrigen": "CORRESPONSALIA",
-    "Usuario": "sschechtel@prevencionart.com.ar",
-    "Password": "Corresponsalia04"
+    "Usuario": "nzanuzzi@sancorseguros.com",
+    "Password": "PrevencioSalud04"
   }
 ]
+
