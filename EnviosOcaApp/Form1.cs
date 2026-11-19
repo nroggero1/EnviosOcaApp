@@ -37,7 +37,8 @@ namespace EnviosOcaApp
                 btnImprimirEtiquetas,
                 btnAuditoria,
                 btnGestionUsuarios,
-                btnGestionOficinas
+                btnGestionOficinas,
+                btnAyuda
             })
             {
                 if (button.Font.Size != fontSize)
@@ -51,7 +52,8 @@ namespace EnviosOcaApp
                 btnImprimirEtiquetas,
                 btnAuditoria,
                 btnGestionUsuarios,
-                btnGestionOficinas
+                btnGestionOficinas,
+                btnAyuda
             })
             {
                 button.Height = buttonHeight;
@@ -258,6 +260,15 @@ namespace EnviosOcaApp
 
             AbrirFormularioHijo(
                 new FrmGestionOficinas());
+        }
+
+        private void btnAyuda_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(
+                "Para ayuda contactese con \"Corresponsalia Sunchales\"",
+                "Ayuda",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
         }
     }
 }

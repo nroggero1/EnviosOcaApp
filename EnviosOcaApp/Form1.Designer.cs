@@ -21,6 +21,7 @@ namespace EnviosOcaApp
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             pnlMenuLateral = new Panel();
+            btnAyuda = new Button();
             btnGestionOficinas = new Button();
             btnGestionUsuarios = new Button();
             btnAuditoria = new Button();
@@ -33,10 +34,11 @@ namespace EnviosOcaApp
             pnlLogo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).BeginInit();
             SuspendLayout();
-            // 
+            //
             // pnlMenuLateral
-            // 
+            //
             pnlMenuLateral.BackColor = Color.FromArgb(167, 3, 85);
+            pnlMenuLateral.Controls.Add(btnAyuda);
             pnlMenuLateral.Controls.Add(btnGestionOficinas);
             pnlMenuLateral.Controls.Add(btnGestionUsuarios);
             pnlMenuLateral.Controls.Add(btnAuditoria);
@@ -48,7 +50,24 @@ namespace EnviosOcaApp
             pnlMenuLateral.Name = "pnlMenuLateral";
             pnlMenuLateral.Size = new Size(236, 577);
             pnlMenuLateral.TabIndex = 0;
-            // 
+            //
+            // btnAyuda
+            //
+            btnAyuda.Dock = DockStyle.Top;
+            btnAyuda.FlatAppearance.BorderSize = 0;
+            btnAyuda.FlatStyle = FlatStyle.Flat;
+            btnAyuda.Font = new Font("Microsoft Sans Serif", 6.4F);
+            btnAyuda.ForeColor = Color.White;
+            btnAyuda.Location = new Point(0, 300);
+            btnAyuda.Name = "btnAyuda";
+            btnAyuda.Padding = new Padding(10, 0, 0, 0);
+            btnAyuda.Size = new Size(236, 40);
+            btnAyuda.TabIndex = 6;
+            btnAyuda.Text = "Ayuda";
+            btnAyuda.TextAlign = ContentAlignment.MiddleLeft;
+            btnAyuda.UseVisualStyleBackColor = true;
+            btnAyuda.Click += btnAyuda_Click;
+            //
             // btnGestionOficinas
             // 
             btnGestionOficinas.Dock = DockStyle.Top;
@@ -192,6 +211,7 @@ namespace EnviosOcaApp
         private System.Windows.Forms.Panel pnlContenedor;
         private System.Windows.Forms.PictureBox pictureBoxLogo;
         private Button btnGestionOficinas;
+        private Button btnAyuda;
     }
 }
 

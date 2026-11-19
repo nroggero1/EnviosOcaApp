@@ -21,7 +21,7 @@ namespace EnviosOcaApp.Services
             }
         }
 
-        private bool EsAdministrador(string currentUser)
+        public bool EsAdministrador(string currentUser)
         {
             try
             {

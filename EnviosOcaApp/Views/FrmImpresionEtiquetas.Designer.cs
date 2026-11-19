@@ -110,7 +110,7 @@ namespace EnviosOcaApp.Views
             this.grpRecientes.Size = new System.Drawing.Size(760, 330);
             this.grpRecientes.TabIndex = 2;
             this.grpRecientes.TabStop = false;
-            this.grpRecientes.Text = "Últimos Envíos Generados (Mes Actual)";
+            this.grpRecientes.Text = "Historial de Envíos Generados";
 
             // lblTipDobleClic
             this.lblTipDobleClic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -142,6 +142,7 @@ namespace EnviosOcaApp.Views
             this.dgvRecientes.MultiSelect = false;
             this.dgvRecientes.Name = "dgvRecientes";
             this.dgvRecientes.ReadOnly = true;
+            this.dgvRecientes.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.dgvRecientes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvRecientes.Size = new System.Drawing.Size(730, 210);
             this.dgvRecientes.TabIndex = 0;
